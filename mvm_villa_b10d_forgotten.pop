@@ -352,8 +352,6 @@ WaveSchedule
 				"clip size upgrade atomic" 16.0
 				"add cond on hit" 12
 				"add cond on hit duration" 3.5
-				//"fire input on hit" "!self^RunScriptCode^w4Callbacks.playSound(true,self)"
-				//"fire input on hit name restrict" "player"
 				"faster reload rate" 0.2
 				"fire rate bonus" 0.2
 				"projectile spread angle penalty" 7
@@ -398,8 +396,6 @@ WaveSchedule
 				"damage bonus" 1.5
 				"add cond on hit" 32
 				"add cond on hit duration" 20
-				//"fire input on hit" "!self^RunScriptCode^w4Callbacks.playSound(false, self)"
-				//"fire input on hit name restrict" "player"
 				"damage causes airblast" 1
 				"attach particle effect" 16
 				"Paintkit_proto_def_index" 3.16693e-43n
@@ -1277,7 +1273,7 @@ WaveSchedule
 			Target	altmode_arena2_wave_start_reviveonly_relay
 			Action	RunScriptCode
 			Param "
-				EntFire(`gamerules`, `RunScriptFile`, `forgotten_w4.nut`, -1)
+				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
 				EntFire(`altmode_arena2_wave_start_reviveonly_relay`, `Trigger`)
 			"
 		}
@@ -1709,7 +1705,8 @@ WaveSchedule
 			Param "
 				self.AcceptInput("Trigger", null, null, null)
 				__CollectGameEventCallbacks(desquad)
-				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`)
+				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
+				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
 			"
 		}
 		DoneOutput {
@@ -1730,7 +1727,8 @@ WaveSchedule
 				Delay 2
 				Param "
 					self.AcceptInput(`runscriptfile`, `timer.nut`, null, null)
-					//self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(containmentbreaker)`, null, null)
+					self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(chaosTimer)`, null, null)
+					setTimerSegment(1)
 				"
 			}
 			
@@ -1749,7 +1747,12 @@ WaveSchedule
 			StartWaveOutput {
 				Target altmode_chaos_script
 				Action runscriptcode
-				Param "EnableTeleporter(`ws1`)"
+				Param "teleportBotsToRoom(`ws1`)"
+			}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws1`)"
 			}
 			
 			Squad {
@@ -1779,6 +1782,12 @@ WaveSchedule
 			SpawnCount 4
 			Where spawnbot_altmode
 			
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws2`)"
+			}
+			
 			Squad {
 				TFBot {
 					Template T_TFBot_Dyspnea
@@ -1806,7 +1815,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws2`)"			
+				Param "teleportBotsToRoom(`ws2`)"			
 			}
 		}
 		WaveSpawn {
@@ -1814,7 +1823,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws2`)"			
+				Param "teleportBotsToRoom(`ws2`)"			
 			}
 		}
 		
@@ -1824,6 +1833,12 @@ WaveSchedule
 			MaxActive 7
 			SpawnCount 7
 			Where spawnbot_altmode
+			
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws3`)"
+			}
 			
 			TFBot {
 				Template T_TFBot_Demoman_Samurai
@@ -1836,7 +1851,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws3`)"			
+				Param "teleportBotsToRoom(`ws3`)"			
 			}
 		}
 		WaveSpawn {
@@ -1844,7 +1859,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws3`)"			
+				Param "teleportBotsToRoom(`ws3`)"			
 			}
 		}
 		
@@ -1854,6 +1869,12 @@ WaveSchedule
 			MaxActive 6
 			SpawnCount 6
 			Where spawnbot_altmode
+			
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws4`)"
+			}
 			
 			Squad {
 				TFBot {
@@ -1880,7 +1901,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws4`)"			
+				Param "teleportBotsToRoom(`ws4`)"			
 			}
 		}
 		WaveSpawn {
@@ -1888,7 +1909,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws4`)"			
+				Param "teleportBotsToRoom(`ws4`)"			
 			}
 		}
 		
@@ -1898,6 +1919,12 @@ WaveSchedule
 			MaxActive 6
 			SpawnCount 6
 			Where spawnbot_altmode
+			
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws5`)"
+			}
 			
 			Squad {
 				TFBot {
@@ -1954,7 +1981,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws5`)"			
+				Param "teleportBotsToRoom(`ws5`)"			
 			}
 		}
 		WaveSpawn {
@@ -1962,7 +1989,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws5`)"			
+				Param "teleportBotsToRoom(`ws5`)"			
 			}
 		}
 		
@@ -1973,6 +2000,11 @@ WaveSchedule
 			SpawnCount 1
 			
 			//need to fix room
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws6`)"
+			}
 			
 			TFBot {
 				Template T_TFBot_Hemorrhagic_Fever
@@ -1984,7 +2016,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws6`)"			
+				Param "teleportBotsToRoom(`ws6`)"			
 			}
 		}
 		WaveSpawn {
@@ -1992,7 +2024,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws6`)"			
+				Param "teleportBotsToRoom(`ws6`)"			
 			}
 		}
 		
@@ -2002,6 +2034,12 @@ WaveSchedule
 			TotalCount 5
 			MaxActive 5
 			SpawnCount 5
+			
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws7`)"
+			}
 			
 			Squad {
 				TFBot {
@@ -2031,7 +2069,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws7`)"			
+				Param "teleportBotsToRoom(`ws7`)"			
 			}
 		}
 		WaveSpawn {
@@ -2039,7 +2077,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws7`)"			
+				Param "teleportBotsToRoom(`ws7`)"			
 			}
 		}
 		
@@ -2049,10 +2087,15 @@ WaveSchedule
 			MaxActive 2
 			SpawnCount 2
 			
-			StartWaveOutput {
+			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action runscriptcode
 				Param "pickRoom(`ws8`)"
+			}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws8`)"
 			}
 			
 			Squad {
@@ -2072,7 +2115,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws8`)"			
+				Param "teleportBotsToRoom(`ws8`)"			
 			}
 		}
 		WaveSpawn {
@@ -2080,7 +2123,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws8`)"			
+				Param "teleportBotsToRoom(`ws8`)"			
 			}
 		}
 		
@@ -2090,10 +2133,15 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 4
 			
-			StartWaveOutput {
+			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action runscriptcode
 				Param "pickRoom(`ws9`)"
+			}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws9`)"
 			}
 			
 			Squad {
@@ -2121,7 +2169,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws9`)"			
+				Param "teleportBotsToRoom(`ws9`)"			
 			}
 		}
 		WaveSpawn {
@@ -2129,7 +2177,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws9`)"			
+				Param "teleportBotsToRoom(`ws9`)"			
 			}
 		}
 		
@@ -2139,10 +2187,15 @@ WaveSchedule
 			MaxActive 5
 			SpawnCount 5
 			
-			StartWaveOutput {
+			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action runscriptcode
 				Param "pickRoom(`ws10`)"
+			}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws10`)"
 			}
 			
 			Squad {
@@ -2173,7 +2226,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws10`)"			
+				Param "teleportBotsToRoom(`ws10`)"			
 			}
 		}
 		WaveSpawn {
@@ -2181,7 +2234,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws10`)"			
+				Param "teleportBotsToRoom(`ws10`)"			
 			}
 		}
 		
@@ -2191,10 +2244,15 @@ WaveSchedule
 			MaxActive 3
 			SpawnCount 3
 			
-			StartWaveOutput {
+			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action runscriptcode
 				Param "pickRoom(`ws11`)"
+			}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws11`)"
 			}
 			
 			Squad {
@@ -2220,7 +2278,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws11`)"			
+				Param "teleportBotsToRoom(`ws11`)"			
 			}
 		}
 		WaveSpawn {
@@ -2228,7 +2286,7 @@ WaveSchedule
 			FirstSpawnOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "EnableTeleporter(`ws11`)"			
+				Param "teleportBotsToRoom(`ws11`)"			
 			}
 		}
 		

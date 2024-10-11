@@ -215,7 +215,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 		activator.AddCustomAttribute("uber duration bonus", -6, -1)
 		EntFireByHandle(activator, "RunScriptCode", "heartbeaterCallbacks.drainShieldIfActive()", -1, activator, null)
 		if(!bossIsBuffed) return
-		activator.AddCustomAttribute("move speed penalty", 0.85, -1)
+		activator.AddCustomAttribute("move speed penalty", 0.75, -1)
 		activator.AddCustomAttribute("halloween increased jump height", 0.5, -1)
 	}
 
@@ -259,12 +259,15 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 				sound_name = "vo/mvm/mght/soldier_mvm_m_laughlong01.mp3"
 				speaker_entity = player
 			})
+
+			DispatchParticleEffect("cardiac_arrest_timer", player.GetCenter() + Vector(0,0,128), Vector())
 			
 			//player.AddCondEx(TF_COND_CRITBOOSTED_USER_BUFF, -1, null)
 			player.AddCondEx(TF_COND_SODAPOPPER_HYPE, -1, null)
 			player.AddCustomAttribute("fire rate penalty", 0.4, -1)
 			player.AddCustomAttribute("move speed penalty", 3, -1)
 			player.AddCustomAttribute("damage penalty", 10, -1)
+			player.AddCustomAttribute("dmg taken increased", 1.5, -1)
 			player.GetScriptScope().rageParticle.AcceptInput("StartTouch", "!activator", player, player)
 			EntFire("wakeup_shake*", "StartShake")
 			break
