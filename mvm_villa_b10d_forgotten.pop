@@ -288,7 +288,7 @@ WaveSchedule
 		{
 			Class Medic
 			Name "Pneumonia"
-			ClassIcon pneumonia
+			ClassIcon pneumonia_bp
             Tag Pneumonia
 			Tag Special_Disease
             Action Mobber  
@@ -331,7 +331,7 @@ WaveSchedule
 		{
 			Class Soldier
 			Name "Dyspnea"
-			ClassIcon dyspnea
+			ClassIcon dyspnea_bp
 			Health 4200
 			Tag Dyspnea
 			Tag Special_Disease
@@ -376,7 +376,7 @@ WaveSchedule
 		{
 			Class Scout
 			Name "Tachycardia"
-			ClassIcon tachycardia
+			ClassIcon tachycardia_bp
             Tag Tachycardia
 			Tag Special_Disease
 			Skill Expert
@@ -416,7 +416,7 @@ WaveSchedule
 		{
 			Class Heavy
 			Name "Malignant Tumor"
-			ClassIcon malignant_tumor
+			ClassIcon malignant_tumor_bp
             Tag Malignant_Tumor
 			Tag Special_Disease
 			Skill Easy
@@ -479,7 +479,7 @@ WaveSchedule
 		{
 			Class Heavyweapons
 			Name "Sarcoma"
-			ClassIcon sarcoma
+			ClassIcon sarcoma_bp
 			Skill Hard
 			Health 20000
             Scale 0.8
@@ -531,7 +531,7 @@ WaveSchedule
 			Class Pyro
 			Name "Hemorrhagic Fever"
 			//Replace with hemorrhagic_fever once made
-			ClassIcon pyro_giant
+			ClassIcon hemorrhagic_fever_bp
 			Tag Hemorrhagic_Fever
 			// Will drop super big potion on death
 			// Tag Special_Disease
