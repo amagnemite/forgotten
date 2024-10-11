@@ -832,7 +832,7 @@ WaveSchedule
 				Health	45000
 				Class Soldier
 				Name "Cardiac Arrest"
-				ClassIcon soldier_ekg
+				ClassIcon cardiac_arrest_bp
 				Skill Expert
 				Tag heartbeater
 				Tag giantgiant
