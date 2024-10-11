@@ -1,0 +1,2239 @@
+//made with engipop
+#base robot_standard.pop
+#base robot_giant.pop
+#base altmode.pop
+
+WaveSchedule
+{
+	StartingCurrency 800
+	RespawnWaveTime 4
+	CanBotsAttackWhileInSpawnRoom no
+	
+	HealOnKillOverhealMelee 1  
+	PlayerAttributes {
+		"penetrate teammates" 1
+	}  
+	
+	ExtendedUpgrades {
+		Upgrade {
+			Name "+25% Damage"
+			Attribute "damage bonus"
+			Cap 2
+			Increment .25
+			Cost 400
+			AllowPlayerClass Medic
+			AllowedWeapons {
+				Classname tf_weapon_syringegun_medic
+			}
+		}
+		Upgrade {
+			Name "+25% Damage"
+			Attribute "damage bonus"
+			Cap 2
+			Increment .25
+			Cost 250
+			AllowPlayerClass Medic
+			AllowedWeapons {
+				Slot Melee
+			}
+			DisallowedWeapons {
+				ItemName "The Amputator"
+			}
+		}
+		Upgrade {
+			Name "+25% Damage"
+			Attribute "damage bonus"
+			Description "Also increases crossbow healing done"
+			Cap 2
+			Increment .25
+			Cost 250
+			AllowPlayerClass Medic
+			AllowedWeapons {
+				Classname tf_weapon_crossbow
+			}
+		}
+		Upgrade {
+			Name "+24% Damage"
+			Attribute "damage bonus"
+			Cap 2.2
+			Increment .24
+			Cost 230
+			AllowedWeapons {
+				ItemName "The Amputator"
+			}
+		}
+		Upgrade [$DISABLED] {
+			Name "Milk Bolts"
+			Attribute "add cond on hit duration"
+			Description "Crossbow bolts apply milk on hit. Has a duration of 4 seconds."
+			Cap 4
+			Increment 4
+			Cost 200
+			AllowPlayerClass Medic
+			AllowedWeapons {
+				Classname tf_weapon_crossbow
+			}
+			SecondaryAttributes {
+				"add cond on hit" 27
+			}
+		}
+		Upgrade {
+			Name "+2s Crits On Kill"
+			Attribute "critboost on kill"
+			Cap 4
+			Increment 2
+			Cost 350
+			AllowPlayerClass Medic
+			AllowedWeapons {
+				Slot Melee
+			}
+		}
+		Upgrade {
+			Name "+10% Firing speed"
+			Attribute "fire rate penalty"
+			Cap 1
+			Increment -.1
+			Cost 50
+			AllowedWeapons {
+				ItemName "The Solemn Vow"
+			}
+		}
+		VacuumMedibeam {
+			Name "Vacuum attachment"
+			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
+			Attribute "mod see enemy health"
+			Cap 1
+			Increment 1
+			Cost 600 //was 400
+			
+			AllowedWeapons {
+				ClassName "TF_WEAPON_MEDIGUN"
+			}
+			DisallowedWeapons {
+				ItemName "The Quick-Fix"
+				ItemName "The Kritzkrieg"
+			}
+			
+			SecondaryAttributes
+			{
+				"special item description" "Medibeam can now target bots and damage them. Disconnects if shield is activated" 
+			}
+			
+			OnApply {
+				//upgrade bought -> apply
+				//switch weapon  -> apply
+				Output "!activator,RunScriptFile,luigis_remansion.nut,0"
+				Output "!activator,CallScriptFunction,levelCheck,0"
+			}
+			OnDowngrade {
+				//Output "!activator,$displaytextchat,downgrade,0"
+				Output "!activator,CallScriptFunction,RefundMain,0"
+			}
+		}
+		VacuumMedibeamKritz {
+			Name "Vacuum attachment"
+			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
+			Attribute "mod see enemy health"
+			Cap 1
+			Increment 1
+			Cost 600
+			
+			AllowedWeapons {
+				ItemName "The Kritzkrieg"
+			}
+			
+			SecondaryAttributes
+			{
+				"special item description" "Medibeam can now target bots and damage them. Disconnects if shield is activated" 
+				"special item description 2" "Damage is tripled during a uber."
+			}
+			
+			OnApply {
+				//upgrade bought -> apply
+				//switch weapon  -> apply
+				Output "!activator,RunScriptFile,luigis_remansion.nut,0"
+				Output "!activator,CallScriptFunction,levelCheck,0"
+			}
+			OnDowngrade {
+				//Output "!activator,$displaytextchat,downgrade,0"
+				Output "!activator,CallScriptFunction,RefundMain,0"
+			}
+		}
+		VacuumMedibeamQF {
+			Name "Vacuum attachment"
+			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
+			Attribute "mod see enemy health"
+			Cap 1
+			Increment 1
+			Cost 800
+			//was 600
+			
+			AllowedWeapons {
+				ItemName "The Quick-Fix"
+			}
+					
+			SecondaryAttributes
+			{
+				"special item description" "Medibeam can now target bots and damage them. Disconnects if shield is activated" 
+				"special item description 2" "Damage is tripled during a uber."
+			}
+			
+			OnApply {
+				//upgrade bought -> apply
+				//switch weapon  -> apply
+				//Output "!activator,$displaytextchat,apply,0"
+				Output "!activator,RunScriptFile,luigis_remansion.nut,0"
+				Output "!activator,CallScriptFunction,levelCheck,0"
+			}
+			OnDowngrade {
+				//Output "!activator,$displaytextchat,downgrade,0"
+				Output "!activator,CallScriptFunction,RefundMain,0"
+			}
+		}
+		Syringe {
+			Name "Magic Syringe"
+			Description "Shots have a will of their own. Every 7th shot conspires against you."
+			//or goes against you
+			Attribute "mod see enemy health"
+			Cap 1
+			Increment 1
+			Cost 400
+			
+			AllowedWeapons {
+				ClassName "TF_WEAPON_CROSSBOW"
+			}
+			
+			SecondaryAttributes {
+				"special item description" "Shots have a will of their own. Every 7th shot conspires against you."
+			}
+			
+			OnApply {
+				Output "!activator,RunScriptFile,crossbow.nut,0"
+				Output "!activator,CallScriptFunction,purchaseCrossbow,0"
+			}
+			OnDowngrade {
+				Output "!activator,CallScriptFunction,refundCrossbow,0"
+			}
+		}
+	}  
+	
+	Templates 
+	{
+		T_TFBot_Pathogen_Soldier
+		{
+			Class Soldier
+			Name "Pathogen"
+			ClassIcon blackdead
+            Action Mobber  
+			Skill Expert
+			WeaponRestrictions MeleeOnly
+			CharacterAttributes
+			{
+				"increased jump height" 2
+				// "damage bonus" 0.001
+				"move speed bonus" 0.8
+			}
+		}
+
+        T_TFBot_Pathogen_Medic
+		{
+			Class Medic
+			Name "Pathogen"
+			ClassIcon blackdead
+            Action Mobber  
+			Skill Expert
+			WeaponRestrictions MeleeOnly
+			CharacterAttributes
+			{
+				"increased jump height" 2
+				// "damage bonus" 0.001
+				"move speed bonus" 0.8
+			}
+		}
+
+        T_TFBot_Pathogen_Pyro
+		{
+			Class Pyro
+			Name "Pathogen"
+			ClassIcon blackdead
+            Action Mobber  
+			Skill Expert
+			WeaponRestrictions MeleeOnly
+			CharacterAttributes
+			{
+				"increased jump height" 2
+				// "damage bonus" 0.001
+				"move speed bonus" 0.8
+			}
+		}
+
+        T_TFBot_Pathogen_Scout
+		{
+			Class Scout
+			Name "Pathogen"
+			ClassIcon blackdead
+            Action Mobber  
+			Skill Expert
+			WeaponRestrictions MeleeOnly
+			CharacterAttributes
+			{
+				"increased jump height" 2
+				// "damage bonus" 0.001
+				"move speed bonus" 0.8
+			}
+		}
+
+        //"Passive" robot that leaves a purple poison trail around it
+		T_TFBot_Pneumonia
+		{
+			Class Medic
+			Name "Pneumonia"
+			ClassIcon pneumonia
+            Tag Pneumonia
+			Tag Special_Disease
+            Action Mobber  
+			Skill Expert
+			Health 5000
+			Item "The Quick-Fix"
+			WeaponRestrictions SecondaryOnly
+			Attributes MiniBoss
+			Item "The Byte'd Beak"
+			ItemAttributes
+			{
+				ItemName "The Byte'd Beak"
+				"set item tint RGB" 13328029
+			}
+			//Not sure if these two conflict with each other or not
+			Item "The Virus Doctor"
+			ItemAttributes
+			{
+				ItemName "The Virus Doctor"
+				"set item tint RGB" 13328029
+			}
+            ItemAttributes
+			{
+				ItemName "The Quick-Fix"
+				"ubercharge rate bonus" 0.01
+			}
+			CharacterAttributes
+			{
+				"move speed bonus"	1
+				"damage force reduction" 0.6
+				"airblast vulnerability multiplier" 0.6
+				"heal rate bonus" 200
+			}
+		}
+
+        //Low damage, difficult to avoid. "Infects" players with faster uber drain and shield drain.
+        //Infection lasts for long and creates a screen overlay.
+        //Mutually exclusive with other screen overlay enemies.
+        T_TFBot_Dyspnea
+		{
+			Class Soldier
+			Name "Dyspnea"
+			ClassIcon dyspnea
+			Health 4200
+			Tag Dyspnea
+			Tag Special_Disease
+			Skill Expert
+			WeaponRestrictions PrimaryOnly
+			Attributes MiniBoss
+			Attributes HoldFireUntilFullReload
+			Action Mobber  
+			Item "Shortness Of Breath"
+			ItemAttributes
+			{
+				ItemName "Shortness Of Breath"
+				"set item tint RGB" 13328029
+			}
+			ItemAttributes
+			{
+				ItemName "TF_WEAPON_ROCKETLAUNCHER"
+				"clip size upgrade atomic" 16.0
+				"add cond on hit" 12
+				"add cond on hit duration" 3.5
+				//"fire input on hit" "!self^RunScriptCode^w4Callbacks.playSound(true,self)"
+				//"fire input on hit name restrict" "player"
+				"faster reload rate" 0.2
+				"fire rate bonus" 0.2
+				"projectile spread angle penalty" 7
+                "damage bonus" 0.1
+				"projectile trail particle" dyspnea_rockettrail
+			}
+			CharacterAttributes
+			{
+				"health regen"	40
+				"move speed bonus"	0.5
+				"damage force reduction" 0.4
+				"airblast vulnerability multiplier" 0.4
+				"override footstep sound set" 3
+				"airblast vertical vulnerability multiplier" 0.1			
+			}
+		}
+
+        //Increased damage super scout, "infects" players with difficult-to-control insane move speed and jump height.
+        //Infection lasts for long and creates a screen overlay.
+        //Mutually exclusive with other screen overlay enemies.
+        T_TFBot_Tachycardia
+		{
+			Class Scout
+			Name "Tachycardia"
+			ClassIcon tachycardia
+            Tag Tachycardia
+			Tag Special_Disease
+			Skill Expert
+			Health 1600
+			WeaponRestrictions MeleeOnly
+			Attributes MiniBoss
+			Action Mobber  
+			Item "The Holy Mackerel"
+			Item "Bonk Leadwear"
+			ItemAttributes
+			{
+				ItemName "Bonk Leadwear"
+				"set item tint RGB" 13328029
+			}
+			ItemAttributes {
+				ItemName "The Holy Mackerel"
+				"damage bonus" 1.5
+				"add cond on hit" 32
+				"add cond on hit duration" 20
+				//"fire input on hit" "!self^RunScriptCode^w4Callbacks.playSound(false, self)"
+				//"fire input on hit name restrict" "player"
+				"damage causes airblast" 1
+				"attach particle effect" 16
+				"Paintkit_proto_def_index" 3.16693e-43n
+				"Set_item_texture_wear" 0
+			}
+
+			CharacterAttributes
+			{
+                "move speed bonus"	1.4
+				"damage force reduction" 0.7
+				"airblast vulnerability multiplier" 0.7
+				"override footstep sound set" 5
+			}
+		}
+
+        //Swarm melee enemy which explodes on death, dealing 50 damage
+        T_TFBot_Malignant_Tumor
+		{
+			Class Heavy
+			Name "Malignant Tumor"
+			ClassIcon malignant_tumor
+            Tag Malignant_Tumor
+			Tag Special_Disease
+			Skill Easy
+            Scale 0.6
+			Health 65
+			WeaponRestrictions MeleeOnly
+			Action Mobber  
+			Item "The Bunsen Brave"
+			ItemAttributes
+			{
+				ItemName "The Bunsen Brave"
+				"set item tint RGB" 13328029
+			}
+			CharacterAttributes
+			{
+				"damage bonus" 0.2
+				"move speed bonus"	1.5
+				"increased jump height" 3
+			}
+		}
+
+        //Literally just rapid burst fire
+        T_TFBot_Cardiomyopathy
+		{
+			Class Demoman
+			Name "Cardiomyopathy"
+			ClassIcon demo_burst
+			Tag Cardiomyopathy
+			Tag Special_Disease
+			Health 5000
+			Skill Expert
+            Scale 1.9
+			WeaponRestrictions PrimaryOnly
+			Attributes HoldFireUntilFullReload
+			Attributes MiniBoss
+			Action Mobber  
+			ItemAttributes
+			{
+				ItemName "TF_WEAPON_GRENADELAUNCHER"
+				"clip size upgrade atomic" 16.0
+				"faster reload rate" 0.2
+				"fire rate bonus" 0.05
+				"projectile spread angle penalty" 7
+                "damage bonus" 0.5
+			}
+
+			CharacterAttributes
+			{
+				"move speed bonus"	0.35
+                "damage force reduction" 0.5
+				"airblast vulnerability multiplier" 0.5
+				"override footstep sound set" 4
+			}
+		}
+
+        //Very high health heavy bot that starts from unarmed and slowly upgrades its weapon to a mini-crit minigun
+        //Becomes bigger and slower as it evolves, eventually becoming immobile
+        //A distinct sound will be played when it upgrades itself
+        T_TFBot_Sarcoma
+		{
+			Class Heavyweapons
+			Name "Sarcoma"
+			ClassIcon sarcoma
+			Skill Hard
+			Health 20000
+            Scale 0.8
+			Tag Sarcoma
+			Tag Special_Disease
+			WeaponRestrictions MeleeOnly
+			MaxVisionRange 800
+			Attributes MiniBoss
+            Attributes SuppressFire
+            Item "The Brass Beast"
+            Item "The Family Business"
+			Action Mobber
+			Item "Cold War Luchador"
+			ItemAttributes
+			{
+				ItemName "Cold War Luchador"
+				"set item tint RGB" 13328029
+			}
+			ItemAttributes
+			{
+				ItemName "The Brass Beast"
+				"damage bonus"	1.8
+				"spunup_damage_resistance" 1
+			}
+            ItemAttributes
+			{
+				ItemName "The Family Business"
+				"damage bonus" 18
+				"override projectile type" 6
+                "clip size penalty" 1
+				"fire rate bonus" 0.7
+				"faster reload rate" 0.2
+			}
+			CharacterAttributes
+			{
+				"move speed bonus"	1.5
+				"increased jump height" 0.01
+				"damage force reduction" 0.3
+				"airblast vulnerability multiplier" 0.3
+				"override footstep sound set" 2
+			}
+		}
+
+		//Sets the entire room on fire. Starts out passive by only taunting,
+		//Then gets out with flamethrower and fire aura during containment breach.
+		//Fires pink flames.
+        T_TFBot_Hemorrhagic_Fever
+		{
+			Class Pyro
+			Name "Hemorrhagic Fever"
+			//Replace with hemorrhagic_fever once made
+			ClassIcon pyro_giant
+			Tag Hemorrhagic_Fever
+			// Will drop super big potion on death
+			// Tag Special_Disease
+			Health 15000
+			Skill Expert
+            Scale 1.9
+			WeaponRestrictions PrimaryOnly
+			Attributes MiniBoss
+			Action Mobber  
+			Item "The Triclops"
+			ItemAttributes
+			{
+				ItemName "The Triclops"
+				"set item tint RGB" 13328029
+			}
+			CharacterAttributes
+			{
+				"move speed bonus"	0.1
+                "damage force reduction" 0.5
+				"airblast vulnerability multiplier" 0.5
+				"override footstep sound set" 4
+			}
+		}
+	}
+	
+	Mission
+	{
+		Objective Engineer
+		InitialCooldown 45
+		CooldownTime 35
+		BeginAtWave 5
+		RunForThisManyWaves 1
+		DesiredCount 1
+		Where spawnbot
+		TFBot
+		{
+			Class Engineer
+			Name Engineer
+			Skill Expert
+			Health 500
+			//Attributes TeleportToHint
+			TeleportWhere spawnbot
+			TeleportWhere spawnbot_right
+			Tag mission_engineer
+		}
+	}
+	Mission
+	{
+		Objective Spy
+		Where spawnbot
+		InitialCooldown 10
+		CooldownTime 25
+		BeginAtWave 5
+		RunForThisManyWaves 1
+		DesiredCount 3
+		TFBot
+		{
+			Class Spy
+			Name Spy
+			Skill Expert
+		}
+	}
+	Mission {
+		Objective Sniper
+		InitialCooldown 20
+		Where spawnbot_sniper
+		BeginAtWave 5
+		RunForThisManyWaves 1
+		CooldownTime 30
+		DesiredCount 2
+		
+		TFBot
+		{
+			Class Sniper
+			Skill Hard
+			MaxVisionRange 3000
+		}
+	}
+	
+	Wave
+	{
+		InitWaveOutput
+		{
+			Target bombpath_choose_relay
+			Action RunScriptCode
+			Param "
+				EntFire(`medonly_relay`, `trigger`)
+				EntFire(`bombpath_choose_relay`, `trigger`)
+			"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		
+		WaveSpawn
+		{
+			Name w1a
+			Where spawnbot
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 2
+			TFBot
+			{
+				Class Pyro
+				Name Pyro
+				Skill Easy
+				WeaponRestrictions PrimaryOnly
+				Item "The Degreaser"
+			}
+		}
+		WaveSpawn
+		{
+			Name w1a
+			Where spawnbot_invasion
+			TotalCount 14
+			MaxActive 4
+			SpawnCount 2
+			WaitBetweenSpawns 2.5
+			WaitBeforeStarting 2
+			TFBot
+			{
+				Class Pyro
+				Name Pyro
+				Skill Easy
+				WeaponRestrictions PrimaryOnly
+				Item "The Degreaser"
+			}
+		}
+		WaveSpawn
+		{
+			Name w1a
+			Where spawnbot_invasion
+			TotalCount 22
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 1
+			TFBot
+			{
+				Class Pyro
+				ClassIcon pyro_powerjack
+				Name "Powerjack Pyro"
+				Skill Hard
+				WeaponRestrictions MeleeOnly
+				Item "The Powerjack"
+			}
+		}
+		WaveSpawn
+		{
+			Name w1aa
+			Where spawnbot
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 1
+			WaitBeforeStarting 2
+			WaitBetweenSpawns 16
+			TotalCurrency 400
+			TFBot
+			{
+				Template T_TFBot_Giant_Soldier
+				Item "The Cow Mangler 5000"
+			}
+		}
+		
+		WaveSpawn
+		{
+			Name w1b
+			Where spawnbot
+			TotalCount 3
+			MaxActive 1
+			SpawnCount 1
+			WaitForAllSpawned w1aa
+			WaitBeforeStarting 12
+			TFBot
+			{
+				Template T_TFBot_Demoman_Samurai
+			}
+		}
+		WaveSpawn
+		{
+			Name w1bb
+			Where spawnbot_invasion
+			TotalCount 32
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 10
+			WaitBetweenSpawns 1
+			WaitForAllSpawned w1aa
+			Support Limited
+			TFBot
+			{
+				Template T_TFBot_Heavyweapons_Shotgun
+			}
+		}
+		WaveSpawn
+		{
+			Name w1c
+			Where spawnbot_invasion
+			TotalCount 4
+			MaxActive 2
+			SpawnCount 1
+			WaitBeforeStarting 45
+			WaitBetweenSpawns 15
+			TotalCurrency 400
+			WaitForAllSpawned w1aa
+			TFBot
+			{
+				Class Scout
+				ClassIcon scout_cane_lite
+				Name "Giant Candy Cane Scout"
+				Skill Expert
+				WeaponRestrictions MeleeOnly
+				Item "The Candy Cane"
+				Attributes MiniBoss
+				Health 1600
+				CharacterAttributes
+				{
+					"move speed bonus" .75
+					"damage force reduction" 0.7
+					"airblast vulnerability multiplier" 0.7
+					"override footstep sound set" 5
+				}
+			}
+		}
+
+		WaveSpawn
+		{
+			Name w1c
+			Where spawnbot_invasion
+			TotalCount 20
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 13
+			WaitBetweenSpawns 5
+			WaitForAllSpawned w1aa
+			TFBot
+			{
+				Class Heavyweapons
+				ClassIcon heavy_steelfist
+				Name "Fists of Steel Heavy"
+				Skill Hard
+				WeaponRestrictions MeleeOnly
+				Item "Fists of Steel"
+			}
+		}
+	}
+	Wave
+	{
+		InitWaveOutput
+		{
+			Target	altmode_init_reviveonly_relay
+			Action RunScriptCode
+			Param
+			"
+				EntFire(`roof_sound`, `Disable`, `0`, 1)
+				//EntFire(`roof_sound`, `Disabled`, `0`, 1)
+				EntFire(`heartbeater_sound`, `Enable`, `0`, 1)
+				EntFire(`altmode_init_reviveonly_relay`, `Trigger`, `0`, 0.1)
+			"
+		}
+		StartWaveOutput
+		{
+			Target	altmode_roof_wave_start_reviveonly_relay
+			Action	RunScriptCode
+			Param
+			"
+				EntFire(`gamerules`, `RunScriptFile`, `heartbeater.nut`, -1)
+				EntFire(`altmode_roof_wave_start_reviveonly_relay`, `Trigger`, `0`, 0)
+				EntFire(`altmode_roof_wave_start_reviveonly_relay`, `RunScriptCode`, `heartbeaterCallbacks.updateMaxSpeed()`, 0)
+			"
+		}
+		DoneOutput
+		{
+			Target	altmode_wave_finished_relay
+			Action	RunScriptCode
+			Param "
+				EntFire(`altmode_wave_finished_relay`, `Trigger`)
+				EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
+				EntFire(`door_red_*`, `Unlock`)
+			"
+		}
+		WaveSpawn
+		{
+			TotalCount	1
+			MaxActive	1
+			SpawnCount	1
+			WaitBeforeStarting	0.2
+			WaitBetweenSpawns	2
+			Where	spawnbot_boss
+            TFBot
+			{
+				Health	45000
+				Class Soldier
+				Name "Cardiac Arrest"
+				ClassIcon soldier_ekg
+				Skill Expert
+				Tag heartbeater
+				Tag giantgiant
+				Attributes MiniBoss
+				Attributes IgnoreFlag
+				Attributes UseBossHealthBar
+				Attributes DisableDodge
+				Scale 2.5
+				Action Mobber
+				FastUpdate 1
+				NoIdleSound 1  
+				Item "The Direct Hit"
+				Item "The Market Gardener"
+				WeaponRestrictions MeleeOnly
+				ItemAttributes
+				{
+					ItemName "The Direct Hit"
+					"damage bonus" 3
+					"fire rate bonus" 0.3
+					"faster reload rate" -0.8
+				}
+				ItemAttributes
+				{
+					ItemName "The Market Gardener"
+					"damage bonus" 99
+					"damage causes airblast" 1
+					"subtract victim medigun charge on hit" 100
+					"apply z velocity on damage" 500
+				}
+				CharacterAttributes
+				{
+					"damage force reduction" 0.0000000001
+					"airblast vulnerability multiplier" 0.0000000001
+					"override footstep sound set" 3
+					"rage giving scale" 0.1
+				}
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 80
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+				"
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 90
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+				"
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 100
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+				"
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 105
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING`)
+				"
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 115
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF00005`)
+				"
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 116
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF00004`)
+				"
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 117
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF00003`)
+				"
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 118
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF00002`)
+				"
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			WaitBeforeStarting 119
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF00001`)
+				"
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			TotalCurrency 500
+			Where spawnbot_alt_1
+			RandomChoice {
+				RandomChoice {
+				TFBot {
+						Class Medic
+						Name "free money"
+						Action Idle  
+					}
+				}
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			Where spawnbot_alt_1
+			
+			//due to timing issues, delay
+			LastSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Delay 2
+				Param "
+					self.AcceptInput(`runscriptfile`, `timer.nut`, null, null)
+					self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(heartbeaterCallbacks.buffBoss)`, null, null)
+				"
+			}
+			
+			TFBot {
+				Template TimerBotOnly
+				Health 100
+				//Health 10
+			}
+		}
+	}
+	Wave
+	{
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		InitWaveOutput
+		{
+			Target bombpath_choose_relay
+			Action Trigger
+		}
+		WaveSpawn
+		{
+			Name w3a
+			Where spawnbot
+			TotalCount 12
+			MaxActive 2
+			SpawnCount 2
+			WaitBetweenSpawns 4
+			TFBot
+			{
+				Class Soldier
+				ClassIcon soldier_conch
+				Name "Conch Soldier"
+				Skill Normal
+				Item "The Concheror"
+				Attributes SpawnWithFullCharge
+			}
+		}
+		WaveSpawn
+		{
+			Name w3aa
+			Where spawnbot_invasion
+			TotalCount 30
+			MaxActive 10
+			SpawnCount 5
+			WaitBeforeStarting 2
+			WaitBetweenSpawns 2
+			TFBot
+			{
+				Template T_TFBot_Demo_Burst
+			}
+		}
+		WaveSpawn
+		{
+			Name w3a
+			Where spawnbot
+			TotalCount 5
+			MaxActive 3
+			SpawnCount 1
+			WaitBeforeStarting 3
+			WaitBetweenSpawns 11
+			TotalCurrency 600
+			TFBot
+			{
+				Class Engineer
+				ClassIcon engineer_ranger_nys_penetrate_giant
+				Name "Giant Piercing Ranger Engineer"
+				Health 2400
+				Item "The Rescue Ranger"
+				Skill Hard
+				WeaponRestrictions PrimaryOnly
+				Attributes MiniBoss
+				Action FetchFlag  
+				ItemAttributes {
+					ItemName "The Rescue Ranger"
+					"projectile penetration" 1
+				}
+				CharacterAttributes {
+					"move speed bonus" 0.5
+					"damage force reduction" 0.5
+					"airblast vulnerability multiplier" 0.6
+					"override footstep sound set" 5
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name w3b
+			Where spawnbot
+			TotalCount 6
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 7
+			WaitBetweenSpawns 18
+			TotalCurrency 200
+			WaitForAllSpawned w3aa
+			Squad
+			{
+				TFBot
+				{
+					Template T_TFBot_Giant_Soldier_Spammer
+				}
+				TFBot
+				{
+					Class Medic
+					ClassIcon medic_shield_lite
+					Name "Shield Medic"
+					Skill Expert
+					WeaponRestrictions SecondaryOnly
+					Item "The Quick-Fix"
+					Attributes SpawnWithFullCharge
+					Attributes ProjectileShield
+					CharacterAttributes
+					{
+						"generate rage on heal" 2
+						"increase buff duration" 19.0
+						"bot medic uber deploy delay duration" 900
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Where spawnbot_invasion
+			TotalCount 27
+			MaxActive 6
+			SpawnCount 3
+			WaitBeforeStarting 25
+			WaitBetweenSpawns 1
+			WaitForAllSpawned w3aa
+			TFBot
+			{
+				Class Scout
+				ClassIcon scout_threerune_daan
+				Skill Expert
+				WeaponRestrictions MeleeOnly
+				Item "Three-Rune Blade"
+			}
+		}
+		WaveSpawn
+		{
+			Where spawnbot
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 1
+			WaitBeforeStarting 28
+			WaitBetweenSpawns 13
+			TotalCurrency 400
+			WaitForAllSpawned w3aa
+			TFBot
+			{
+				Class Sniper
+				ClassIcon sniper_huntsman_bleed_giant
+				Name "Giant Bleed Huntsman"
+				Skill Expert
+				WeaponRestrictions PrimaryOnly
+				Item "The Huntsman"
+				Attributes MiniBoss
+				Health 2400
+				CharacterAttributes {
+					"move speed bonus" 0.5
+					"damage force reduction" 0.5
+					"airblast vulnerability multiplier" 0.6
+					"override footstep sound set" 5
+				}
+				ItemAttributes {
+					ItemName "The Huntsman"
+					"bleeding duration" 4
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Where spawnbot
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 10
+			WaitBetweenSpawns 5
+			WaitForAllSpawned w3aa
+			Support true
+			TFBot
+			{
+				Class Sniper
+				ClassIcon sniper_jarate
+				Name "Jarate Sniper"
+				Skill Expert
+				Item Jarate
+				Attributes SpawnWithFullCharge
+				WeaponRestrictions SecondaryOnly
+				ItemAttributes {
+					ItemName "Jarate"
+					"effect bar recharge rate increased" 0.1
+				}
+			}
+		}
+	}
+	Wave
+	{
+		InitWaveOutput
+		{
+			Target altmode_init_reviveonly_relay
+			Action RunScriptCode
+			Param
+			"
+				EntFire(`spawnbot_arena2_disposable`, `Disable`)
+				EntFire(`altmode_init_reviveonly_relay`, `Trigger`)
+			"
+		}
+		StartWaveOutput
+		{
+			Target	altmode_arena2_wave_start_reviveonly_relay
+			Action	RunScriptCode
+			Param "
+				EntFire(`gamerules`, `RunScriptFile`, `forgotten_w4.nut`, -1)
+				EntFire(`altmode_arena2_wave_start_reviveonly_relay`, `Trigger`)
+			"
+		}
+		DoneOutput
+		{
+			Target	altmode_wave_finished_relay
+			Action	RunScriptCode
+			Param "
+				EntFire(`altmode_wave_finished_relay`, `Trigger`)
+				EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
+				EntFire(`door_red_*`, `Unlock`)
+			"
+		}
+		WaveSpawn
+		{
+			Name	support
+			TotalCount 999
+			MaxActive	8
+			SpawnCount	4
+			WaitBetweenSpawns	6
+			Support	1
+			Where spawnbot_arena2
+			RandomChoice
+			{
+				TFBot
+				{
+					Template	T_TFBot_Pathogen_Medic
+				}
+				TFBot
+				{
+					Template	T_TFBot_Pathogen_Scout
+				}
+				TFBot
+				{
+					Template	T_TFBot_Pathogen_Soldier
+				}
+				TFBot
+				{
+					Template	T_TFBot_Pathogen_Pyro
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	4a
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	1
+			WaitBeforeStarting	7
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			TFBot
+			{
+				Template	T_TFBot_Dyspnea
+			}
+		}
+		WaveSpawn
+		{
+			Name	4b
+			WaitForAllDead	4a
+			TotalCurrency	300
+			TotalCount	1
+			MaxActive	1
+			SpawnCount	1
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			LastSpawnOutput
+			{
+				Target	wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					EntFire(`spawnbot_arena2_disposable`, `Enable`, null, 40)
+				"
+			}
+			DoneOutput
+			{
+				Target	wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					EntFire(`spawnbot_arena2_disposable`, `Enable`)
+				"
+			}
+			TFBot
+			{
+				Template	T_TFBot_Sarcoma
+			}
+		}
+		WaveSpawn
+		{
+			Name	4c
+			WaitForAllDead	4a
+			//TotalCurrency	200
+			TotalCount	5
+			MaxActive	5
+			SpawnCount	1
+			WaitBetweenSpawns	6
+			Where spawnbot_arena2_disposable
+			TFBot
+			{
+				Template	T_TFBot_Tachycardia
+			}
+		}
+		WaveSpawn
+		{
+			Name	4d
+			WaitForAllDead	4c
+			TotalCount	40
+			MaxActive	20
+			SpawnCount	1
+			WaitBetweenSpawns	0.1
+			Where spawnbot_arena2
+			TFBot
+			{
+				Template	T_TFBot_Malignant_Tumor
+			}
+		}
+		WaveSpawn
+		{
+			Name	4e
+			WaitForAllDead	4d
+			//TotalCurrency	100
+			TotalCount	1
+			MaxActive	1
+			SpawnCount	1
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			TFBot
+			{
+				Template	T_TFBot_Pneumonia
+			}
+		}
+		WaveSpawn
+		{
+			Name	4f
+			WaitForAllSpawned	4e
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	1
+			WaitBeforeStarting	10
+			WaitBetweenSpawns	7
+			Where spawnbot_arena2
+			TFBot
+			{
+				Template	T_TFBot_Cardiomyopathy
+			}
+		}
+		WaveSpawn
+		{
+			Name	4g
+			WaitForAllSpawned	4f
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	2
+			WaitBeforeStarting	7
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			Squad
+			{
+				TFBot
+				{
+					Template	T_TFBot_Cardiomyopathy
+				}
+				TFBot
+				{
+					Template	T_TFBot_Pneumonia
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	4h
+			WaitForAllDead	4f
+			//TotalCurrency	100
+			TotalCount	3
+			MaxActive	3
+			SpawnCount	1
+			WaitBetweenSpawns	12.5
+			Where spawnbot_arena2
+			FirstSpawnOutput
+			{
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					EntFire(`spawnbot_arena2_disposable`, `Disable`)
+				"
+			}
+			TFBot
+			{
+				Template	T_TFBot_Dyspnea
+			}
+		}
+		WaveSpawn
+		{
+			WaitForAllDead	4f
+			TotalCount	1
+			MaxActive	1
+			SpawnCount	1
+			WaitBeforeStarting	32
+			//WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			DoneOutput
+			{
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					EntFire(`spawnbot_arena2_disposable`, `Enable`)
+				"
+			}
+			TFBot
+			{
+				Template	T_TFBot_Sarcoma
+			}
+		}
+		WaveSpawn
+		{
+			Name	4i
+			WaitForAllDead	4h
+			TotalCount	12
+			MaxActive	12
+			SpawnCount	4
+			WaitBeforeStarting	2
+			WaitBetweenSpawns	6
+			Where spawnbot_arena2
+			TFBot
+			{
+				Template	T_TFBot_Malignant_Tumor
+			}
+		}
+		WaveSpawn
+		{
+			Name	4j
+			WaitForAllDead	4h
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	2
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			DoneOutput
+			{
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					EntFire(`spawnbot_arena2_disposable`, `Enable`)
+				"
+			}
+			TFBot
+			{
+				Template	T_TFBot_Cardiomyopathy
+			}
+		}
+		WaveSpawn
+		{
+			Name	4k
+			WaitForAllDead	4h
+			TotalCount	3
+			MaxActive	3
+			SpawnCount	3
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2_disposable
+			TFBot
+			{
+				Template	T_TFBot_Tachycardia
+			}
+		}
+	}
+	Wave
+	{
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		InitWaveOutput
+		{
+			Target bombpath_choose_relay
+			Action Trigger
+		}
+		WaveSpawn
+		{
+			TotalCount 1
+			WaitBeforeStarting 15
+			TotalCurrency 300
+			Where spawnbot
+			Tank
+			{
+				Name tankboss
+				Health 15000
+				StartingPathTrackNode path_0
+				OnBombDroppedOutput
+				{
+					Target bomb_deploy_relay
+					Action Trigger
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name w5a
+			Where spawnbot
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBetweenSpawns 27
+			TotalCurrency 200
+			Squad
+			{
+				TFBot
+				{
+					ClassIcon soldier_burstfire_hyper_lite
+					Template T_TFBot_Soldier_BurstFire
+				}
+				TFBot
+				{
+					Name "Big Heal Medic"
+					Template T_TFBot_Medic_BigHeal
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name w5b
+			Where spawnbot
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 1
+			WaitBeforeStarting 17
+			WaitBetweenSpawns 13
+			TotalCurrency 400
+			WaitForAllSpawned w5a
+			TFBot
+			{
+				Template T_TFBot_Giant_Pyro
+				ClassIcon pyro_dragon_fury_swordstone
+				Name "Giant Dragon's Fury Pyro"
+				Skill Expert
+				WeaponRestrictions PrimaryOnly
+				Attributes MiniBoss
+				MaxVisionRange 800
+				Item "The Dragon's Fury"
+			}
+		}
+		WaveSpawn
+		{
+			Name w5bb
+			Where spawnbot_invasion
+			TotalCount 42
+			MaxActive 8
+			SpawnCount 2
+			WaitBetweenSpawns 2
+			WaitForAllSpawned w5a
+			Support Limited
+			TFBot
+			{
+				Class Pyro
+				ClassIcon pyro_detonator_lite
+				Name "Detonator Pyro"
+				Skill Expert
+				WeaponRestrictions SecondaryOnly
+				Item "The Detonator"
+			}
+		}
+		WaveSpawn
+		{
+			Name w5c
+			Where spawnbot
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 1
+			WaitBeforeStarting 11
+			WaitBetweenSpawns 13
+			TotalCurrency 300
+			WaitForAllSpawned w5b
+			TFBot
+			{
+				Template T_TFBot_Giant_Heavyweapons
+			}
+		}
+		WaveSpawn
+		{
+			Where spawnbot_invasion
+			TotalCount 999
+			MaxActive 6
+			SpawnCount 2
+			WaitBetweenSpawns 1
+			WaitForAllSpawned w5b
+			Support 1
+			RandomChoice
+			{
+				TFBot
+				{
+					Class Medic
+					ClassIcon medic_syringe
+					Name "Syringe Medic"
+					Skill Expert
+					WeaponRestrictions PrimaryOnly
+					Action Mobber  
+				}
+				TFBot
+				{
+					Class Medic
+					ClassIcon medic_crossbow
+					Name "Crossbow Medic"
+					Skill Expert
+					WeaponRestrictions PrimaryOnly
+					Action Mobber  
+					Item "The Crusader's Crossbow"
+				}
+			}
+		}
+	}
+	Wave [$DISABLED] { //it is time
+		InitWaveOutput {
+			Target altmode_init_reviveonly_locked_relay
+			Action Trigger
+		}
+		StartWaveOutput {
+			Target altmode_chaos_wave_start_reviveonly_relay
+			Action runscriptcode
+			Param "
+				self.AcceptInput("Trigger", null, null, null)
+				__CollectGameEventCallbacks(desquad)
+				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`)
+			"
+		}
+		DoneOutput {
+			Target altmode_wave_finished_relay
+			Action Trigger
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
+			Where spawnbot_altmode
+			
+			//due to timing issues, delay
+			LastSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Delay 2
+				Param "
+					self.AcceptInput(`runscriptfile`, `timer.nut`, null, null)
+					//self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(containmentbreaker)`, null, null)
+				"
+			}
+			
+			TFBot {
+				Template TimerBotOnly
+				Health 60
+			}
+		}
+		WaveSpawn {
+			Name ws1
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
+			Where spawnbot_altmode
+			
+			StartWaveOutput {
+				Target altmode_chaos_script
+				Action runscriptcode
+				Param "EnableTeleporter(`ws1`)"
+			}
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Tachycardia
+					Tag ws1
+				}
+				TFBot {
+					Template T_TFBot_Tachycardia
+					Tag ws1
+				}
+				TFBot {
+					Template T_TFBot_Tachycardia
+					Tag ws1
+				}
+				TFBot {
+					Template T_TFBot_Giant_Heavyweapons_Deflector
+					Action Mobber
+					Tag ws1
+				}
+			}
+		}
+		WaveSpawn {
+			Name ws2
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
+			Where spawnbot_altmode
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Dyspnea
+					Tag ws2
+				}
+				TFBot {
+					Template T_TFBot_Pneumonia
+					Tag ws2
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Fist
+					Action Mobber
+					Tag ws2
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Fist
+					Action Mobber
+					Tag ws2
+				}
+			}
+		}
+		//start 2 when either 1 is done or time has passed
+		WaveSpawn {
+			WaitForAllDead "ws1"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws2`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 15
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws2`)"			
+			}
+		}
+		
+		WaveSpawn {
+			Name ws3
+			TotalCount 7
+			MaxActive 7
+			SpawnCount 7
+			Where spawnbot_altmode
+			
+			TFBot {
+				Template T_TFBot_Demoman_Samurai
+				Action Mobber
+				Tag ws3
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws2"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws3`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 30
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws3`)"			
+			}
+		}
+		
+		WaveSpawn {
+			Name ws4
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 6
+			Where spawnbot_altmode
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Giant_Heavyweapons_Deflector
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws3"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws4`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 45
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws4`)"			
+			}
+		}
+		
+		WaveSpawn { //currently capped at 22 before
+			Name ws5
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 6
+			Where spawnbot_altmode
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Giant_Demo_RapidFire
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Heavyweight_Champ
+					Skill Expert
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Heavyweight_Champ
+					Skill Expert
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Class Pyro
+					Name "Detonator Pyro"
+					Skill Expert
+					ClassIcon pyro_detonator_lite
+					Item "The Detonator"
+					WeaponRestrictions SecondaryOnly
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Class Pyro
+					Name "Detonator Pyro"
+					Skill Expert
+					ClassIcon pyro_detonator_lite
+					Item "The Detonator"
+					WeaponRestrictions SecondaryOnly
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Class Engineer
+					Name "Short Circuit Engie"
+					Skill Expert
+					ClassIcon engineer_shortcircuit_lite
+					Item "The Short Circuit"
+					WeaponRestrictions SecondaryOnly
+					Action Mobber
+					Tag ws5
+				}
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws4"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws5`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 60
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws5`)"			
+			}
+		}
+		
+		WaveSpawn {
+			Name ws6
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			
+			//need to fix room
+			
+			TFBot {
+				Template T_TFBot_Hemorrhagic_Fever
+				Tag ws6
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws5"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws6`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 75
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws6`)"			
+			}
+		}
+		
+		
+		WaveSpawn {
+			Name ws7
+			TotalCount 5
+			MaxActive 5
+			SpawnCount 5
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Sarcoma
+					Tag ws7
+				}
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws6"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws7`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 90
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws7`)"			
+			}
+		}
+		
+		WaveSpawn {
+			Name ws8
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 2
+			
+			StartWaveOutput {
+				Target altmode_chaos_script
+				Action runscriptcode
+				Param "pickRoom(`ws8`)"
+			}
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Giant_Heavyweapons_Deflector
+					Action Mobber
+					Tag ws8
+				}
+				TFBot {
+					//cool gmed goes here
+					Tag ws8
+				}
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws7"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws8`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 105
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws8`)"			
+			}
+		}
+		
+		WaveSpawn {
+			Name ws9
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
+			
+			StartWaveOutput {
+				Target altmode_chaos_script
+				Action runscriptcode
+				Param "pickRoom(`ws9`)"
+			}
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Dyspnea
+					Tag ws9
+				}
+				TFBot {
+					Template T_TFBot_Medic
+					Tag ws9
+				}
+				TFBot {
+					Template T_TFBot_Giant_Pyro
+					Action Mobber
+					Tag ws9
+				}
+				TFBot {
+					Template T_TFBot_Cardiomyopathy
+					Tag ws9
+				}
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws8"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws9`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 120
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws9`)"			
+			}
+		}
+		
+		WaveSpawn {
+			Name ws10
+			TotalCount 5
+			MaxActive 5
+			SpawnCount 5
+			
+			StartWaveOutput {
+				Target altmode_chaos_script
+				Action runscriptcode
+				Param "pickRoom(`ws10`)"
+			}
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Cardiomyopathy
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Medic
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws10
+				}
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws9"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws10`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 135
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws10`)"			
+			}
+		}
+		
+		WaveSpawn {
+			Name ws11
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 3
+			
+			StartWaveOutput {
+				Target altmode_chaos_script
+				Action runscriptcode
+				Param "pickRoom(`ws11`)"
+			}
+			
+			Squad {
+				TFBot {
+					Template T_TFBot_Engineer_Sentry_Battle
+					Health 1000
+					Tag ws11
+				}
+				TFBot {
+					Template T_TFBot_Engineer_Sentry_Battle
+					Health 1000
+					Tag ws11
+				}
+				TFBot {
+					Template T_TFBot_Engineer_Sentry_Battle
+					Health 1000
+					Tag ws11
+				}
+			}
+		}
+		WaveSpawn {
+			WaitForAllDead "ws10"
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws11`)"			
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 150
+			FirstSpawnOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "EnableTeleporter(`ws11`)"			
+			}
+		}
+		
+		WaveSpawn {
+			//room 12
+		}
+	}
+}
