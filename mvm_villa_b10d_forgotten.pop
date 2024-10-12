@@ -845,8 +845,14 @@ WaveSchedule
 				FastUpdate 1
 				NoIdleSound 1  
 				Item "The Direct Hit"
+				Item "Steel Shako"
 				Item "The Market Gardener"
 				WeaponRestrictions MeleeOnly
+				ItemAttributes
+				{
+					ItemName "Steel Shako"
+					"set item tint RGB" 13328029
+				}
 				ItemAttributes
 				{
 					ItemName "The Direct Hit"

@@ -215,7 +215,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 		activator.AddCustomAttribute("uber duration bonus", -6, -1)
 		EntFireByHandle(activator, "RunScriptCode", "heartbeaterCallbacks.drainShieldIfActive()", -1, activator, null)
 		if(!bossIsBuffed) return
-		activator.AddCustomAttribute("move speed penalty", 0.75, -1)
+		activator.AddCustomAttribute("move speed penalty", 0.7, -1)
 		activator.AddCustomAttribute("halloween increased jump height", 0.5, -1)
 	}
 

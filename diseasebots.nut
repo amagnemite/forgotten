@@ -305,7 +305,8 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 				case 5:
 					self.AddCond(TF_COND_CRITBOOSTED_USER_BUFF)
 					self.AddCustomAttribute("move speed bonus", 0.0001, -1)
-					self.AddCustomAttribute("health drain", -50, -1)
+					self.AddCustomAttribute("health drain", -40, -1)
+					self.AddCustomAttribute("dmg taken increased", 2.5, -1)
 					self.SetScaleOverride(2.5)
 					break
 				default:
