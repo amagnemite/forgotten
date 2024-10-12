@@ -225,9 +225,9 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 				delete thinkTable.drainShieldThink
 				return
 			}
-			//if(counter < DEFAULTTIME) {
-			//	return
-			//}
+			if(timeCounter < DEFAULTTIME) {
+				return
+			}
 
 			if(self.IsRageDraining()) {
 				local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")

@@ -876,6 +876,24 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			Support Limited
+			WaitBeforeStarting 70
+			Where spawnbot_alt_1
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+				"
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Support Limited
 			WaitBeforeStarting 80
 			Where spawnbot_alt_1
 			FirstSpawnOutput {
@@ -912,25 +930,7 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			Support Limited
-			WaitBeforeStarting 100
-			Where spawnbot_alt_1
-			FirstSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param
-				"
-					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
-					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
-					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
-				"
-			}
-		}
-		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
-			WaitBeforeStarting 105
+			WaitBeforeStarting 95
 			Where spawnbot_alt_1
 			FirstSpawnOutput {
 				Target wave_start_relay
@@ -1051,7 +1051,7 @@ WaveSchedule
 				Action RunScriptCode
 				Delay 2
 				Param "
-					self.AcceptInput(`runscriptfile`, `timer.nut`, null, null)
+					self.AcceptInput(`runscriptfile`, `timerbot.nut`, null, null)
 					self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(heartbeaterCallbacks.buffBoss)`, null, null)
 				"
 			}
@@ -1697,16 +1697,21 @@ WaveSchedule
 	Wave [$DISABLED] { //it is time
 		InitWaveOutput {
 			Target altmode_init_reviveonly_locked_relay
-			Action Trigger
+			Action runscriptcode
+			Param "
+				self.AcceptInput(`Trigger`, null, null, null)
+				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
+				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
+			"
 		}
 		StartWaveOutput {
 			Target altmode_chaos_wave_start_reviveonly_relay
 			Action runscriptcode
 			Param "
-				self.AcceptInput("Trigger", null, null, null)
+				self.AcceptInput(`Trigger`, null, null, null)
 				__CollectGameEventCallbacks(desquad)
-				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
-				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
+				__CollectGameEventCallbacks(chaosCallbacks)
+				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
 			"
 		}
 		DoneOutput {
@@ -1726,7 +1731,7 @@ WaveSchedule
 				Action RunScriptCode
 				Delay 2
 				Param "
-					self.AcceptInput(`runscriptfile`, `timer.nut`, null, null)
+					self.AcceptInput(`runscriptfile`, `timerbot.nut`, null, null)
 					self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(chaosTimer)`, null, null)
 					setTimerSegment(1)
 				"
@@ -1744,10 +1749,11 @@ WaveSchedule
 			SpawnCount 4
 			Where spawnbot_altmode
 			
-			StartWaveOutput {
+			FirstSpawnOutputOutput {
 				Target altmode_chaos_script
 				Action runscriptcode
 				Param "teleportBotsToRoom(`ws1`)"
+				Delay 1
 			}
 			DoneOutput {
 				Target altmode_chaos_script
@@ -1811,14 +1817,6 @@ WaveSchedule
 		}
 		//start 2 when either 1 is done or time has passed
 		WaveSpawn {
-			WaitForAllDead "ws1"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws2`)"			
-			}
-		}
-		WaveSpawn {
 			WaitBeforeStarting 15
 			FirstSpawnOutput {
 				Target altmode_chaos_script
@@ -1844,14 +1842,6 @@ WaveSchedule
 				Template T_TFBot_Demoman_Samurai
 				Action Mobber
 				Tag ws3
-			}
-		}
-		WaveSpawn {
-			WaitForAllDead "ws2"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws3`)"			
 			}
 		}
 		WaveSpawn {
@@ -1894,14 +1884,6 @@ WaveSchedule
 					Action Mobber
 					Tag ws4
 				}
-			}
-		}
-		WaveSpawn {
-			WaitForAllDead "ws3"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws4`)"			
 			}
 		}
 		WaveSpawn {
@@ -1977,14 +1959,6 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			WaitForAllDead "ws4"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws5`)"			
-			}
-		}
-		WaveSpawn {
 			WaitBeforeStarting 60
 			FirstSpawnOutput {
 				Target altmode_chaos_script
@@ -1999,7 +1973,6 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			
-			//need to fix room
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -2009,14 +1982,6 @@ WaveSchedule
 			TFBot {
 				Template T_TFBot_Hemorrhagic_Fever
 				Tag ws6
-			}
-		}
-		WaveSpawn {
-			WaitForAllDead "ws5"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws6`)"			
 			}
 		}
 		WaveSpawn {
@@ -2065,14 +2030,6 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			WaitForAllDead "ws6"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws7`)"			
-			}
-		}
-		WaveSpawn {
 			WaitBeforeStarting 90
 			FirstSpawnOutput {
 				Target altmode_chaos_script
@@ -2083,15 +2040,10 @@ WaveSchedule
 		
 		WaveSpawn {
 			Name ws8
-			TotalCount 2
-			MaxActive 2
-			SpawnCount 2
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
 			
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action runscriptcode
-				Param "pickRoom(`ws8`)"
-			}
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -2104,18 +2056,10 @@ WaveSchedule
 					Action Mobber
 					Tag ws8
 				}
-				TFBot {
+				//TFBot {
 					//cool gmed goes here
-					Tag ws8
-				}
-			}
-		}
-		WaveSpawn {
-			WaitForAllDead "ws7"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws8`)"			
+				//	Tag ws8
+				//}
 			}
 		}
 		WaveSpawn {
@@ -2133,11 +2077,6 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 4
 			
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action runscriptcode
-				Param "pickRoom(`ws9`)"
-			}
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -2151,6 +2090,7 @@ WaveSchedule
 				}
 				TFBot {
 					Template T_TFBot_Medic
+					Action Mobber
 					Tag ws9
 				}
 				TFBot {
@@ -2162,14 +2102,6 @@ WaveSchedule
 					Template T_TFBot_Cardiomyopathy
 					Tag ws9
 				}
-			}
-		}
-		WaveSpawn {
-			WaitForAllDead "ws8"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws9`)"			
 			}
 		}
 		WaveSpawn {
@@ -2187,11 +2119,6 @@ WaveSchedule
 			MaxActive 5
 			SpawnCount 5
 			
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action runscriptcode
-				Param "pickRoom(`ws10`)"
-			}
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -2205,6 +2132,7 @@ WaveSchedule
 				}
 				TFBot {
 					Template T_TFBot_Medic
+					Action Mobber
 					Tag ws10
 				}
 				TFBot {
@@ -2219,14 +2147,6 @@ WaveSchedule
 					Template T_TFBot_Malignant_Tumor
 					Tag ws10
 				}
-			}
-		}
-		WaveSpawn {
-			WaitForAllDead "ws9"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws10`)"			
 			}
 		}
 		WaveSpawn {
@@ -2244,11 +2164,6 @@ WaveSchedule
 			MaxActive 3
 			SpawnCount 3
 			
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action runscriptcode
-				Param "pickRoom(`ws11`)"
-			}
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -2271,14 +2186,6 @@ WaveSchedule
 					Health 1000
 					Tag ws11
 				}
-			}
-		}
-		WaveSpawn {
-			WaitForAllDead "ws10"
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws11`)"			
 			}
 		}
 		WaveSpawn {

@@ -347,9 +347,9 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 				delete self.GetScriptScope().thinkTable.playerDebuffThink
 				return
 			}
-			//if(counter < DEFAULTTIME) {
-			//	return
-			//}
+			if(timeCounter < DEFAULTTIME) {
+				return
+			}
 			
 			//Check for Dyspnea's debuff cond, apply screen overlay
 			if(self.InCond(12) && !dyspneaDebuffed) {
