@@ -160,6 +160,25 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 					case "Cardiomyopathy":
 						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_demo_boss.mdl")
 						break
+					case "Hemorrhagic_Fever":
+						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_pyro_boss.mdl")
+						local hemorrhagicFeverEntity = Entities.FindByName(null, "hemorrhagic_fever_trigger")
+						// while(hemorrhagicFeverEntity = Entities.FindByName(hemorrhagicFeverEntity, "hemorrhagic_fever_trigger")) {
+						hemorrhagicFeverEntity.AcceptInput("Enable", null, null, null)
+						hemorrhagicFeverEntity.ValidateScriptScope()
+						hemorrhagicFeverEntity.GetScriptScope().owner <- activator
+						hemorrhagicFeverEntity.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
+							if(!(feverTicks in activator.GetScriptScope())) {
+								activator.GetScriptScope().feverTicks <- 0
+								return
+							}
+							local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
+							activator.GetScriptScope().feverTicks = newTicks > 5 ? 5 : newTicks
+
+							if(newTicks >= 5) activator.TakeDamage(10, DMG_BURN, owner)
+						}
+						// }
+						break
 					default:
 						break
 				}
@@ -196,10 +215,10 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 	}
 
 	addSarcomaThink = function() {
-		//Stage 0 = Unarmed bot (Has SuppressFire) 0.8 scale 2 speed
-		//Stage 1 = Melee bot 1.25 scale 1.5 speed
-		//Stage 2 = Stock shotgun bot 1.5 scale 1 speed
-		//Stage 3 = Strong shotgun bot 1.75 scale 0.75 speed 
+		//Stage 0 = Unarmed bot (Has SuppressFire) 0.8 scale 1.5 speed
+		//Stage 1 = Melee bot 1.25 scale 1 speed
+		//Stage 2 = Stock shotgun bot 1.5 scale 0.75 speed
+		//Stage 3 = Strong shotgun bot 1.75 scale 0.66 speed 
 		//Stage 4 = Minigun bot 2.15 scale 0.5 speed
 		//Stage 5 = Crit minigun 2.5 scale 0 speed
 
