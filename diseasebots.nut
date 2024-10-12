@@ -68,6 +68,13 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			EntFire("uber_flask_normal_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 15)", -1)
 			return
 		}
+		if(player.HasBotTag("Hemorrhagic_Fever")) {
+			EntFire("hemorrhagic_fever_trigger", Disable)
+			local hemorrhagicFeverParticle = null
+			while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
+				hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
+			}
+		}
 		if (!player.HasBotTag("Malignant_Tumor")) return
 
 		local victim = null
@@ -162,12 +169,12 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 						break
 					case "Hemorrhagic_Fever":
 						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_pyro_boss.mdl")
-						local hemorrhagicFeverEntity = Entities.FindByName(null, "hemorrhagic_fever_trigger")
-						// while(hemorrhagicFeverEntity = Entities.FindByName(hemorrhagicFeverEntity, "hemorrhagic_fever_trigger")) {
-						hemorrhagicFeverEntity.AcceptInput("Enable", null, null, null)
-						hemorrhagicFeverEntity.ValidateScriptScope()
-						hemorrhagicFeverEntity.GetScriptScope().owner <- activator
-						hemorrhagicFeverEntity.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
+						local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
+						// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
+						hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
+						hemorrhagicFeverTrigger.ValidateScriptScope()
+						hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
+						hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
 							if(!(feverTicks in activator.GetScriptScope())) {
 								activator.GetScriptScope().feverTicks <- 0
 								return
@@ -178,6 +185,11 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 							if(newTicks >= 5) activator.TakeDamage(10, DMG_BURN, owner)
 						}
 						// }
+
+						local hemorrhagicFeverParticle = null
+						while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
+							hemorrhagicFeverParticle.AcceptInput("Start", null, null, null)
+						}
 						break
 					default:
 						break

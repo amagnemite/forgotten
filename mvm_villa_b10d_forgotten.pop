@@ -1790,7 +1790,7 @@ WaveSchedule
 			
 			Squad {
 				TFBot {
-					Template T_TFBot_Dyspnea
+					Template T_TFBot_Giant_Soldier_Spammer
 					Tag ws2
 				}
 				TFBot {
