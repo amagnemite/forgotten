@@ -1,6 +1,7 @@
 ::pneumoniaSpawner <- Entities.FindByName(null, "pneumonia_spawn_maker")
 ::uberFlaskNormalSpawner <- Entities.FindByName(null, "uber_flask_normal_maker")
 ::uberFlaskShortSpawner <- Entities.FindByName(null, "uber_flask_short_maker")
+
 PrecacheSound("mvm/spell_lightning_ball_cast.wav")
 PrecacheSound("mvm/halloween_haunted1.mp3")
 PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
@@ -29,9 +30,6 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 		EntFire("uber_flask_short_prop*", "Kill", -1)
 		EntFire("uber_flask_short_trigger*", "Kill", -1)
 		
-		delete ::pneumoniaSpawner
-		delete ::uberFlaskNormalSpawner
-		delete ::uberFlaskShortSpawner
 		delete ::diseaseCallbacks
     }
 	
@@ -69,7 +67,7 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			return
 		}
 		if(player.HasBotTag("Hemorrhagic_Fever")) {
-			EntFire("hemorrhagic_fever_trigger", Disable)
+			EntFire("hemorrhagic_fever_trigger", "Disable")
 			local hemorrhagicFeverParticle = null
 			while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
 				hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
@@ -169,27 +167,6 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 						break
 					case "Hemorrhagic_Fever":
 						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_pyro_boss.mdl")
-						local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
-						// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
-						hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
-						hemorrhagicFeverTrigger.ValidateScriptScope()
-						hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
-						hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
-							if(!(feverTicks in activator.GetScriptScope())) {
-								activator.GetScriptScope().feverTicks <- 0
-								return
-							}
-							local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-							activator.GetScriptScope().feverTicks = newTicks > 5 ? 5 : newTicks
-
-							if(newTicks >= 5) activator.TakeDamage(10, DMG_BURN, owner)
-						}
-						// }
-
-						local hemorrhagicFeverParticle = null
-						while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
-							hemorrhagicFeverParticle.AcceptInput("Start", null, null, null)
-						}
 						break
 					default:
 						break
@@ -201,13 +178,15 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 
 	addPneumoniaThink = function() {
 		//printl("Pneumonia is Thonking...")
-
+		
 		activator.GetScriptScope().pneumoniaThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
 				//return
 			}
+			
+			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 			
 			pneumoniaSpawner.SpawnEntityAtEntityOrigin(self)
 			local pneumoniaEntity = null
@@ -248,9 +227,20 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			spawnflags = 1
 			filtername = "team_red"
 		})
+		scope.selfPush <- SpawnEntityFromTable("trigger_push", {
+			origin = activator.GetCenter()
+			pushdir = QAngle(0, 0, 0) 
+			speed = 250
+			startdisabled = true
+			spawnflags = 1
+			filtername = "team_blu"
+		})
 		scope.sarcomaPush.SetSolid(2)
 		scope.sarcomaPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))	
 		scope.sarcomaPush.AcceptInput("SetParent", "!activator", activator, activator)
+		scope.selfPush.SetSolid(2)
+		scope.selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
+		scope.selfPush.AcceptInput("SetParent", "!activator", activator, activator)
 		
 		activator.GetScriptScope().sarcomaThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
@@ -259,7 +249,11 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 				if(sarcomaPush.IsValid()) {
 					sarcomaPush.Kill()
 				}
+				if(selfPush.IsValid()) {
+					selfPush.Kill()
+				}
 				delete sarcomaPush
+				delete selfPush
 				return
 			}
 			
@@ -269,7 +263,6 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			sarcomaStage++
 			sarcomaNextStage = sarcomaThresholds[sarcomaStage]
 			NetProps.SetPropVector(sarcomaPush, "m_vecPushDir", self.EyeAngles() + Vector())
-			//sarcomaPush.AcceptInput("Enable", null, null, null)
 			EntFireByHandle(sarcomaPush, "Enable", null, -1, null, null)
 			switch(sarcomaStage) {
 				case 1:
@@ -318,9 +311,11 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			}
 			EntFire("sarcoma_evolution_shake", "StartShake")
 			DispatchParticleEffect("sarcoma_explode", self.GetOrigin(), Vector())
-			//sarcomaPush.AcceptInput("Disable", null, null, null)
-			EntFireByHandle(sarcomaPush, "Disable", null, 1, null, null)
-
+			EntFireByHandle(sarcomaPush, "Disable", null, 0.5, null, null)
+			if(self.GetLocomotionInterface().IsStuck()) { //safety for altmode, since he tends to hump walls and get stuck
+				EntFireByHandle(selfPush, "Enable", null, -1, null, null)
+				EntFireByHandle(selfPush, "Disable", null, 0.5, null, null)
+			}
 			return 1
 		}
 		AddThinkToEnt(activator, "sarcomaThink")
@@ -421,6 +416,30 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			}
 		}
 		AddThinkToEnt(ent, "killThink")
+	}
+	
+	activateHemorrhagicFever = function() {		
+		local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
+		// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
+		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
+		hemorrhagicFeverTrigger.ValidateScriptScope()
+		hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
+		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
+			if(!("feverTicks" in activator.GetScriptScope())) {
+				activator.GetScriptScope().feverTicks <- 0
+				return
+			}
+			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
+			activator.GetScriptScope().feverTicks = newTicks > 5 ? 5 : newTicks
+
+			if(newTicks >= 5) activator.TakeDamage(10, DMG_BURN, owner)
+		}
+		// }
+
+		local hemorrhagicFeverParticle = null
+		while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
+			hemorrhagicFeverParticle.AcceptInput("Start", null, null, null)
+		}
 	}
 }
 __CollectGameEventCallbacks(diseaseCallbacks)
