@@ -2209,16 +2209,28 @@ WaveSchedule
 					Template T_TFBot_Engineer_Sentry_Battle
 					Health 1000
 					Tag ws11
+					CharacterAttributes
+					{
+						"damage force reduction" 0.99
+					}
 				}
 				TFBot {
 					Template T_TFBot_Engineer_Sentry_Battle
 					Health 1000
 					Tag ws11
+					CharacterAttributes
+					{
+						"damage force reduction" 0.99
+					}
 				}
 				TFBot {
 					Template T_TFBot_Engineer_Sentry_Battle
 					Health 1000
 					Tag ws11
+					CharacterAttributes
+					{
+						"damage force reduction" 0.99
+					}
 				}
 			}
 		}
