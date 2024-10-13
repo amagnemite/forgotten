@@ -1064,6 +1064,7 @@ WaveSchedule
 			
 			TFBot {
 				Template TimerBotOnly
+				ClassIcon timer_pink
 				Health 100
 				//Health 10
 			}
@@ -1745,6 +1746,7 @@ WaveSchedule
 			
 			TFBot {
 				Template TimerBotOnly
+				ClassIcon timer_pink
 				Health 60
 			}
 		}
