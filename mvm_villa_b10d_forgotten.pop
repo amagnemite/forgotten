@@ -1057,8 +1057,7 @@ WaveSchedule
 				Action RunScriptCode
 				Delay 2
 				Param "
-					self.AcceptInput(`runscriptfile`, `timerbot.nut`, null, null)
-					self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(heartbeaterCallbacks.buffBoss)`, null, null)
+					findTimerBot(null, false, heartbeaterCallbacks.buffBoss)
 				"
 			}
 			
@@ -1719,6 +1718,9 @@ WaveSchedule
 				__CollectGameEventCallbacks(desquad)
 				__CollectGameEventCallbacks(chaosCallbacks)
 				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
+				AddThinkToEnt(Entities.FindByName(null, `altmode_chaos_script`), `checkThink`)
+				EntFire(`bot_hint_sentrygun`, `Disable`)
+				IncludeScript(`altmodenests.nut`, getroottable())
 			"
 		}
 		DoneOutput {
@@ -1731,18 +1733,6 @@ WaveSchedule
 			SpawnCount 1
 			Support Limited
 			Where spawnbot_altmode
-			
-			//due to timing issues, delay
-			LastSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Delay 2
-				Param "
-					self.AcceptInput(`runscriptfile`, `timerbot.nut`, null, null)
-					self.AcceptInput(`runscriptcode`, `setTimerFuncToRun(chaosTimer)`, null, null)
-					setTimerSegment(1)
-				"
-			}
 			
 			TFBot {
 				Template TimerBotOnly
@@ -1980,11 +1970,15 @@ WaveSchedule
 			TotalCount 1
 			MaxActive 1
 			SpawnCount 1
+			Where spawnbot_altmode
 			
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws6`)"
+				Param "
+					DoneRoom(`ws6`)
+					EntFire(`hemorrhagic_fever_trigger`, `Disable`)
+				"
 			}
 			
 			TFBot {
@@ -2001,12 +1995,12 @@ WaveSchedule
 			}
 		}
 		
-		
 		WaveSpawn {
 			Name ws7
 			TotalCount 5
 			MaxActive 5
 			SpawnCount 5
+			Where spawnbot_altmode
 			
 			DoneOutput {
 				Target altmode_chaos_script
@@ -2048,9 +2042,10 @@ WaveSchedule
 		
 		WaveSpawn {
 			Name ws8
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 2
+			Where spawnbot_altmode
 			
 			DoneOutput {
 				Target altmode_chaos_script
@@ -2064,10 +2059,12 @@ WaveSchedule
 					Action Mobber
 					Tag ws8
 				}
-				//TFBot {
+				/TFBot {
 					//cool gmed goes here
-				//	Tag ws8
-				//}
+					Template T_TFBot_Giant_Medic_Regen
+					Action Mobber
+					Tag ws8
+				}
 			}
 		}
 		WaveSpawn {
@@ -2084,6 +2081,7 @@ WaveSchedule
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 4
+			Where spawnbot_altmode
 			
 			DoneOutput {
 				Target altmode_chaos_script
@@ -2126,6 +2124,7 @@ WaveSchedule
 			TotalCount 5
 			MaxActive 5
 			SpawnCount 5
+			Where spawnbot_altmode
 			
 			DoneOutput {
 				Target altmode_chaos_script
@@ -2171,6 +2170,7 @@ WaveSchedule
 			TotalCount 3
 			MaxActive 3
 			SpawnCount 3
+			Where spawnbot_altmode
 			
 			DoneOutput {
 				Target altmode_chaos_script
