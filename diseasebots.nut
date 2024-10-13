@@ -430,7 +430,13 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 				return
 			}
 			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-			activator.GetScriptScope().feverTicks = newTicks > 5 ? 5 : newTicks
+			if(newTicks > 5) {
+				newTicks = 5
+			}
+			else if(newTicks < 0) {
+				newTicks = 0
+			}
+			activator.GetScriptScope().feverTicks = newTicks
 
 			if(newTicks >= 5) activator.TakeDamage(10, DMG_BURN, owner)
 		}
