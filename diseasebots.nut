@@ -438,8 +438,17 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			}
 			activator.GetScriptScope().feverTicks = newTicks
 
-			if(newTicks >= 5) activator.TakeDamage(10, DMG_BURN, owner)
-		}
+			if(newTicks >= 5) {
+				activator.TakeDamage(10, DMG_BURN, owner)
+				EmitSoundEx({
+					sound_name = "misc/flame_engulf.wav"
+					volume = 0.6
+					origin = activator.GetOrigin()
+					filter_type = 4
+					entity = activator
+				})
+			}
+		}	
 		// }
 
 		local hemorrhagicFeverParticle = null
