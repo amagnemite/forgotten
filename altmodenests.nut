@@ -64,14 +64,14 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 SpawnEntityFromTable("bot_hint_sentrygun", {
 	targetname = "nest_alt_3"
 	startdisabled = true
-	origin = Vector(-2892, 2138, 557)
+	origin = Vector(-2892, 2138, 587)
 	angles = QAngle(0, 195, 0)
 	teamnum = TF_TEAM_BLUE
 })
 SpawnEntityFromTable("bot_hint_engineer_nest", {
 	targetname = "nest_alt_3"
 	startdisabled = true
-	origin = Vector(-2892, 2138, 557)
+	origin = Vector(-2892, 2138, 587)
 	angles = QAngle(0, 195, 0)
 	teamnum = TF_TEAM_BLUE
 })
@@ -80,7 +80,7 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 SpawnEntityFromTable("bot_hint_sentrygun", {
 	targetname = "nest_alt_4"
 	startdisabled = true
-	origin = Vector(-1040, 2192, 557)
+	origin = Vector(-1040, 2192, 587)
 	angles = QAngle(0, 240, 0)
 	teamnum = TF_TEAM_BLUE
 })
@@ -94,7 +94,7 @@ SpawnEntityFromTable("bot_hint_sentrygun", {
 SpawnEntityFromTable("bot_hint_engineer_nest", {
 	targetname = "nest_alt_4"
 	startdisabled = true
-	origin = Vector(-1040, 2192, 557)
+	origin = Vector(-1040, 2192, 587)
 	angles = QAngle(0, 240, 0)
 	teamnum = TF_TEAM_BLUE
 })
