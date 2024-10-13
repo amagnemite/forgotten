@@ -8,6 +8,8 @@ WaveSchedule
 	StartingCurrency 800
 	RespawnWaveTime 4
 	CanBotsAttackWhileInSpawnRoom no
+
+	PrecacheParticle "hemorrhagic_fever_flamethrower" [$SIGSEGV]
 	
 	HealOnKillOverhealMelee 1  
 	PlayerAttributes {
@@ -543,6 +545,14 @@ WaveSchedule
 			Attributes MiniBoss
 			Action Mobber  
 			Item "The Triclops"
+			ItemAttributes
+			{
+				ItemName "TF_WEAPON_FLAMETHROWER"
+				"fire particle red" "hemorrhagic_fever_flamethrower"
+				"fire particle blue" "hemorrhagic_fever_flamethrower"
+				"fire particle red crit" "hemorrhagic_fever_flamethrower"
+				"fire particle blue crit" "hemorrhagic_fever_flamethrower"
+			}
 			ItemAttributes
 			{
 				ItemName "The Triclops"
