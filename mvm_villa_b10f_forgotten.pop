@@ -294,7 +294,6 @@ WaveSchedule
 			ClassIcon pneumonia_bp
             Tag Pneumonia
 			Tag Special_Disease
-            Action Mobber  
 			Skill Expert
 			Health 5000
 			Item "The Quick-Fix"
@@ -566,8 +565,8 @@ WaveSchedule
 	}
 	
 	OverrideParticles {
-		"flamethrower_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
-		"flamethrower_crit_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
+		"flamethrower_giant_mvm_flame" "hemorrhagic_fever_flamethrower"
+		"flamethrower_crit_giant_mvm_flame" "hemorrhagic_fever_flamethrower"
 	}
 	
 	Mission
@@ -838,7 +837,6 @@ WaveSchedule
 			MaxActive	1
 			SpawnCount	1
 			WaitBeforeStarting	0.2
-			WaitBetweenSpawns	2
 			Where	spawnbot_boss
             TFBot
 			{
@@ -855,7 +853,7 @@ WaveSchedule
 				Attributes DisableDodge
 				Scale 2.5
 				Action Mobber
-				FastUpdate 1
+				//FastUpdate 1
 				NoIdleSound 1  
 				Item "The Direct Hit"
 				Item "Steel Shako"
@@ -1023,7 +1021,7 @@ WaveSchedule
 			LastSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
-				Delay 2
+				Delay 0.1
 				Param "
 					findTimerBot(null, false, heartbeaterCallbacks.buffBoss)
 				"
@@ -1714,12 +1712,6 @@ WaveSchedule
 			SpawnCount 4
 			Where spawnbot_altmode
 			
-			//LastSpawnOutput {
-			//	Target altmode_chaos_script
-			//	Action runscriptcode
-			//	Param "teleportBotsToRoom(`ws1`)"
-			//	Delay 0.5
-			//}
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -1799,14 +1791,6 @@ WaveSchedule
 				Template T_TFBot_Demoman_Samurai
 				Action Mobber
 				Tag ws3
-			}
-		}
-		WaveSpawn {
-			WaitBeforeStarting 30
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws3`)"			
 			}
 		}
 		

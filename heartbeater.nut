@@ -26,20 +26,6 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 		delete ::heartbeaterCallbacks
     }
 	
-	OnScriptHook_OnTakeDamage = function(params) {
-		if(params.const_entity.GetTeam() != TF_TEAM_RED) return
-		printl("damage " + params.damage)
-	}
-	
-	OnGameEvent_player_hurt = function(params) {
-		local player = GetPlayerFromUserID(params.userid)
-		if(player.GetTeam() != TF_TEAM_RED) return
-		
-		printl("time " + Time())
-		printl("in pre ghost " + player.InCond(TF_COND_HALLOWEEN_IN_HELL))
-		printl("in ghost " + player.InCond(TF_COND_HALLOWEEN_GHOST_MODE))
-	}
-	
 	OnGameEvent_mvm_wave_complete = function(_) {
 		Cleanup()
 	}

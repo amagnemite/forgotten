@@ -13,6 +13,7 @@ PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
 PrecacheScriptSound("Weapon_DragonsFury.BonusDamageHit")
 PrecacheScriptSound("Halloween.spell_overheal")
 PrecacheScriptSound("Halloween.spell_lightning_cast")
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemorrhagic_fever_flamethrower"})
 
 ::diseaseCallbacks <- {
 	Cleanup = function() {
@@ -465,17 +466,20 @@ PrecacheScriptSound("Halloween.spell_lightning_cast")
                 break;
             }
         }
-
+		/*
 		scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
 			targetname = "hemorrhagic_fever_weapon_particles"
-			effect_name = "hemorrhagic_fever_flamethrower"
+			//effect_name = "hemorrhagic_fever_flamethrower"
+			//effect_name = "teleporter_mvm_bot_persist"
+			effect_name = "flamethrower_halloween"
 			start_active = 1
+			origin = activator.GetOrigin()
 		})
 
-		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", 0.2, scope.flamethrower, scope.flamethrower)
-		EntFireByHandle(scope.feverFireParticles, "SetParentAttachment", "muzzle", 0.4, scope.flamethrower, scope.flamethrower)
-
-
+		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
+		EntFireByHandle(scope.feverFireParticles, "SetParentAttachment", "muzzle", 0.02, null, null)
+		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
+		*/
 	}
 }
 __CollectGameEventCallbacks(diseaseCallbacks)
