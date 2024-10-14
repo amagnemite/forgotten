@@ -338,6 +338,7 @@ WaveSchedule
 			Health 4200
 			Tag Dyspnea
 			Tag Special_Disease
+			Action Mobber
 			Skill Expert
 			WeaponRestrictions PrimaryOnly
 			Attributes MiniBoss

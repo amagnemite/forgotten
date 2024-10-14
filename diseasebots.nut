@@ -2,11 +2,17 @@
 ::uberFlaskNormalSpawner <- Entities.FindByName(null, "uber_flask_normal_maker")
 ::uberFlaskShortSpawner <- Entities.FindByName(null, "uber_flask_short_maker")
 
+/*
 PrecacheSound("mvm/spell_lightning_ball_cast.wav")
-PrecacheSound("mvm/halloween_haunted1.mp3")
-PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
 PrecacheSound("mvm/spell_overheal.wav")
 PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
+*/
+PrecacheSound("vo/halloween_haunted1.mp3")
+PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
+//PrecacheScriptSound("Halloween.Haunted")
+PrecacheScriptSound("Weapon_DragonsFury.BonusDamageHit")
+PrecacheScriptSound("Halloween.spell_overheal")
+PrecacheScriptSound("Halloween.spell_lightning_cast")
 
 ::diseaseCallbacks <- {
 	Cleanup = function() {
@@ -112,7 +118,8 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 					//printl("damage " + damage)
 					
 					victim.TakeDamageEx(player, player, null, Vector(1, 0, 0), player.GetCenter(), damage, DMG_BLAST)
-					diseaseCallbacks.playSound("mvm/dragons_fury_impact_bonus_damage_hit.wav", victim)
+					//diseaseCallbacks.playSound("mvm/dragons_fury_impact_bonus_damage_hit.wav", victim)
+					diseaseCallbacks.playSound("Weapon_DragonsFury.BonusDamageHit", victim)
 				}
 			}
 		}
@@ -351,8 +358,7 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			if(self.InCond(12) && !dyspneaDebuffed) {
 				dyspneaDebuffed = true
 				self.SetScriptOverlayMaterial("effects/forgotten_dyspnea_debuff")
-				diseaseCallbacks.playSound("mvm/halloween_haunted1.mp3", self)
-				//printl("Dyspnea'd")
+				diseaseCallbacks.playSound("vo/halloween_haunted1.mp3", self)
 			}
 			else if(!self.InCond(12) && dyspneaDebuffed) {
 				dyspneaDebuffed = false
@@ -360,22 +366,15 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			}
 
 			//Check for Dyspnea's debuff cond
-			//if(self.InCond(12) && self.IsRageDraining()) {
 			if(self.InCond(12)) {
 				local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")
-				//printl("Rage: " + rageMeter)
 				local newRageMeter = rageMeter - 1.2 > 0 ? rageMeter - 1.2 : 0
-
+				//printl("Rage: " + rageMeter)
 				NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
-			}
-
-			//Check for Dyspnea's debuff cond, and is actively using ubercharge (vaccinator doesn't count)
-			//if(self.InCond(12) && NetProps.GetPropBool(medigun, "m_bChargeRelease")) {
-			if(self.InCond(12)) {
+				
 				local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
-				//printl("uber: " + uberMeter + " " + Time())
 				local newUberMeter = uberMeter - 0.01 > 0 ? uberMeter - 0.01 : 0
-
+				//printl("uber: " + uberMeter + " " + Time())
 				NetProps.SetPropFloat(medigun, "m_flChargeLevel", newUberMeter)
 			}
 
@@ -383,7 +382,7 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			if(self.InCond(32) && !tachycardiaDebuffed) {
 				tachycardiaDebuffed = true
 				self.SetScriptOverlayMaterial("effects/forgotten_tachycardia_debuff")
-				diseaseCallbacks.playSound("mvm/spell_lightning_ball_cast.wav", self)
+				diseaseCallbacks.playSound("Halloween.spell_lightning_cast", self)
 				self.AddCustomAttribute("move speed penalty", 999, -1)
 				self.AddCustomAttribute("halloween increased jump height", 15, -1)
 				self.AddCustomAttribute("damage force reduction", 2.5, -1)
@@ -441,9 +440,7 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			if(newTicks >= 5) {
 				activator.TakeDamage(10, DMG_BURN, owner)
 				EmitSoundEx({
-					//sound_name = "misc/flame_engulf.wav"
 					sound_name = "Fire.Engulf"
-					//volume = 0.6
 					origin = activator.GetOrigin()
 					filter_type = 4
 					entity = activator
@@ -520,6 +517,5 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	local newRageMeter = rageMeter + 12 < 100 ? rageMeter + 12 : 100
 
 	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
-	diseaseCallbacks.playSound("mvm/spell_overheal.wav", self)
-	//diseaseCallbacks.playSound("mvm/spell_overheal.wav", self)
+	diseaseCallbacks.playSound("Halloween.spell_overheal", self)
 }
