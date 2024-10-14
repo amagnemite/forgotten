@@ -342,7 +342,6 @@ WaveSchedule
 			WeaponRestrictions PrimaryOnly
 			Attributes MiniBoss
 			Attributes HoldFireUntilFullReload
-			Action Mobber  
 			Item "Shortness Of Breath"
 			ItemAttributes
 			{
@@ -545,13 +544,9 @@ WaveSchedule
 			Attributes MiniBoss
 			Action Mobber  
 			Item "The Triclops"
-			ItemAttributes
-			{
-				ItemName "TF_WEAPON_FLAMETHROWER"
-				"fire particle red" "hemorrhagic_fever_flamethrower"
-				"fire particle blue" "hemorrhagic_fever_flamethrower"
-				"fire particle red crit" "hemorrhagic_fever_flamethrower"
-				"fire particle blue crit" "hemorrhagic_fever_flamethrower"
+			ItemAttributes {
+				ItemName TF_WEAPON_FLAMETHROWER
+				"mod flaregun fires pellets with knockback" 2 //set weapon mode to set flamethrower particle
 			}
 			ItemAttributes
 			{
@@ -566,6 +561,11 @@ WaveSchedule
 				"override footstep sound set" 4
 			}
 		}
+	}
+	
+	OverrideParticles {
+		"flamethrower_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
+		"flamethrower_crit_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
 	}
 	
 	Mission
@@ -889,12 +889,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 70
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -907,12 +902,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 80
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -925,12 +915,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 90
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -943,12 +928,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 95
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -959,12 +939,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn [$DISABLED] {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 115
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -975,12 +950,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn [$DISABLED] {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 116
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -991,12 +961,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn [$DISABLED] {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 117
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -1007,12 +972,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn [$DISABLED] {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 118
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -1023,12 +983,7 @@ WaveSchedule
 			}
 		}
 		WaveSpawn [$DISABLED] {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Support Limited
 			WaitBeforeStarting 119
-			Where spawnbot_altmode
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -1729,7 +1684,7 @@ WaveSchedule
 				__CollectGameEventCallbacks(desquad)
 				__CollectGameEventCallbacks(chaosCallbacks)
 				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
-				AddThinkToEnt(Entities.FindByName(null, `altmode_chaos_script`), `checkThink`)
+				EntFire(`altmode_chaos_script`, `CallScriptFunction`, `startWave`, -1)
 				IncludeScript(`altmodenests.nut`, getroottable())
 			"
 		}
@@ -1757,12 +1712,12 @@ WaveSchedule
 			SpawnCount 4
 			Where spawnbot_altmode
 			
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action runscriptcode
-				Param "teleportBotsToRoom(`ws1`)"
-				Delay 1
-			}
+			//LastSpawnOutput {
+			//	Target altmode_chaos_script
+			//	Action runscriptcode
+			//	Param "teleportBotsToRoom(`ws1`)"
+			//	Delay 0.5
+			//}
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -1822,15 +1777,6 @@ WaveSchedule
 					Action Mobber
 					Tag ws2
 				}
-			}
-		}
-		//start 2 when either 1 is done or time has passed
-		WaveSpawn {
-			WaitBeforeStarting 15
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws2`)"			
 			}
 		}
 		
@@ -1895,15 +1841,7 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn {
-			WaitBeforeStarting 45
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws4`)"			
-			}
-		}
-		
+
 		WaveSpawn { //currently capped at 22 before
 			Name ws5
 			TotalCount 6
@@ -1967,14 +1905,6 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn {
-			WaitBeforeStarting 60
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws5`)"			
-			}
-		}
 		
 		WaveSpawn {
 			Name ws6
@@ -1983,7 +1913,7 @@ WaveSchedule
 			SpawnCount 1
 			Where spawnbot_altmode
 			
-			StartWaveOutput {
+			StartWaveOutput { //can't just check for spawned, need to see if it got teleported
 				Target altmode_chaos_script
 				Action RunScriptCode
 				Param "
@@ -2013,14 +1943,6 @@ WaveSchedule
 			TFBot {
 				Template T_TFBot_Hemorrhagic_Fever
 				Tag ws6
-			}
-		}
-		WaveSpawn {
-			WaitBeforeStarting 75
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws6`)"			
 			}
 		}
 		
@@ -2060,14 +1982,6 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn {
-			WaitBeforeStarting 90
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws7`)"			
-			}
-		}
 		
 		WaveSpawn {
 			Name ws8
@@ -2093,14 +2007,6 @@ WaveSchedule
 					Template T_TFBot_Giant_Medic_Regen
 					Tag ws8
 				}
-			}
-		}
-		WaveSpawn {
-			WaitBeforeStarting 105
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws8`)"			
 			}
 		}
 		
@@ -2135,14 +2041,6 @@ WaveSchedule
 					Template T_TFBot_Cardiomyopathy
 					Tag ws9
 				}
-			}
-		}
-		WaveSpawn {
-			WaitBeforeStarting 120
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws9`)"			
 			}
 		}
 		
@@ -2180,14 +2078,6 @@ WaveSchedule
 					Template T_TFBot_Malignant_Tumor
 					Tag ws10
 				}
-			}
-		}
-		WaveSpawn {
-			WaitBeforeStarting 135
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws10`)"			
 			}
 		}
 		
@@ -2232,14 +2122,6 @@ WaveSchedule
 						"damage force reduction" 0.99
 					}
 				}
-			}
-		}
-		WaveSpawn {
-			WaitBeforeStarting 150
-			FirstSpawnOutput {
-				Target altmode_chaos_script
-				Action RunScriptCode
-				Param "teleportBotsToRoom(`ws11`)"			
 			}
 		}
 		

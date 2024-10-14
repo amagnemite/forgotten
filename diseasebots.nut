@@ -418,7 +418,7 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 		AddThinkToEnt(ent, "killThink")
 	}
 	
-	activateHemorrhagicFever = function() {		
+	activateHemorrhagicFever = function() {
 		local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
 		// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
 		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
@@ -441,8 +441,9 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 			if(newTicks >= 5) {
 				activator.TakeDamage(10, DMG_BURN, owner)
 				EmitSoundEx({
-					sound_name = "misc/flame_engulf.wav"
-					volume = 0.6
+					//sound_name = "misc/flame_engulf.wav"
+					sound_name = "Fire.Engulf"
+					//volume = 0.6
 					origin = activator.GetOrigin()
 					filter_type = 4
 					entity = activator
