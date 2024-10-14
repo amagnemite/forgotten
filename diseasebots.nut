@@ -472,8 +472,8 @@ PrecacheScriptSound("Halloween.spell_lightning_cast")
 			start_active = 1
 		})
 
-		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", scope.flamethrower, scope.flamethrower)
-		EntFireByHandle(scope.feverFireParticles, "SetParentAttachment", "muzzle", scope.flamethrower, scope.flamethrower)
+		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", 0.2, scope.flamethrower, scope.flamethrower)
+		EntFireByHandle(scope.feverFireParticles, "SetParentAttachment", "muzzle", 0.4, scope.flamethrower, scope.flamethrower)
 
 
 	}
