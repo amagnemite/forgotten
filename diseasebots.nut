@@ -466,14 +466,14 @@ PrecacheScriptSound("Halloween.spell_lightning_cast")
             }
         }
 
-		scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
-			particle_name = "hemorrhagic_fever_flamethrower"
-			attachment_type = 4
-			attachment_name = "muzzle"
-			spawnflags = 64
+		scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
+			targetname = "hemorrhagic_fever_weapon_particles"
+			effect_name = "hemorrhagic_fever_flamethrower"
+			start_active = 1
 		})
 
-		scope.feverFireParticles.AcceptInput("StartTouch", "!activator", scope.flamethrower, scope.flamethrower)
+		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", scope.flamethrower, scope.flamethrower)
+		EntFireByHandle(scope.feverFireParticles, "SetParentAttachment", "muzzle", scope.flamethrower, scope.flamethrower)
 
 
 	}
