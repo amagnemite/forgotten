@@ -456,6 +456,29 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 		while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
 			hemorrhagicFeverParticle.AcceptInput("Start", null, null, null)
 		}
+
+		local scope = activator.GetScriptScope()
+		scope.flamethrower <- null
+		
+		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
+			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
+		
+            if(wep && wep.GetClassname() == "tf_weapon_flamethrower") {
+                scope.flamethrower = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i);
+                break;
+            }
+        }
+
+		scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
+			particle_name = "hemorrhagic_fever_flamethrower"
+			attachment_type = 4
+			attachment_name = "muzzle"
+			spawnflags = 64
+		})
+
+		scope.feverFireParticles.AcceptInput("StartTouch", "!activator", scope.flamethrower, scope.flamethrower)
+
+
 	}
 }
 __CollectGameEventCallbacks(diseaseCallbacks)

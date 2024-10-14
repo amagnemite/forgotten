@@ -541,6 +541,7 @@ WaveSchedule
 			Skill Expert
             Scale 1.9
 			WeaponRestrictions PrimaryOnly
+			Attributes AlwaysFireWeapon
 			Attributes MiniBoss
 			Action Mobber  
 			Item "The Triclops"
