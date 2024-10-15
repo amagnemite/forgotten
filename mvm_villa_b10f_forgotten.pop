@@ -877,7 +877,7 @@ WaveSchedule
 				{
 					ItemName "The Market Gardener"
 					"provide on active" 1
-					"dmg from melee increased" 1.5
+					"dmg from melee increased" 2
 					"damage bonus" 99
 					"damage causes airblast" 1
 					"subtract victim medigun charge on hit" 100
