@@ -9,8 +9,6 @@ WaveSchedule
 	RespawnWaveTime 4
 	CanBotsAttackWhileInSpawnRoom no
 
-	PrecacheParticle "hemorrhagic_fever_flamethrower" [$SIGSEGV]
-	
 	HealOnKillOverhealMelee 1  
 	PlayerAttributes {
 		"penetrate teammates" 1
@@ -567,8 +565,8 @@ WaveSchedule
 	}
 	
 	OverrideParticles {
-		"flamethrower_giant_mvm_flame" "hemorrhagic_fever_flamethrower"
-		"flamethrower_crit_giant_mvm_flame" "hemorrhagic_fever_flamethrower"
+		"flamethrower_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
+		"flamethrower_crit_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
 	}
 	
 	Mission
@@ -1990,14 +1988,39 @@ WaveSchedule
 			
 			Squad {
 				TFBot {
-					Template T_TFBot_Giant_Heavyweapons_Deflector
-					Action Mobber
+					Class Medic
+					Name "Giant Medic"
+					ClassIcon medic_giant
+					Skill Expert
+					Health 4500
+					Item "The Crusader's Crossbow"
+					Item "The Kritzkrieg"
+					WeaponRestrictions PrimaryOnly
+					Attributes MiniBoss
 					Tag ws8
-				}
-				TFBot {
-					//cool gmed goes here
-					Template T_TFBot_Giant_Medic_Regen
-					Tag ws8
+
+					ItemAttributes
+					{
+						ItemName "The Kritzkrieg
+						"ubercharge rate bonus" 0.01
+					}
+					CharacterAttributes
+					{
+						"move speed bonus"	0.5
+						"damage force reduction" 0.6
+						"airblast vulnerability multiplier" 0.6
+						"overheal decay bonus" 0.5 //inverted percent
+					}
+					EventChangeAttributes {
+						ShootPlayers {
+							WeaponRestrictions PrimaryOnly
+							Action Mobber //make sure he doesn't hug players
+						}
+						EatBots {
+							WeaponRestrictions SecondaryOnly
+							Action Default
+						}
+					}
 				}
 			}
 		}

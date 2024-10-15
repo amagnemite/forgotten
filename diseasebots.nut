@@ -152,42 +152,37 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		activator.GetAllBotTags(tags)
 	
 		foreach(i, tag in tags) {
-			if(tag != "Special_Disease") {
-				switch(tag) {
-					case "Pneumonia":
-						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
-						activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addPneumoniaThink()", activator, null)
-						break
-					case "Sarcoma":
-						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy_boss.mdl")
-						activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addSarcomaThink()", activator, null)
-						break
-					case "Dyspnea":
-						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_soldier_boss.mdl")
-						break
-					case "Tachycardia":
-						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_scout_boss.mdl")
-						break
-					case "Malignant_Tumor":
-						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy.mdl")
-						break
-					case "Cardiomyopathy":
-						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_demo_boss.mdl")
-						break
-					case "Hemorrhagic_Fever":
-						activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_pyro_boss.mdl")
-						break
-					default:
-						break
-				}
-				//activator.SetSkin(1)
+			switch(tag) {
+				case "Pneumonia":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
+					activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addPneumoniaThink()", activator, null)
+					break
+				case "Sarcoma":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy_boss.mdl")
+					activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addSarcomaThink()", activator, null)
+					break
+				case "Dyspnea":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_soldier_boss.mdl")
+					break
+				case "Tachycardia":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_scout_boss.mdl")
+					break
+				case "Malignant_Tumor":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy.mdl")
+					break
+				case "Cardiomyopathy":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_demo_boss.mdl")
+					break
+				case "Hemorrhagic_Fever":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_pyro_boss.mdl")
+					break
+				default:
+					break
 			}
 		}
 	}
 
 	addPneumoniaThink = function() {
-		//printl("Pneumonia is Thonking...")
-		
 		activator.GetScriptScope().pneumoniaThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
@@ -329,24 +324,147 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		}
 		AddThinkToEnt(activator, "sarcomaThink")
 	}
+	
+	//placeholder name
+	addMedBotThink = function() {
+		::medbot <- activator
+		activator.ValidateScriptScope()
+		local scope = activator.GetScriptScope()
+		scope.OFFENSIVE <- 0
+		scope.DEFENSIVE <- 1
+		scope.MOVESPEEDBASE <- 0.5
+		scope.HEALTHBONUS <- 200
+		scope.currentState <- 0
+		scope.playersEaten <- 0
+		scope.medigun <- null
+		scope.support <- []
+		scope.supportTimer <- Timer()
+		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
+			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
+		
+			if(wep && wep.GetClassname() == "tf_weapon_medigun") {
+				scope.medigun = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i);
+				break;
+			}
+		}
+		
+		for(local i = 1; i <= MaxPlayers; i++) {
+			local player = PlayerInstanceFromIndex(i)
+			if(player == null) continue
+			if(!IsPlayerABot(player)) continue
+			if(player == activator) continue
+			if(!player.HasBotTag("ws8") && NetProps.GetPropInt(player, "m_lifeState") != 0) continue
+			
+			support.append(player)
+			player.ValidateScriptScope()
+			player.GetScriptScope().reviveThink <- function() {
+				if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
+					if(!("medbot" in getroottable()) || NetProps.GetPropInt(medbot, "m_lifeState") != 0) {
+						AddThinkToEnt(self, null)
+						NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
+						
+						self.ForceChangeTeam(TEAM_SPECTATOR, true)
+					}
+					else {
+						self.ForceChangeTeam(TF_TEAM_BLUE, true)
+						self.ForceRespawn()
+					}
+				}
+			}
+			AddThinkToEnt(player, "reviveThink")
+		}
+		
+		scope.medbotThink <- function() {
+			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
+				AddThinkToEnt(self, null)
+				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
+				delete OFFENSIVE
+				delete DEFENSIVE
+				delete MOVESPEEDBASE
+				delete HEALTHBONUS
+				delete currentState
+				delete playersEaten
+				delete ::medbot
+				delete ::medBotCallback
+				return
+			}
+		
+			local supportAllDead = true
+			foreach(supporter in support) {
+				if(NetProps.GetPropInt(self, "m_lifeState") == LIFE_ALIVE) {
+					supportAllDead = false
+					break
+				}
+			}
+			if(supportAllDead) {
+				if(supportTimer.Expired()) {
+					foreach(supporter in support) {
+						supporter.Teleport(true, loc, false, QAngle(), false, Vector())
+					}
+				}
+				else {
+					supportTimer.Start(10)
+				}
+			}
+	
+			if(self.GetHealth() < self.GetMaxHealth() && currentState == OFFENSIVE) {
+				EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1)
+				currentState = DEFENSIVE
+			}
+			else if(currentState == DEFENSIVE) {
+				local target = self.GetHealTarget()
+				if(target != null) {
+					target.TakeDamageCustom(self, null, medigun, Vector(0, 0, 0), target.GetCenter(),
+						1000, DMG_ENERGYBEAM, TF_DMG_CUSTOM_MERASMUS_ZAP);
+					//some sort of particle?
+					//crunchy noise
+				}
+				if(supportAllDead) {
+					EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
+					currentState = OFFENSIVE
+				}
+			}
+		}
+		
+		scope.strengthen <- function() {
+			playersEaten++
+			self.SetHealth(self.GetHealth() + HEALTHBONUS)
+			self.AddCustomAttribute("damage bonus", 1 + 0.25 * playersEaten, -1)
+			self.AddCustomAttribute("move speed bonus", movespeedBase + 0.1 * playersEaten, -1)
+			//particle to show boost
+		}
+		
+		::medBotCallback <- {
+			OnGameEvent_player_death = function(params) {
+				local victim = GetPlayerFromUserID(params.userid)
+				if(IsPlayerABot(victim)) return
+				local attacker = GetPlayerFromUserID(params.attacker)
+				if(attacker.HasBotTag("ws8")) {
+					medbot.AcceptInput("CallScriptFunction", "strengthen", null, null)
+				}
+			}
+		}
+		__CollectGameEventCallbacks(medBotCallback)
+	}
 
 	addPlayerDebuffThink = function() {
 		//printl("Player Debuff Check is thonking...")
 		local scope = activator.GetScriptScope()
-		scope.medigun <- null
 		
-		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
-			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
-		
-            if(wep && wep.GetClassname() == "tf_weapon_medigun") {
-                scope.medigun = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i);
-                break;
-            }
-        }
-		
+		if(!("medigun" in scope) || !scope.medigun.IsValid()) {
+			scope.medigun <- null
+			for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
+				local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
+			
+				if(wep && wep.GetClassname() == "tf_weapon_medigun") {
+					scope.medigun = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i);
+					break;
+				}
+			}
+		}
+
 		scope.dyspneaDebuffed <- false
 		scope.tachycardiaDebuffed <- false
-		
 		scope.playerDebuffThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				delete self.GetScriptScope().thinkTable.playerDebuffThink
@@ -483,13 +601,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 			start_active = 1
 			origin = activator.GetOrigin()
 		})
-
-		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
-		EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
-		EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
-		EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
-		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
-
+		
 		// scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
 		// 	particle_name = "hemorrhagic_fever_flamethrower"
 		// 	attachment_type = 4
@@ -499,6 +611,26 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 
 		// EntFireByHandle(scope.feverFireParticles, "StartTouch", "!activator", 0.2, scope.flamethrower, scope.flamethrower)
 
+		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
+		EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
+		EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
+		EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
+		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
+	}
+	
+	containmentBreachBuffs = function() {
+		for (local i = 1; i <= MaxPlayers ; i++)
+		{
+			local player = PlayerInstanceFromIndex(i)
+			if(player == null) continue
+			if(!IsPlayerABot(player)) continue
+			
+			player.AddCondEx(72, -1, null)
+			if(player.HasBotTag("Sarcoma")) {
+				self.AddCustomAttribute("move speed bonus", 0.6, -1)
+				self.AddCustomAttribute("health drain", -2, -1)
+			}
+		}
 	}
 }
 __CollectGameEventCallbacks(diseaseCallbacks)
@@ -516,13 +648,15 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	local selfHealth = self.GetHealth()
 	self.SetHealth(selfHealth + 40)
 
-	local medigun = null
-	for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
-		local wep = NetProps.GetPropEntityArray(self, "m_hMyWeapons", i)
-	
-		if(wep != null && wep.GetClassname() == "tf_weapon_medigun") {
-			medigun = NetProps.GetPropEntityArray(self, "m_hMyWeapons", i);
-			break;
+	if(!("medigun" in GetScriptScope()) || !medigun.IsValid()) {
+		medigun <- null //double check this actually inserts into scope
+		for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
+			local wep = NetProps.GetPropEntityArray(self, "m_hMyWeapons", i)
+		
+			if(wep && wep.GetClassname() == "tf_weapon_medigun") {
+				scope.medigun = NetProps.GetPropEntityArray(self, "m_hMyWeapons", i);
+				break;
+			}
 		}
 	}
 	
@@ -533,28 +667,11 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
 	//printl("uber meter " + uberMeter)
 	local newUberMeter = uberMeter + 0.12 < 1 ? uberMeter + 0.12 : 1
-	//local newUberMeter = uberMeter + 0.12
 	NetProps.SetPropFloat(medigun, "m_flChargeLevel", newUberMeter)
 
 	local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")
 	local newRageMeter = rageMeter + 12 < 100 ? rageMeter + 12 : 100
-
 	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
+	
 	diseaseCallbacks.playSound("Halloween.spell_overheal", self)
-}
-
-::containmentBreachBuffs <- function() {
-	for (local i = 1; i <= MaxPlayers ; i++)
-	{
-		local player = PlayerInstanceFromIndex(i)
-		if(player == null) continue
-		if(!IsPlayerABot(player)) continue
-		
-		player.AddCondEx(72, -1, null)
-
-		if(player.HasBotTag("Sarcoma")) {
-			self.AddCustomAttribute("move speed bonus", 0.6, -1)
-			self.AddCustomAttribute("health drain", -2, -1)
-		}
-	}
 }
