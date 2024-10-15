@@ -460,7 +460,7 @@ WaveSchedule
 				"faster reload rate" 0.2
 				"fire rate bonus" 0.05
 				"projectile spread angle penalty" 7
-                "damage bonus" 0.5
+                "damage bonus" 0.4
 			}
 
 			CharacterAttributes
@@ -535,7 +535,7 @@ WaveSchedule
 			Tag Hemorrhagic_Fever
 			// Will drop super big potion on death
 			// Tag Special_Disease
-			Health 15000
+			Health 22500
 			Skill Expert
             Scale 1.9
 			WeaponRestrictions PrimaryOnly
