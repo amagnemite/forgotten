@@ -805,9 +805,8 @@ WaveSchedule
 			Param
 			"
 				EntFire(`roof_sound`, `Disable`, `0`, 1)
-				//EntFire(`roof_sound`, `Disabled`, `0`, 1)
 				EntFire(`heartbeater_sound`, `Enable`, `0`, 1)
-				EntFire(`altmode_init_reviveonly_relay`, `Trigger`, `0`, 0.1)
+				self.AcceptInput(`Trigger`, null, null, null)
 			"
 		}
 		StartWaveOutput
@@ -817,8 +816,8 @@ WaveSchedule
 			Param
 			"
 				EntFire(`gamerules`, `RunScriptFile`, `heartbeater.nut`, -1)
-				EntFire(`altmode_roof_wave_start_reviveonly_relay`, `Trigger`, `0`, 0)
 				EntFire(`altmode_roof_wave_start_reviveonly_relay`, `RunScriptCode`, `heartbeaterCallbacks.updateMaxSpeed()`, 0)
+				self.AcceptInput(`Trigger`, null, null, null)
 			"
 		}
 		DoneOutput
@@ -826,9 +825,10 @@ WaveSchedule
 			Target	altmode_wave_finished_relay
 			Action	RunScriptCode
 			Param "
-				EntFire(`altmode_wave_finished_relay`, `Trigger`)
-				EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
-				EntFire(`door_red_*`, `Unlock`)
+				self.AcceptInput(`Trigger`, null, null, null)
+				self.AcceptInput(`CallScriptFunction`, `teleportToSpawn`, null, null)
+				//EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
+				EntFire(`door_red_*`, `Unlock`, null, -1)
 			"
 		}
 		WaveSpawn
@@ -1241,7 +1241,7 @@ WaveSchedule
 			Param
 			"
 				EntFire(`spawnbot_arena2_disposable`, `Disable`)
-				EntFire(`altmode_init_reviveonly_relay`, `Trigger`)
+				self.AcceptInput(`Trigger`, null, null, null)
 			"
 		}
 		StartWaveOutput
@@ -1250,7 +1250,7 @@ WaveSchedule
 			Action	RunScriptCode
 			Param "
 				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
-				EntFire(`altmode_arena2_wave_start_reviveonly_relay`, `Trigger`)
+				self.AcceptInput(`Trigger`, null, null, null)
 			"
 		}
 		DoneOutput
@@ -1258,9 +1258,10 @@ WaveSchedule
 			Target	altmode_wave_finished_relay
 			Action	RunScriptCode
 			Param "
-				EntFire(`altmode_wave_finished_relay`, `Trigger`)
-				EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
-				EntFire(`door_red_*`, `Unlock`)
+				self.AcceptInput(`Trigger`, null, null, null)
+				self.AcceptInput(`CallScriptFunction`, `teleportToSpawn`, null, null)
+				//EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
+				EntFire(`door_red_*`, `Unlock`, null, -1)
 			"
 		}
 		WaveSpawn
@@ -1677,6 +1678,7 @@ WaveSchedule
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
+				EntFire(`altmode_chaos_script`, `runscriptcode`, `preAssignRoom(\`ws8\`, 2)`, -1)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
 			"
 		}
@@ -1839,6 +1841,12 @@ WaveSchedule
 			SpawnCount 6
 			Where spawnbot_altmode
 			
+			LastSpawnOutput { //this should guarantee the timer bot is active
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "setTimerFuncToRun(diseaseCallbacks.containmentBreachBuffs)"
+			}
+			
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -1975,9 +1983,9 @@ WaveSchedule
 		
 		WaveSpawn {
 			Name ws8
-			TotalCount 2
-			MaxActive 2
-			SpawnCount 2
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 6
 			Where spawnbot_altmode
 			
 			DoneOutput {
@@ -1998,10 +2006,12 @@ WaveSchedule
 					WeaponRestrictions PrimaryOnly
 					Attributes MiniBoss
 					Tag ws8
+					Tag gmed
+					Action Mobber
 
 					ItemAttributes
 					{
-						ItemName "The Kritzkrieg
+						ItemName "The Kritzkrieg"
 						"ubercharge rate bonus" 0.01
 					}
 					CharacterAttributes
@@ -2014,13 +2024,33 @@ WaveSchedule
 					EventChangeAttributes {
 						ShootPlayers {
 							WeaponRestrictions PrimaryOnly
-							Action Mobber //make sure he doesn't hug players
+							ActionOverride Mobber
 						}
 						EatBots {
 							WeaponRestrictions SecondaryOnly
-							Action Default
+							ActionOverride Medic
 						}
 					}
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					tag ws8
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					tag ws8
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					tag ws8
+				}
+				TFBot {
+					Template T_TFBot_Pathogen_Soldier
+					tag ws8
+				}
+				TFBot {
+					Template T_TFBot_Pathogen_Soldier
+					tag ws8
 				}
 			}
 		}

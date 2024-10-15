@@ -9,11 +9,15 @@ PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
 */
 PrecacheSound("vo/halloween_haunted1.mp3")
 PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
+PrecacheSound("ambient/grinder/grinderbot_03.wav")
 //PrecacheScriptSound("Halloween.Haunted")
 PrecacheScriptSound("Weapon_DragonsFury.BonusDamageHit")
 PrecacheScriptSound("Halloween.spell_overheal")
 PrecacheScriptSound("Halloween.spell_lightning_cast")
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemorrhagic_fever_flamethrower"})
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "rd_robot_explosion"})
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "medic_healradius_blue_buffed"})
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeboss_tp_vortex"})
 
 ::diseaseCallbacks <- {
 	Cleanup = function() {
@@ -176,6 +180,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 				case "Hemorrhagic_Fever":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_pyro_boss.mdl")
 					break
+				case "gmed":
+					activator.AcceptInput("runscriptcode", "diseaseCallbacks.addMedBotThink()", activator, null)
+					break
 				default:
 					break
 			}
@@ -328,6 +335,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 	//placeholder name
 	addMedBotThink = function() {
 		::medbot <- activator
+		NetProps.SetPropString(activator, "m_iName", "medbot") //needed for particle nonsense
 		activator.ValidateScriptScope()
 		local scope = activator.GetScriptScope()
 		scope.OFFENSIVE <- 0
@@ -339,6 +347,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		scope.medigun <- null
 		scope.support <- []
 		scope.supportTimer <- Timer()
+		//scope.supportTimer.Start(0.01)
 		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
 			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
 		
@@ -348,6 +357,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 			}
 		}
 		
+		/*
 		for(local i = 1; i <= MaxPlayers; i++) {
 			local player = PlayerInstanceFromIndex(i)
 			if(player == null) continue
@@ -355,10 +365,10 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 			if(player == activator) continue
 			if(!player.HasBotTag("ws8") && NetProps.GetPropInt(player, "m_lifeState") != 0) continue
 			
-			support.append(player)
+			scope.support.append(player)
 			player.ValidateScriptScope()
 			player.GetScriptScope().reviveThink <- function() {
-				if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
+				if(NetProps.GetPropInt(self, "m_lifeState") != LIFE_ALIVE) {
 					if(!("medbot" in getroottable()) || NetProps.GetPropInt(medbot, "m_lifeState") != 0) {
 						AddThinkToEnt(self, null)
 						NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
@@ -368,27 +378,21 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 					else {
 						self.ForceChangeTeam(TF_TEAM_BLUE, true)
 						self.ForceRespawn()
+						//EntFireByHandle(self, "runscriptcode", "self.ForceRespawn()", 10, null, null)
 					}
 				}
 			}
 			AddThinkToEnt(player, "reviveThink")
 		}
+		*/
 		
 		scope.medbotThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
-				AddThinkToEnt(self, null)
-				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-				delete OFFENSIVE
-				delete DEFENSIVE
-				delete MOVESPEEDBASE
-				delete HEALTHBONUS
-				delete currentState
-				delete playersEaten
-				delete ::medbot
-				delete ::medBotCallback
+				cleanup()
 				return
 			}
-		
+			
+			/*
 			local supportAllDead = true
 			foreach(supporter in support) {
 				if(NetProps.GetPropInt(self, "m_lifeState") == LIFE_ALIVE) {
@@ -398,40 +402,83 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 			}
 			if(supportAllDead) {
 				if(supportTimer.Expired()) {
+					local LOCATION = Vector(-3122, 2817, 800)
+					DispatchParticleEffect("eyeboss_tp_vortex", LOCATION, Vector())
 					foreach(supporter in support) {
-						supporter.Teleport(true, loc, false, QAngle(), false, Vector())
+						supporter.Teleport(true, LOCATION, false, QAngle(), false, Vector())
 					}
 				}
 				else {
 					supportTimer.Start(10)
 				}
 			}
+			
+			if(supportTimer.Expired()) {
+				local LOCATION = Vector(-3122, 2817, 800)
+				DispatchParticleEffect("eyeboss_tp_vortex", LOCATION, Vector())
+				foreach(supporter in support) {
+					supporter.Teleport(true, LOCATION, false, QAngle(), false, Vector())
+				}
+			}
+			*/
 	
 			if(self.GetHealth() < self.GetMaxHealth() && currentState == OFFENSIVE) {
 				EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1)
 				currentState = DEFENSIVE
+				self.AddBotAttribute(IGNORE_ENEMIES)
+				supportTimer.Start(10)
+				//printl("in defense")
 			}
 			else if(currentState == DEFENSIVE) {
 				local target = self.GetHealTarget()
 				if(target != null) {
-					target.TakeDamageCustom(self, null, medigun, Vector(0, 0, 0), target.GetCenter(),
-						1000, DMG_ENERGYBEAM, TF_DMG_CUSTOM_MERASMUS_ZAP);
-					//some sort of particle?
-					//crunchy noise
+					target.TakeDamageCustom(null, target, null, Vector(0, 0, 0), target.GetCenter(),
+						1000, DMG_ENERGYBEAM, TF_DMG_CUSTOM_MERASMUS_ZAP); //can't friendly fire
+					DispatchParticleEffect("rd_robot_explosion", target.GetOrigin(), Vector())
+					EmitSoundEx({
+						sound_name = "ambient/grinder/grinderbot_03.wav",
+						channel = 6,
+						origin = target.GetCenter(),
+						filter_type = RECIPIENT_FILTER_PAS
+					})
+					strengthen()
 				}
-				if(supportAllDead) {
+				//if(supportAllDead) {
+				if(supportTimer.Expired()) {
 					EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 					currentState = OFFENSIVE
+					self.RemoveBotAttribute(IGNORE_ENEMIES)
+					//printl("in offense")
 				}
 			}
+		}
+		
+		scope.cleanup <- function() {
+			AddThinkToEnt(self, null)
+			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
+			delete OFFENSIVE
+			delete DEFENSIVE
+			delete MOVESPEEDBASE
+			delete HEALTHBONUS
+			delete currentState
+			delete playersEaten
+			delete ::medbot
+			delete ::medBotCallback
+			NetProps.SetPropString(self, "m_iName", null)
 		}
 		
 		scope.strengthen <- function() {
 			playersEaten++
 			self.SetHealth(self.GetHealth() + HEALTHBONUS)
 			self.AddCustomAttribute("damage bonus", 1 + 0.25 * playersEaten, -1)
-			self.AddCustomAttribute("move speed bonus", movespeedBase + 0.1 * playersEaten, -1)
-			//particle to show boost
+			self.AddCustomAttribute("move speed bonus", MOVESPEEDBASE + 0.1 * playersEaten, -1)
+			local particle = SpawnEntityFromTable("info_particle_system", {
+				origin = self.GetOrigin()
+				effect_name = "medic_healradius_blue_buffed"
+				start_active = true
+			})
+			particle.AcceptInput("SetParent", "medbot", null, null)
+			EntFireByHandle(particle, "Kill", null, 0.3, null, null)
 		}
 		
 		::medBotCallback <- {
@@ -444,7 +491,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 				}
 			}
 		}
-		__CollectGameEventCallbacks(medBotCallback)
+		//__CollectGameEventCallbacks(medBotCallback)
+		//AddThinkToEnt(activator, "medbotThink")
 	}
 
 	addPlayerDebuffThink = function() {
@@ -566,12 +614,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 
 			if(newTicks >= 5) {
 				activator.TakeDamage(15, DMG_BURN, owner)
-				EmitSoundEx({
-					sound_name = "Fire.Engulf"
-					origin = activator.GetOrigin()
-					filter_type = 4
-					entity = activator
-				})
+				diseaseCallbacks.playSound("Fire.Engulf", self)
 			}
 		}	
 		// }
@@ -615,7 +658,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
 		EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
 		EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
-		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
+		//EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
 	}
 	
 	containmentBreachBuffs = function() {
@@ -630,6 +673,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 				self.AddCustomAttribute("move speed bonus", 0.6, -1)
 				self.AddCustomAttribute("health drain", -2, -1)
 			}
+			/*
+			else if(player.HasBotTag("gmed")) {
+				player.RemoveBotAttribute(IGNORE_ENEMIES)
+				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
+				player.GetScriptScope().cleanup()
+				//this deletes the death callback, so for now he'll just have the buffs he gained before containmentbreaker
+			}
+			*/
 		}
 	}
 }
@@ -647,9 +698,10 @@ for (local i = 1; i <= MaxPlayers ; i++)
 ::applyFlaskBoost <- function() {
 	local selfHealth = self.GetHealth()
 	self.SetHealth(selfHealth + 40)
-
-	if(!("medigun" in GetScriptScope()) || !medigun.IsValid()) {
-		medigun <- null //double check this actually inserts into scope
+	
+	local scope = self.GetScriptScope()
+	if(!("medigun" in scope) || !medigun.IsValid()) {
+		scope.medigun <- null
 		for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
 			local wep = NetProps.GetPropEntityArray(self, "m_hMyWeapons", i)
 		
