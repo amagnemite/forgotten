@@ -523,3 +523,21 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
 	diseaseCallbacks.playSound("Halloween.spell_overheal", self)
 }
+
+::containmentBreachBuffs <- function() {
+	for (local i = 1; i <= MaxPlayers ; i++)
+	{
+		local player = PlayerInstanceFromIndex(i)
+		if(player == null) continue
+		if(!IsPlayerABot(player)) continue
+		
+		player.AddCondEx(72, -1, null)
+
+		if(player.HasBotTag("Sarcoma")) {
+			self.AddCustomAttribute("move speed bonus", 0.6, -1)
+			self.AddCustomAttribute("health drain", -2, -1)
+		}
+
+		
+	}
+}
