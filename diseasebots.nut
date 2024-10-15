@@ -68,9 +68,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		if(player.HasBotTag("special_disease") && !player.HasBotTag("Malignant_Tumor")) {
 			local center = player.GetCenter() //spawnentityatlocation is dumb
 			uberFlaskNormalSpawner.SpawnEntityAtLocation(center, Vector())
-			EntFire("uber_flask_normal_prop*", "AddOutput", "renderfx 10", 12)
-			EntFire("uber_flask_normal_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 15)", -1)
-			EntFire("uber_flask_normal_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 15)", -1)
+			//EntFire("uber_flask_normal_prop*", "AddOutput", "renderfx 10", 12)
+			EntFire("uber_flask_normal_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 3, 12)", -1)
+			EntFire("uber_flask_normal_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 3, 12)", -1)
 			return
 		}
 		if(player.HasBotTag("Hemorrhagic_Fever")) {
@@ -79,6 +79,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 			while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
 				hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
 			}
+			EntFire("hemorrhagic_fever_weapon_particles", "Stop")
 		}
 		if (!player.HasBotTag("Malignant_Tumor")) return
 
@@ -127,9 +128,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		
 		local center = player.GetCenter() + Vector(0, 0, 20)
 		uberFlaskShortSpawner.SpawnEntityAtLocation(center, Vector())
-		EntFire("uber_flask_short_prop*", "AddOutput", "renderfx 10", 1)
-		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 3)", -1)
-		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 3)", -1)
+		//EntFire("uber_flask_short_prop*", "AddOutput", "renderfx 10", 1)
+		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1)", -1)
+		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1)", -1)
 	}
 	
 	OnGameEvent_player_spawn = function(params) {
@@ -399,15 +400,22 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		scope.thinkTable.playerDebuffThink <- scope.playerDebuffThink
 	}
 	
-	killInTime = function(ent, seconds) {
+	killInTime = function(ent, seconds, flashSeconds) {
 		if(ent.GetScriptThinkFunc() == "killThink") {
 			return
 		}
 		ent.ValidateScriptScope()
+		ent.GetScriptScope().shouldFlash <- false
 		ent.GetScriptScope().shouldKill <- false
 		ent.GetScriptScope().seconds <- seconds
+		ent.GetScriptScope().flashSeconds <- flashSeconds
 		ent.GetScriptScope().killThink <- function() {
+			if(!shouldFlash) {
+				shouldFlash = true
+				return flashSeconds
+			}
 			if(!shouldKill) {
+				self.AcceptInput("AddOutput", "renderfx 10", null, null)
 				shouldKill = true
 				return seconds
 			}
@@ -469,16 +477,27 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 
 		scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
 			targetname = "hemorrhagic_fever_weapon_particles"
-			//effect_name = "hemorrhagic_fever_flamethrower"
+			effect_name = "hemorrhagic_fever_flamethrower"
 			//effect_name = "teleporter_mvm_bot_persist"
-			effect_name = "flamethrower_halloween"
+			//effect_name = "flamethrower_halloween"
 			start_active = 1
 			origin = activator.GetOrigin()
 		})
 
 		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
-		EntFireByHandle(scope.feverFireParticles, "SetParentAttachment", "muzzle", 0.02, null, null)
+		EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
+		EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
+		EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
 		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
+
+		// scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
+		// 	particle_name = "hemorrhagic_fever_flamethrower"
+		// 	attachment_type = 4
+		// 	attachment_name = "muzzle"
+		// 	spawnflags = 64
+		// })
+
+		// EntFireByHandle(scope.feverFireParticles, "StartTouch", "!activator", 0.2, scope.flamethrower, scope.flamethrower)
 
 	}
 }
@@ -537,7 +556,5 @@ for (local i = 1; i <= MaxPlayers ; i++)
 			self.AddCustomAttribute("move speed bonus", 0.6, -1)
 			self.AddCustomAttribute("health drain", -2, -1)
 		}
-
-		
 	}
 }

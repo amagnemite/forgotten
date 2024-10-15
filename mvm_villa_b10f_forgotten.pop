@@ -541,7 +541,7 @@ WaveSchedule
 			Skill Expert
             Scale 1.9
 			WeaponRestrictions PrimaryOnly
-			Attributes AlwaysFireWeapon
+			//Attributes SuppressFire
 			Attributes MiniBoss
 			Action Mobber  
 			Item "Upgradeable TF_WEAPON_FLAMETHROWER"
@@ -549,7 +549,7 @@ WaveSchedule
 			ItemAttributes {
 				ItemName "Upgradeable TF_WEAPON_FLAMETHROWER"
 				"mod flaregun fires pellets with knockback" 2 //set weapon mode to set flamethrower particle
-				"damage penalty" 0.1
+				"damage penalty" 0.2
 			}
 			ItemAttributes
 			{
