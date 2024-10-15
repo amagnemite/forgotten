@@ -357,7 +357,7 @@ WaveSchedule
 				"faster reload rate" 0.2
 				"fire rate bonus" 0.2
 				"projectile spread angle penalty" 7
-                "damage bonus" 0.1
+                "damage bonus" 0.125
 				"projectile trail particle" dyspnea_rockettrail
 			}
 			CharacterAttributes
@@ -544,10 +544,12 @@ WaveSchedule
 			Attributes AlwaysFireWeapon
 			Attributes MiniBoss
 			Action Mobber  
+			Item "Upgradeable TF_WEAPON_FLAMETHROWER"
 			Item "The Triclops"
 			ItemAttributes {
-				ItemName TF_WEAPON_FLAMETHROWER
+				ItemName "Upgradeable TF_WEAPON_FLAMETHROWER"
 				"mod flaregun fires pellets with knockback" 2 //set weapon mode to set flamethrower particle
+				"damage penalty" 0.1
 			}
 			ItemAttributes
 			{
@@ -840,7 +842,7 @@ WaveSchedule
 			Where	spawnbot_boss
             TFBot
 			{
-				Health	45000
+				Health	50000
 				Class Soldier
 				Name "Cardiac Arrest"
 				ClassIcon cardiac_arrest_bp
@@ -868,16 +870,20 @@ WaveSchedule
 				{
 					ItemName "The Direct Hit"
 					"damage bonus" 3
+					"provide on active" 1
+					"dmg from melee increased" 1.5
 					"fire rate bonus" 0.3
 					"faster reload rate" -0.8
 				}
 				ItemAttributes
 				{
 					ItemName "The Market Gardener"
+					"provide on active" 1
+					"dmg from melee increased" 1.5
 					"damage bonus" 99
 					"damage causes airblast" 1
 					"subtract victim medigun charge on hit" 100
-					"apply z velocity on damage" 500
+					"apply z velocity on damage" 5000
 				}
 				CharacterAttributes
 				{

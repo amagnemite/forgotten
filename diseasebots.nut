@@ -439,7 +439,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 			activator.GetScriptScope().feverTicks = newTicks
 
 			if(newTicks >= 5) {
-				activator.TakeDamage(10, DMG_BURN, owner)
+				activator.TakeDamage(15, DMG_BURN, owner)
 				EmitSoundEx({
 					sound_name = "Fire.Engulf"
 					origin = activator.GetOrigin()
@@ -466,7 +466,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
                 break;
             }
         }
-		/*
+
 		scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
 			targetname = "hemorrhagic_fever_weapon_particles"
 			//effect_name = "hemorrhagic_fever_flamethrower"
@@ -479,7 +479,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemo
 		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
 		EntFireByHandle(scope.feverFireParticles, "SetParentAttachment", "muzzle", 0.02, null, null)
 		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
-		*/
+
 	}
 }
 __CollectGameEventCallbacks(diseaseCallbacks)
