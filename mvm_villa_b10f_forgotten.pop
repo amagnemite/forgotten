@@ -548,6 +548,7 @@ WaveSchedule
 				ItemName "Upgradeable TF_WEAPON_FLAMETHROWER"
 				"mod flaregun fires pellets with knockback" 2 //set weapon mode to set flamethrower particle
 				"damage penalty" 0.2
+				"airblast disabled" 1
 			}
 			ItemAttributes
 			{
