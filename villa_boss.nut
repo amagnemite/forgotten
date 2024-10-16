@@ -22,7 +22,12 @@
             NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
             //return
         }
-        
+        if(readyToChangePhase) {
+            switch(readyToChangePhase) {
+                case "HF":
+                    
+            }
+        }
         return 1
     }
 

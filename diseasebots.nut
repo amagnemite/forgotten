@@ -161,6 +161,10 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
 					activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addPneumoniaThink()", activator, null)
 					break
+				case "Sarcoma_w6":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy_boss.mdl")
+					//activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addSarcomaThink(true)", activator, null)
+					break
 				case "Sarcoma":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy_boss.mdl")
 					activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addSarcomaThink()", activator, null)
@@ -225,6 +229,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		//Stage 5 = Crit minigun 2.5 scale 0 speed
 
 		local scope = activator.GetScriptScope()
+		//scope.delayProgression <- delayProgression
 		scope.sarcomaProgress <- 0
 		scope.sarcomaStage <- 0
 		scope.sarcomaThresholds <- [12, 24, 36, 48, 70, 999999] //Time to reach each stage, in seconds
@@ -268,6 +273,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				return
 			}
 			
+			//if(delayProgression) return 1
 			sarcomaProgress++
 			if(sarcomaProgress < sarcomaNextStage) return 1
 			

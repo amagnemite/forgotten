@@ -446,7 +446,7 @@ WaveSchedule
 			ClassIcon demo_burst
 			Tag Cardiomyopathy
 			Tag Special_Disease
-			Health 5000
+			Health 4500
 			Skill Expert
             Scale 1.9
 			WeaponRestrictions PrimaryOnly
@@ -457,7 +457,7 @@ WaveSchedule
 			{
 				ItemName "TF_WEAPON_GRENADELAUNCHER"
 				"clip size upgrade atomic" 16.0
-				"faster reload rate" 0.2
+				"faster reload rate" 0.3
 				"fire rate bonus" 0.05
 				"projectile spread angle penalty" 7
                 "damage bonus" 0.4
@@ -534,8 +534,8 @@ WaveSchedule
 			ClassIcon hemorrhagic_fever_bp
 			Tag Hemorrhagic_Fever
 			// Will drop super big potion on death
-			// Tag Special_Disease
-			Health 22500
+			Tag Special_Disease
+			Health 25000
 			Skill Expert
             Scale 1.9
 			WeaponRestrictions PrimaryOnly
@@ -1831,6 +1831,24 @@ WaveSchedule
 					Action Mobber
 					Tag ws4
 				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
 			}
 		}
 
@@ -1976,6 +1994,7 @@ WaveSchedule
 				}
 				TFBot {
 					Template T_TFBot_Sarcoma
+					Tag Sarcoma_w6
 					Tag ws7
 				}
 			}
