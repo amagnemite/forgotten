@@ -238,7 +238,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.sarcomaPush <- SpawnEntityFromTable("trigger_push", {
 			origin = activator.GetCenter()
 			pushdir = QAngle(0, 0, 0) 
-			speed = 250
+			speed = 125
 			startdisabled = true
 			spawnflags = 1
 			filtername = "team_red"
@@ -274,6 +274,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 			
 			//if(delayProgression) return 1
+			if(self.GetLocomotionInterface().IsStuck()) { //safety for altmode, since he tends to hump walls and get stuck
+				printl("sarcoma triggered antistuck")
+				EntFireByHandle(selfPush, "Enable", null, -1, null, null)
+				EntFireByHandle(selfPush, "Disable", null, 0.5, null, null)
+			}
+			
 			sarcomaProgress++
 			if(sarcomaProgress < sarcomaNextStage) return 1
 			
@@ -329,10 +335,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			EntFire("sarcoma_evolution_shake", "StartShake")
 			DispatchParticleEffect("sarcoma_explode", self.GetOrigin(), Vector())
 			EntFireByHandle(sarcomaPush, "Disable", null, 0.5, null, null)
-			if(self.GetLocomotionInterface().IsStuck()) { //safety for altmode, since he tends to hump walls and get stuck
-				EntFireByHandle(selfPush, "Enable", null, -1, null, null)
-				EntFireByHandle(selfPush, "Disable", null, 0.5, null, null)
-			}
 			return 1
 		}
 		AddThinkToEnt(activator, "sarcomaThink")
@@ -351,9 +353,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.currentState <- 0
 		scope.playersEaten <- 0
 		scope.medigun <- null
+		scope.deadSupport <- 0
 		scope.support <- []
 		scope.supportTimer <- Timer()
-		//scope.supportTimer.Start(0.01)
 		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
 			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
 		
@@ -363,15 +365,15 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 		}
 		
-		/*
 		for(local i = 1; i <= MaxPlayers; i++) {
 			local player = PlayerInstanceFromIndex(i)
 			if(player == null) continue
 			if(!IsPlayerABot(player)) continue
 			if(player == activator) continue
-			if(!player.HasBotTag("ws8") && NetProps.GetPropInt(player, "m_lifeState") != 0) continue
+			if(!player.HasBotTag("ws8") && NetProps.GetPropInt(player, "m_lifeState") != LIFE_ALIVE) continue
 			
 			scope.support.append(player)
+			/*
 			player.ValidateScriptScope()
 			player.GetScriptScope().reviveThink <- function() {
 				if(NetProps.GetPropInt(self, "m_lifeState") != LIFE_ALIVE) {
@@ -382,80 +384,69 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 						self.ForceChangeTeam(TEAM_SPECTATOR, true)
 					}
 					else {
-						self.ForceChangeTeam(TF_TEAM_BLUE, true)
-						self.ForceRespawn()
-						//EntFireByHandle(self, "runscriptcode", "self.ForceRespawn()", 10, null, null)
+						if(self.GetTeam() != TF_TEAM_BLUE) {
+						
+						}
 					}
 				}
 			}
 			AddThinkToEnt(player, "reviveThink")
+			*/
 		}
-		*/
 		
-		scope.medbotThink <- function() {
+		scope.offensiveThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				cleanup()
 				return
 			}
 			
-			/*
-			local supportAllDead = true
-			foreach(supporter in support) {
-				if(NetProps.GetPropInt(self, "m_lifeState") == LIFE_ALIVE) {
-					supportAllDead = false
-					break
-				}
-			}
-			if(supportAllDead) {
-				if(supportTimer.Expired()) {
-					local LOCATION = Vector(-3122, 2817, 800)
-					DispatchParticleEffect("eyeboss_tp_vortex", LOCATION, Vector())
-					foreach(supporter in support) {
-						supporter.Teleport(true, LOCATION, false, QAngle(), false, Vector())
-					}
-				}
-				else {
-					supportTimer.Start(10)
-				}
-			}
-			
-			if(supportTimer.Expired()) {
+			printl("dead support " + deadSupport)
+			if(deadSupport >= 5 && supportTimer.Expired()) {
 				local LOCATION = Vector(-3122, 2817, 800)
 				DispatchParticleEffect("eyeboss_tp_vortex", LOCATION, Vector())
 				foreach(supporter in support) {
 					supporter.Teleport(true, LOCATION, false, QAngle(), false, Vector())
 				}
+				printl("spawned bots")
+				deadSupport = 0
 			}
-			*/
-	
-			if(self.GetHealth() < self.GetMaxHealth() && currentState == OFFENSIVE) {
+			
+			if(self.GetHealth() < self.GetMaxHealth() && deadSupport < 5) {
 				EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1)
 				currentState = DEFENSIVE
-				self.AddBotAttribute(IGNORE_ENEMIES)
-				supportTimer.Start(10)
+				//self.AddBotAttribute(IGNORE_ENEMIES)
+				AddThinkToEnt(self, "defensiveThink")
 				//printl("in defense")
 			}
-			else if(currentState == DEFENSIVE) {
-				local target = self.GetHealTarget()
-				if(target != null) {
-					target.TakeDamageCustom(null, target, null, Vector(0, 0, 0), target.GetCenter(),
-						1000, DMG_ENERGYBEAM, TF_DMG_CUSTOM_MERASMUS_ZAP); //can't friendly fire
-					DispatchParticleEffect("rd_robot_explosion", target.GetOrigin(), Vector())
-					EmitSoundEx({
-						sound_name = "ambient/grinder/grinderbot_03.wav",
-						channel = 6,
-						origin = target.GetCenter(),
-						filter_type = RECIPIENT_FILTER_PAS
-					})
-					strengthen()
-				}
-				//if(supportAllDead) {
-				if(supportTimer.Expired()) {
-					EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-					currentState = OFFENSIVE
-					self.RemoveBotAttribute(IGNORE_ENEMIES)
-					//printl("in offense")
-				}
+		}
+		
+		scope.defensiveThink <- function() {
+			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
+				cleanup()
+				return
+			}
+			printl(self.HasBotAttribute(IGNORE_ENEMIES))
+			if(deadSupport >= 5) {
+				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
+				currentState = OFFENSIVE
+				self.RemoveBotAttribute(IGNORE_ENEMIES)
+				supportTimer.Start(10)
+				AddThinkToEnt(self, "offensiveThink")
+				return
+			}
+			
+			local target = self.GetHealTarget()
+			if(target != null) {
+				DispatchParticleEffect("rd_robot_explosion", target.GetOrigin(), Vector())
+				target.TakeDamageCustom(null, self, null, Vector(0, 0, 0), target.GetCenter(),
+					1000, DMG_ENERGYBEAM, TF_DMG_CUSTOM_MERASMUS_ZAP);
+				EmitSoundEx({
+					sound_name = "ambient/grinder/grinderbot_03.wav",
+					channel = 6,
+					origin = target.GetCenter(),
+					filter_type = RECIPIENT_FILTER_PAS
+				})
+				strengthen()
 			}
 		}
 		
@@ -469,7 +460,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			delete currentState
 			delete playersEaten
 			delete ::medbot
-			delete ::medBotCallback
+			delete ::medBotCallbacks
 			NetProps.SetPropString(self, "m_iName", null)
 		}
 		
@@ -487,18 +478,36 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			EntFireByHandle(particle, "Kill", null, 0.3, null, null)
 		}
 		
-		::medBotCallback <- {
+		::medBotCallbacks <- {
 			OnGameEvent_player_death = function(params) {
 				local victim = GetPlayerFromUserID(params.userid)
-				if(IsPlayerABot(victim)) return
 				local attacker = GetPlayerFromUserID(params.attacker)
-				if(attacker.HasBotTag("ws8")) {
-					medbot.AcceptInput("CallScriptFunction", "strengthen", null, null)
+				if(IsPlayerABot(victim)) {
+					if(victim.HasBotTag("ws8") && victim != medbot) {
+						medbot.GetScriptScope().deadSupport++
+						EntFireByHandle(victim, "runscriptcode", "self.ForceChangeTeam(TF_TEAM_BLUE, true)", -1, null, null)
+						EntFireByHandle(victim, "runscriptcode", "self.ForceRespawn()", 5, null, null)
+						
+					}
+				}
+				else {
+					if(attacker.HasBotTag("ws8")) {
+						medbot.AcceptInput("CallScriptFunction", "strengthen", null, null)
+					}
 				}
 			}
+			OnScriptHook_OnTakeDamage = function(params) {
+				local victim = params.const_entity
+				local attacker = params.attacker
+				if(!IsPlayerABot(victim)) return
+				if(IsPlayerABot(victim) && !victim.HasBotTag("ws8")) return
+				if(victim == medbot) return
+				if(attacker == null || !IsPlayerABot(attacker)) return
+				params.force_friendly_fire = true
+			}
 		}
-		//__CollectGameEventCallbacks(medBotCallback)
-		//AddThinkToEnt(activator, "medbotThink")
+		//__CollectGameEventCallbacks(medBotCallbacks)
+		//AddThinkToEnt(activator, "offensiveThink")
 	}
 
 	addPlayerDebuffThink = function() {

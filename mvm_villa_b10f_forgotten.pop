@@ -5,7 +5,7 @@
 
 WaveSchedule
 {
-	StartingCurrency 800
+	StartingCurrency 900
 	RespawnWaveTime 4
 	CanBotsAttackWhileInSpawnRoom no
 
@@ -670,7 +670,7 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 2
 			WaitBetweenSpawns 2.5
-			WaitBeforeStarting 2
+			WaitBeforeStarting 2.5
 			TFBot
 			{
 				Class Pyro
@@ -707,7 +707,7 @@ WaveSchedule
 			SpawnCount 1
 			WaitBeforeStarting 2
 			WaitBetweenSpawns 16
-			TotalCurrency 400
+			TotalCurrency 300
 			TFBot
 			{
 				Template T_TFBot_Giant_Soldier
@@ -1543,7 +1543,7 @@ WaveSchedule
 		{
 			TotalCount 1
 			WaitBeforeStarting 15
-			TotalCurrency 300
+			TotalCurrency 450
 			Where spawnbot
 			Tank
 			{
@@ -1565,7 +1565,7 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 2
 			WaitBetweenSpawns 27
-			TotalCurrency 200
+			TotalCurrency 350
 			Squad
 			{
 				TFBot
@@ -1632,7 +1632,6 @@ WaveSchedule
 			SpawnCount 1
 			WaitBeforeStarting 11
 			WaitBetweenSpawns 13
-			TotalCurrency 300
 			WaitForAllSpawned w5b
 			TFBot
 			{
@@ -2016,6 +2015,10 @@ WaveSchedule
 			
 			Squad {
 				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					tag ws8
+				}
+				TFBot {
 					Class Medic
 					Name "Giant Medic"
 					ClassIcon medic_giant
@@ -2048,13 +2051,10 @@ WaveSchedule
 						}
 						EatBots {
 							WeaponRestrictions SecondaryOnly
+							Attributes IgnoreEnemies
 							ActionOverride Medic
 						}
 					}
-				}
-				TFBot {
-					Template T_TFBot_Malignant_Tumor
-					tag ws8
 				}
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
