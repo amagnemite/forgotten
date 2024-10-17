@@ -284,7 +284,7 @@ WaveSchedule
 			}
 		}
 
-        //"Passive" robot that leaves a purple poison trail around it
+        //"Passive" robot that leaves a green poison trail around it
 		T_TFBot_Pneumonia
 		{
 			Class Medic
@@ -304,12 +304,13 @@ WaveSchedule
 				"set item tint RGB" 13328029
 			}
 			//Not sure if these two conflict with each other or not
-			Item "The Virus Doctor"
-			ItemAttributes
-			{
-				ItemName "The Virus Doctor"
-				"set item tint RGB" 13328029
-			}
+			//Edit they do
+			// Item "The Virus Doctor"
+			// ItemAttributes
+			// {
+			// 	ItemName "The Virus Doctor"
+			// 	"set item tint RGB" 13328029
+			// }
             ItemAttributes
 			{
 				ItemName "The Quick-Fix"
@@ -318,7 +319,7 @@ WaveSchedule
 			CharacterAttributes
 			{
 				"move speed bonus"	1
-				"damage force reduction" 0.6
+				"damage force reduction" 0.5
 				"airblast vulnerability multiplier" 0.6
 				"heal rate bonus" 200
 			}
@@ -563,6 +564,59 @@ WaveSchedule
 				"override footstep sound set" 4
 			}
 		}
+
+		//Final boss
+		T_TFBot_UKGR
+		{
+			Class Medic
+			Name "Unrecalled King of Ghost Robots"
+			ClassIcon ukgr_base
+            Tag UKGR
+			Scale 1.9
+			Skill Expert
+			Health 60000
+			Item "The Quick-Fix"
+			WeaponRestrictions PrimaryOnly
+			Attributes MiniBoss
+			Item "The Virus Doctor"
+			ItemAttributes
+			{
+				ItemName "The Virus Doctor"
+				"set item tint RGB" 13328029
+			}
+			CharacterAttributes
+			{
+				"move speed bonus"	0.8
+				"damage force reduction" 0.1
+				"airblast vulnerability multiplier" 0.1
+			}
+		}
+
+		T_TFBot_UKGR_Tumor
+		{
+			Class Medic
+			Name "Fragment"
+			ClassIcon ukgr_base
+            Tag UKGR_Tumor
+			Skill Expert
+			Health 125
+			Scale 0.8
+			Item "The Ubersaw"
+			WeaponRestrictions MeleeOnly
+			Item "The Virus Doctor"
+			ItemAttributes
+			{
+				ItemName "The Virus Doctor"
+				"set item tint RGB" 13328029
+			}
+			CharacterAttributes
+			{
+				"move speed bonus"	2
+				//Screw you vacuum
+				"damage force reduction" 0.1
+				"airblast vulnerability multiplier" 0.1
+			}
+		}
 	}
 	
 	OverrideParticles {
@@ -727,6 +781,16 @@ WaveSchedule
 			TFBot
 			{
 				Template T_TFBot_Demoman_Samurai
+				CharacterAttributes
+				{
+					"charge time increased" 2
+					"charge recharge rate increased" 7
+					"increased jump height" 2.3
+					"bot custom jump particle"	1
+					"damage bonus"	1.5
+					"cancel falling damage" 1
+					"damage force reduction" 0.5
+				}
 			}
 		}
 		WaveSpawn
@@ -794,6 +858,10 @@ WaveSchedule
 				Skill Hard
 				WeaponRestrictions MeleeOnly
 				Item "Fists of Steel"
+				CharacterAttributes
+				{
+					"damage force reduction" 0.6
+				}
 			}
 		}
 	}
@@ -873,6 +941,9 @@ WaveSchedule
 					"dmg from melee increased" 1.5
 					"fire rate bonus" 0.3
 					"faster reload rate" -0.8
+					"killstreak tier" 3
+					"killstreak idleeffect" 7
+					"killstreak effect" 2002
 				}
 				ItemAttributes
 				{
@@ -883,6 +954,9 @@ WaveSchedule
 					"damage causes airblast" 1
 					"subtract victim medigun charge on hit" 100
 					"apply z velocity on damage" 5000
+					"killstreak tier" 3
+					"killstreak idleeffect" 7
+					"killstreak effect" 2002
 				}
 				CharacterAttributes
 				{
@@ -1797,6 +1871,16 @@ WaveSchedule
 				Template T_TFBot_Demoman_Samurai
 				Action Mobber
 				Tag ws3
+				CharacterAttributes
+				{
+					"charge time increased" 2
+					"charge recharge rate increased" 7
+					"increased jump height" 2.3
+					"bot custom jump particle"	1
+					"damage bonus"	1.5
+					"cancel falling damage" 1
+					"damage force reduction" 0.5
+				}
 			}
 		}
 		
@@ -2040,7 +2124,7 @@ WaveSchedule
 					CharacterAttributes
 					{
 						"move speed bonus"	0.5
-						"damage force reduction" 0.6
+						"damage force reduction" 0.5
 						"airblast vulnerability multiplier" 0.6
 						"overheal decay bonus" 0.5 //inverted percent
 					}

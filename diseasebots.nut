@@ -84,6 +84,10 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
 			}
 			EntFire("hemorrhagic_fever_weapon_particles", "Stop")
+			if(player.GetScriptScope().rageParticle.IsValid()) {
+				player.GetScriptScope().rageParticle.Kill()
+			}
+			delete player.GetScriptScope().rageParticle
 		}
 		if (!player.HasBotTag("Malignant_Tumor")) return
 
@@ -674,6 +678,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
 		EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
 		//EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
+
+		scope.rageParticle <- SpawnEntityFromTable("trigger_particle", {
+			particle_name = "cardiac_arrest_buffed"
+			attachment_type = 1
+			spawnflags = 64
+		})
 	}
 	
 	containmentBreachBuffs = function() {
@@ -685,8 +695,22 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			
 			player.AddCondEx(72, -1, null)
 			if(player.HasBotTag("Sarcoma")) {
-				self.AddCustomAttribute("move speed bonus", 0.6, -1)
-				self.AddCustomAttribute("health drain", -2, -1)
+				player.AddCustomAttribute("move speed bonus", 0.6, -1)
+				player.AddCustomAttribute("health drain", -2, -1)
+			}
+			else if(player.HasBotTag("Hemorrhagic_Fever")) {
+				player.AddCustomAttribute("move speed bonus", 0.6, -1)
+				player.AddCustomAttribute("damage bonus", 5, -1)
+				player.AddCustomAttribute("bleeding duration", 5, -1)
+				player.AddCustomAttribute("dmg taken increased", 2, -1)
+				
+				EntFire("hemorrhagic_fever_trigger", "Disable")
+				player.GetScriptScope().rageParticle.AcceptInput("StartTouch", "!activator", player, player)
+				local hemorrhagicFeverParticle = null
+				while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
+					hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
+				}
+				
 			}
 			/*
 			else if(player.HasBotTag("gmed")) {
