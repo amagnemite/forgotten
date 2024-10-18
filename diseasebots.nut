@@ -2,15 +2,9 @@
 ::uberFlaskNormalSpawner <- Entities.FindByName(null, "uber_flask_normal_maker")
 ::uberFlaskShortSpawner <- Entities.FindByName(null, "uber_flask_short_maker")
 
-/*
-PrecacheSound("mvm/spell_lightning_ball_cast.wav")
-PrecacheSound("mvm/spell_overheal.wav")
-PrecacheSound("mvm/dragons_fury_impact_impact_pain.wav")
-*/
 PrecacheSound("vo/halloween_haunted1.mp3")
 PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
 PrecacheSound("ambient/grinder/grinderbot_03.wav")
-//PrecacheScriptSound("Halloween.Haunted")
 PrecacheScriptSound("Weapon_DragonsFury.BonusDamageHit")
 PrecacheScriptSound("Halloween.spell_overheal")
 PrecacheScriptSound("Halloween.spell_lightning_cast")
@@ -27,7 +21,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(player == null) continue
 			if(IsPlayerABot(player)) continue
 			if(player.GetTeam() != TF_TEAM_RED) continue
-			
+
 			player.SetScriptOverlayMaterial(null)
 			player.RemoveCustomAttribute("move speed penalty")
 			player.RemoveCustomAttribute("halloween increased jump height")
@@ -40,16 +34,16 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		EntFire("uber_flask_normal_trigger*", "Kill", -1)
 		EntFire("uber_flask_short_prop*", "Kill", -1)
 		EntFire("uber_flask_short_trigger*", "Kill", -1)
-		
+
 		delete ::diseaseCallbacks
     }
-	
+
 	OnGameEvent_recalculate_holidays = function(_) {
 		if(GetRoundState() == 3) {
 			Cleanup()
-		} 
+		}
 	}
-	
+
 	OnGameEvent_mvm_wave_complete = function(_) {
 		Cleanup()
 	}
@@ -66,9 +60,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
-
 		if (player == null) return
 		if(!IsPlayerABot(player)) return
+
 		if(player.HasBotTag("special_disease") && !player.HasBotTag("Malignant_Tumor")) {
 			local center = player.GetCenter() //spawnentityatlocation is dumb
 			uberFlaskNormalSpawner.SpawnEntityAtLocation(center, Vector())
@@ -77,6 +71,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			EntFire("uber_flask_normal_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 3, 12)", -1)
 			return
 		}
+
 		if(player.HasBotTag("Hemorrhagic_Fever")) {
 			EntFire("hemorrhagic_fever_trigger", "Disable")
 			local hemorrhagicFeverParticle = null
@@ -92,9 +87,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		if(!player.HasBotTag("Malignant_Tumor")) return
 
 		local victim = null
-		
+
 		DispatchParticleEffect("malignant_tumor_explode", player.GetCenter(), Vector())
-		
+
 		//check if this channel is correct
 		EmitSoundEx({
 			sound_name = "misc/halloween/spell_mirv_explode_secondary.wav",
@@ -102,7 +97,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			origin = player.GetCenter(),
 			filter_type = RECIPIENT_FILTER_GLOBAL
 		})
-		
+
 		while(victim = Entities.FindByClassnameWithin(victim, "player", player.GetCenter(), 180)) {
 			if(victim.GetTeam() == TF_TEAM_RED) {
 				local distance = (victim.GetCenter() - player.GetCenter()).Length()
@@ -110,43 +105,43 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				local shouldDamage = true
 				//printl("distance " + distance)
 				//DebugDrawCircle(player.GetCenter(), Vector(255, 0, 0), 127, 146, true, 1)
-				
+
 				local traceTable = {
 					start = player.GetCenter()
 					end = victim.GetCenter()
 				}
 				TraceLineEx(traceTable)
-				
+
 				if(traceTable.hit && traceTable.enthit != victim) {
 					//not los, don't damage them
 					shouldDamage = false
 				}
-				
+
 				if(shouldDamage) {
 					local splash = distance / 2.88
 					local damage = 125 * (1 - splash / 125)
 					//printl("damage " + damage)
-					
+
 					victim.TakeDamageEx(player, player, null, Vector(1, 0, 0), player.GetCenter(), damage, DMG_BLAST)
 					//diseaseCallbacks.playSound("mvm/dragons_fury_impact_bonus_damage_hit.wav", victim)
 					diseaseCallbacks.playSound("Weapon_DragonsFury.BonusDamageHit", victim)
 				}
 			}
 		}
-		
+
 		local center = player.GetCenter() + Vector(0, 0, 20)
 		uberFlaskShortSpawner.SpawnEntityAtLocation(center, Vector())
 		//EntFire("uber_flask_short_prop*", "AddOutput", "renderfx 10", 1)
 		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1)", -1)
 		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1)", -1)
 	}
-	
+
 	OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 
 		if(player == null) return
 		if(player.GetTeam() != TF_TEAM_RED && player.GetTeam() != TF_TEAM_BLUE) return
-		
+
 		if(!IsPlayerABot(player)) {
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.addPlayerDebuffThink()", -1, player, null)
 		}
@@ -154,11 +149,11 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.specialDiseaseCheck()", -1, player, null)
 		}
 	}
-	
+
 	specialDiseaseCheck = function() {
 		local tags = {}
 		activator.GetAllBotTags(tags)
-	
+
 		foreach(i, tag in tags) {
 			switch(tag) {
 				case "Pneumonia":
@@ -167,7 +162,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					break
 				case "Sarcoma_w6":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy_boss.mdl")
-					//activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addSarcomaThink(true)", activator, null)
 					break
 				case "Sarcoma":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy_boss.mdl")
@@ -204,9 +198,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
 				//return
 			}
-			
+
 			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
-			
+
 			pneumoniaSpawner.SpawnEntityAtEntityOrigin(self)
 			local pneumoniaEntity = null
 			while(pneumoniaEntity = Entities.FindByName(pneumoniaEntity, "pneumonia_spawn_e_*")) {
@@ -225,23 +219,23 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 	}
 
 	addSarcomaThink = function() {
+		printl(activator)
 		//Stage 0 = Unarmed bot (Has SuppressFire) 0.8 scale 1.5 speed
 		//Stage 1 = Melee bot 1.25 scale 1 speed
 		//Stage 2 = Stock shotgun bot 1.5 scale 0.75 speed
-		//Stage 3 = Strong shotgun bot 1.75 scale 0.66 speed 
+		//Stage 3 = Strong shotgun bot 1.75 scale 0.66 speed
 		//Stage 4 = Minigun bot 2.15 scale 0.5 speed
 		//Stage 5 = Crit minigun 2.5 scale 0 speed
 
 		local scope = activator.GetScriptScope()
-		//scope.delayProgression <- delayProgression
 		scope.sarcomaProgress <- 0
 		scope.sarcomaStage <- 0
 		scope.sarcomaThresholds <- [12, 24, 36, 48, 70, 999999] //Time to reach each stage, in seconds
 		scope.sarcomaNextStage <- scope.sarcomaThresholds[0]
-		
+
 		scope.sarcomaPush <- SpawnEntityFromTable("trigger_push", {
 			origin = activator.GetCenter()
-			pushdir = QAngle(0, 0, 0) 
+			pushdir = QAngle(0, 0, 0)
 			speed = 125
 			startdisabled = true
 			spawnflags = 1
@@ -249,19 +243,19 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		})
 		scope.selfPush <- SpawnEntityFromTable("trigger_push", {
 			origin = activator.GetCenter()
-			pushdir = QAngle(0, 0, 0) 
+			pushdir = QAngle(0, 0, 0)
 			speed = 250
 			startdisabled = true
 			spawnflags = 1
 			filtername = "team_blu"
 		})
 		scope.sarcomaPush.SetSolid(2)
-		scope.sarcomaPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))	
+		scope.sarcomaPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
 		scope.sarcomaPush.AcceptInput("SetParent", "!activator", activator, activator)
 		scope.selfPush.SetSolid(2)
 		scope.selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
 		scope.selfPush.AcceptInput("SetParent", "!activator", activator, activator)
-		
+
 		activator.GetScriptScope().sarcomaThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
@@ -276,17 +270,16 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				delete selfPush
 				return
 			}
-			
-			//if(delayProgression) return 1
+
 			if(self.GetLocomotionInterface().IsStuck()) { //safety for altmode, since he tends to hump walls and get stuck
 				printl("sarcoma triggered antistuck")
 				EntFireByHandle(selfPush, "Enable", null, -1, null, null)
 				EntFireByHandle(selfPush, "Disable", null, 0.5, null, null)
 			}
-			
+
 			sarcomaProgress++
 			if(sarcomaProgress < sarcomaNextStage) return 1
-			
+
 			sarcomaStage++
 			sarcomaNextStage = sarcomaThresholds[sarcomaStage]
 			NetProps.SetPropVector(sarcomaPush, "m_vecPushDir", self.EyeAngles() + Vector())
@@ -343,7 +336,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		}
 		AddThinkToEnt(activator, "sarcomaThink")
 	}
-	
+
 	//placeholder name
 	addMedBotThink = function() {
 		::medbot <- activator
@@ -362,20 +355,20 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.supportTimer <- Timer()
 		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
 			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
-		
+
 			if(wep && wep.GetClassname() == "tf_weapon_medigun") {
 				scope.medigun = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i);
 				break;
 			}
 		}
-		
+
 		for(local i = 1; i <= MaxPlayers; i++) {
 			local player = PlayerInstanceFromIndex(i)
 			if(player == null) continue
 			if(!IsPlayerABot(player)) continue
 			if(player == activator) continue
 			if(!player.HasBotTag("ws8") && NetProps.GetPropInt(player, "m_lifeState") != LIFE_ALIVE) continue
-			
+
 			scope.support.append(player)
 			/*
 			player.ValidateScriptScope()
@@ -384,12 +377,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					if(!("medbot" in getroottable()) || NetProps.GetPropInt(medbot, "m_lifeState") != 0) {
 						AddThinkToEnt(self, null)
 						NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-						
+
 						self.ForceChangeTeam(TEAM_SPECTATOR, true)
 					}
 					else {
 						if(self.GetTeam() != TF_TEAM_BLUE) {
-						
+
 						}
 					}
 				}
@@ -397,13 +390,13 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			AddThinkToEnt(player, "reviveThink")
 			*/
 		}
-		
+
 		scope.offensiveThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				cleanup()
 				return
 			}
-			
+
 			printl("dead support " + deadSupport)
 			if(deadSupport >= 5 && supportTimer.Expired()) {
 				local LOCATION = Vector(-3122, 2817, 800)
@@ -414,7 +407,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				printl("spawned bots")
 				deadSupport = 0
 			}
-			
+
 			if(self.GetHealth() < self.GetMaxHealth() && deadSupport < 5) {
 				EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1)
 				currentState = DEFENSIVE
@@ -423,7 +416,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				//printl("in defense")
 			}
 		}
-		
+
 		scope.defensiveThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				cleanup()
@@ -438,7 +431,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				AddThinkToEnt(self, "offensiveThink")
 				return
 			}
-			
+
 			local target = self.GetHealTarget()
 			if(target != null) {
 				DispatchParticleEffect("rd_robot_explosion", target.GetOrigin(), Vector())
@@ -453,7 +446,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				strengthen()
 			}
 		}
-		
+
 		scope.cleanup <- function() {
 			AddThinkToEnt(self, null)
 			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
@@ -467,7 +460,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			delete ::medBotCallbacks
 			NetProps.SetPropString(self, "m_iName", null)
 		}
-		
+
 		scope.strengthen <- function() {
 			playersEaten++
 			self.SetHealth(self.GetHealth() + HEALTHBONUS)
@@ -481,7 +474,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			particle.AcceptInput("SetParent", "medbot", null, null)
 			EntFireByHandle(particle, "Kill", null, 0.3, null, null)
 		}
-		
+
 		::medBotCallbacks <- {
 			OnGameEvent_player_death = function(params) {
 				local victim = GetPlayerFromUserID(params.userid)
@@ -491,7 +484,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 						medbot.GetScriptScope().deadSupport++
 						EntFireByHandle(victim, "runscriptcode", "self.ForceChangeTeam(TF_TEAM_BLUE, true)", -1, null, null)
 						EntFireByHandle(victim, "runscriptcode", "self.ForceRespawn()", 5, null, null)
-						
+
 					}
 				}
 				else {
@@ -517,12 +510,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 	addPlayerDebuffThink = function() {
 		//printl("Player Debuff Check is thonking...")
 		local scope = activator.GetScriptScope()
-		
+
 		if(!("medigun" in scope) || !scope.medigun.IsValid()) {
 			scope.medigun <- null
 			for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
 				local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
-			
+
 				if(wep && wep.GetClassname() == "tf_weapon_medigun") {
 					scope.medigun = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i);
 					break;
@@ -540,7 +533,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(timeCounter < DEFAULTTIME) {
 				return
 			}
-			
+
 			//Check for Dyspnea's debuff cond, apply screen overlay
 			if(self.InCond(12) && !dyspneaDebuffed) {
 				dyspneaDebuffed = true
@@ -558,7 +551,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				local newRageMeter = rageMeter - 1.2 > 0 ? rageMeter - 1.2 : 0
 				//printl("Rage: " + rageMeter)
 				NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
-				
+
 				local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
 				local newUberMeter = uberMeter - 0.01 > 0 ? uberMeter - 0.01 : 0
 				//printl("uber: " + uberMeter + " " + Time())
@@ -584,7 +577,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		}
 		scope.thinkTable.playerDebuffThink <- scope.playerDebuffThink
 	}
-	
+
 	killInTime = function(ent, seconds, flashSeconds) {
 		if(ent.GetScriptThinkFunc() == "killThink") {
 			return
@@ -610,9 +603,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		}
 		AddThinkToEnt(ent, "killThink")
 	}
-	
+
 	activateHemorrhagicFever = function() {
-		EntFire("fevertrigger", "kill", null, -1)
 		local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
 		// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
 		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
@@ -636,7 +628,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				activator.TakeDamage(20, DMG_BURN, owner)
 				diseaseCallbacks.playSound("Fire.Engulf", self)
 			}
-		}	
+		}
 		// }
 
 		local hemorrhagicFeverParticle = null
@@ -646,10 +638,10 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 		local scope = activator.GetScriptScope()
 		scope.flamethrower <- null
-		
+
 		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
 			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
-		
+
             if(wep && wep.GetClassname() == "tf_weapon_flamethrower") {
                 scope.flamethrower = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i);
                 break;
@@ -664,7 +656,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			start_active = 1
 			origin = activator.GetOrigin()
 		})
-		
+
 		// scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
 		// 	particle_name = "hemorrhagic_fever_flamethrower"
 		// 	attachment_type = 4
@@ -678,7 +670,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
 		EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
 		EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
-		//EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.5, null, null)
+		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.2, null, null)
 
 		scope.rageParticle <- SpawnEntityFromTable("trigger_particle", {
 			particle_name = "cardiac_arrest_buffed"
@@ -686,14 +678,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			spawnflags = 64
 		})
 	}
-	
+
 	containmentBreachBuffs = function() {
 		for (local i = 1; i <= MaxPlayers ; i++)
 		{
 			local player = PlayerInstanceFromIndex(i)
 			if(player == null) continue
 			if(!IsPlayerABot(player)) continue
-			
+
 			player.AddCondEx(72, -1, null)
 			if(player.HasBotTag("Sarcoma")) {
 				player.AddCustomAttribute("move speed bonus", 0.6, -1)
@@ -704,14 +696,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				player.AddCustomAttribute("damage bonus", 5, -1)
 				player.AddCustomAttribute("bleeding duration", 5, -1)
 				player.AddCustomAttribute("dmg taken increased", 2, -1)
-				
+
 				EntFire("hemorrhagic_fever_trigger", "Disable")
 				player.GetScriptScope().rageParticle.AcceptInput("StartTouch", "!activator", player, player)
 				local hemorrhagicFeverParticle = null
 				while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
 					hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
 				}
-				
+
 			}
 			/*
 			else if(player.HasBotTag("gmed")) {
@@ -738,24 +730,24 @@ for (local i = 1; i <= MaxPlayers ; i++)
 ::applyFlaskBoost <- function() {
 	local selfHealth = self.GetHealth()
 	self.SetHealth(selfHealth + 40)
-	
+
 	local scope = self.GetScriptScope()
 	if(!("medigun" in scope) || !medigun.IsValid()) {
 		scope.medigun <- null
 		for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
 			local wep = NetProps.GetPropEntityArray(self, "m_hMyWeapons", i)
-		
+
 			if(wep && wep.GetClassname() == "tf_weapon_medigun") {
 				scope.medigun = NetProps.GetPropEntityArray(self, "m_hMyWeapons", i);
 				break;
 			}
 		}
 	}
-	
+
 	if(medigun == null) {
 		return
 	}
-	
+
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
 	//printl("uber meter " + uberMeter)
 	local newUberMeter = uberMeter + 0.12 < 1 ? uberMeter + 0.12 : 1
@@ -764,6 +756,6 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")
 	local newRageMeter = rageMeter + 12 < 100 ? rageMeter + 12 : 100
 	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
-	
+
 	diseaseCallbacks.playSound("Halloween.spell_overheal", self)
 }

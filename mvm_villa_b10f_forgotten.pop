@@ -485,7 +485,7 @@ WaveSchedule
 			Skill Hard
 			Health 20000
             Scale 0.8
-			Tag Sarcoma
+			//Tag Sarcoma
 			Tag Special_Disease
 			WeaponRestrictions MeleeOnly
 			MaxVisionRange 800
@@ -536,7 +536,7 @@ WaveSchedule
 			ClassIcon hemorrhagic_fever_bp
 			Tag Hemorrhagic_Fever
 			// Will drop super big potion on death
-			Tag Special_Disease
+			//Tag Special_Disease ither reorganize death callback or ???
 			Health 25000
 			Skill Expert
             Scale 1.9
@@ -1423,6 +1423,7 @@ WaveSchedule
 			TFBot
 			{
 				Template	T_TFBot_Sarcoma
+				Tag Sarcoma
 			}
 		}
 		WaveSpawn
@@ -1551,6 +1552,7 @@ WaveSchedule
 			TFBot
 			{
 				Template	T_TFBot_Sarcoma
+				Tag Sarcoma
 			}
 		}
 		WaveSpawn
@@ -1762,7 +1764,7 @@ WaveSchedule
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
-				EntFire(`altmode_chaos_script`, `runscriptcode`, `preAssignRoom(\`ws8\`, 2)`, -1)
+				EntFire(`altmode_chaos_script`, `runscriptcode`, `preassignRoom(\`ws8\`, 2)`, -1)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
 			"
 		}
@@ -2083,7 +2085,7 @@ WaveSchedule
 					local trigger = SpawnEntityFromTable(`trigger_multiple`, {
 						targetname = `sarcomatrigger`
 						origin = Vector(-2592, -864, 1424)
-						filtername = `sarcomafilter`
+						filtername = `sarcomaw6filter`
 						spawnflags = 1
 						`OnEndTouchAll#1` : `!caller,runscriptcode,diseaseCallbacks.addSarcomaThink(),1,-1`
 						`OnEndTouchAll#2` : `!caller,kill,,2.5,-1`
