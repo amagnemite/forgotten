@@ -1,10 +1,10 @@
 IncludeScript("popextensions/customweapons.nut", getroottable())
 
-
-
 ::bossSpawnFunction <- function() {
 
     scope = self.GetScriptScope()
+
+    self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
     
     //==MIMIC ORDER==
     //Hemorrhagic Fever
@@ -17,7 +17,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
     //Cardiac Arrest
 
     //Is this even necessary??
-    //scope.phases = ["HF", "Dy", "MT", "Ca", "Ta", "Sa", "Pn", "CA"]
+    //scope.phases = ["HF", "Dy", "MT", "Cm", "Ta", "Sa", "Pn", "CA"]
     scope.currentPhase = "HF"
     scope.readyToChangePhase = true
     scope.phaseTimer = 0
@@ -29,6 +29,13 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
 
     //Disable altmode spawns to block tumors
     EntFire("spawnbot_altmode", "Disable", null, 1)
+
+    //Prep cardiac arrest particles
+    scope.caParticle <- SpawnEntityFromTable("trigger_particle", {
+        particle_name = "cardiac_arrest_buffed"
+        attachment_type = 1
+        spawnflags = 64
+    })
 
     scope.ukgrThink <- function() {
         if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
@@ -45,8 +52,15 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
             damageTakenThisPhase = 0
             switch(currentPhase) {
                 case "HF":
+                    //Reset stat changes from Cardiac Arrest mimic
+                    self.RemoveCustomAttribute("fire rate bonus")
+                    self.RemoveCustomAttribute("faster reload rate")
                     GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
                     EquipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
+
+                    self.AcceptInput("DispatchEffect", "ParticleEffectStop", null, null)
+                    caParticle.AcceptInput("EndTouch", "!activator", self, self)
+
                     // scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
                     //     targetname = "ukgr_hf_particles"
                     //     effect_name = "hemorrhagic_fever_flamethrower"
@@ -60,7 +74,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                     // EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
                     self.AddCustomAttribute("damage bonus", 2, -1)
                     self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
-                    break;
+                    break
                 case "Dy":
                     EntFire("ukgr_hf_particles", Kill)
                     GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
@@ -78,7 +92,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                     self.AddCustomAttribute("projectile trail particle", "dyspnea_rockettrail", -1)
                     self.AddCustomAttribute("add cond on hit", 12, -1)
                     self.AddCustomAttribute("add cond on hit duration", 4, -1)
-                    break;
+                    break
                 case "MT":
                     GiveItem("The Crusader's Crossbow", self)
                     EquipItem("The Crusader's Crossbow", self)
@@ -109,17 +123,17 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                         player.Teleport(true, lastPosition, false, QAngle(0,0,0), false, Vector(0,0,0))
                     }
                     //Remember to make tumors explode on death and deal 125 dmg to boss
-                    break;
-                case "Ca":
+                    break
+                case "Cm":
                     GiveItem("The Iron Bomber", self)
                     EquipItem("The Iron Bomber", self)
                     self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
                     self.AddCustomAttribute("damage bonus", 0.5, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.05, -1)
                     self.AddCustomAttribute("projectile spread angle penalty", 10, -1)
-                    self.AddCustomAttribute("clip size upgrade atomic", 20, -1)
-                    self.AddCustomAttribute("faster reload rate", 0.1, -1)
-                    break;
+                    self.AddCustomAttribute("clip size upgrade atomic", 76, -1)
+                    self.AddCustomAttribute("faster reload rate", 10, -1)
+                    break
                 case "Ta":
                     self.RemoveCustomAttribute("damage bonus")
                     self.RemoveCustomAttribute("fire rate bonus")
@@ -136,16 +150,49 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                     //Taunts to forcefully apply Tachycardia debuff on everyone
                     //Debuff function below
                     self.Taunt(TAUNT_BASE_WEAPON, 11)
+                    break
                 case "Sa":
                     //Oh no I'm unarmed!
                     self.AddWeaponRestriction(SECONDARY_ONLY)
                     self.SetScaleOverride(0.8)
                     self.AddCustomAttribute("move speed bonus", 2, -1)
+                    break
                 case "Pn":
                     self.SetScaleOverride(1.9)
                     self.AddWeaponRestriction(SECONDARY_ONLY)
+                    self.AddCustomAttribute("move speed bonus", 1.1, -1)
+                    self.AddCustomAttribute("projectile spread angle penalty", 60, -1)
+                    self.AddCustomAttribute("fire rate bonus", 0.1, -1)
+                    self.AddCustomAttribute("faster reload rate", 20, -1)
                     GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
                     EquipItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
+                    self.AddCustomAttribute("clip size upgrade atomic", -4, -1)
+                    //Attach think to stickies and have them do the rest
+                    break
+                case "CA":
+                    self.AddWeaponRestriction(PRIMARY_ONLY)
+                    self.AddCondEx(TF_COND_SODAPOPPER_HYPE, 11, null)
+                    GiveItem("The Direct Hit", self)
+                    EquipItem("The Direct Hit", self)
+                    self.AddCustomAttribute("fire rate bonus", 0.3, -1)
+                    self.AddCustomAttribute("faster reload rate", -0.8, -1)
+                    self.AddCustomAttribute("damage bonus", 3, -1)
+
+                    self.RemoveCustomAttribute("projectile spread angle penalty")
+                    self.RemoveCustomAttribute("clip size upgrade atomic")
+
+                    caParticle.AcceptInput("StartTouch", "!activator", self, self)
+
+                    //Might be a bit too ass or smth - Apply Cardiac Arrest's fog
+                    // for (local i = 1; i <= MaxPlayers ; i++)
+                    // {
+                    //     local player = PlayerInstanceFromIndex(i)
+                    //     if(player == null) continue
+                    //     if(IsPlayerABot(player)) continue
+                        
+                    //     player.AcceptInput("SetFogController", "fog_heartbeater", null, null)
+                    // }
+                    break
                 default:
                     break;
             }
@@ -159,7 +206,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                 currentPhase = "Dy"
             }
         }
-        if(currentPhase == "Dy") {
+        else if(currentPhase == "Dy") {
             //LOOK UP
             local currentEyeAngles = self.EyeAngles()
 			self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
@@ -175,17 +222,17 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                 currentPhase = "MT"
             }
         }
-        if(currentPhase == "MT" && deadTumorCounter >= 20) {
+        else if(currentPhase == "MT" && deadTumorCounter >= 20) {
             readyToChangePhase = true
             //It's set to 0 twice but yknow just to be safe
             deadTumorCounter = 0
-            currentPhase = "Ca"
+            currentPhase = "Cm"
         }
-        if(currentPhase == "Ca" && phaseTimer > 666) {
+        else if(currentPhase == "Cm" && phaseTimer > 666) {
             readyToChangePhase = true
             currentPhase = "Ta"
         }
-        if(currentPhase == "Ta") {
+        else if(currentPhase == "Ta") {
             if(phaseTimer > 133 && !pausePhaseTimerActions) {
                 for (local i = 1; i <= MaxPlayers ; i++)
                 {
@@ -201,7 +248,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                 currentPhase = "Sa"
             }
         }
-        if(currentPhase == "Sa") {
+        else if(currentPhase == "Sa") {
 
             if(damageTakenThisPhase > 5000 && !pausePhaseTimerActions) {
                 self.AddCondEx(71, (14.8 - (phaseTimer / 66.6)), null)
@@ -222,6 +269,15 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                 readyToChangePhase = true
                 currentPhase = "Pn"
             }
+        }
+        else if(currentPhase == "Pn" && phaseTimer > 530) {
+            readyToChangePhase = true
+            currentPhase = "CA"
+        }
+        //It all loops back
+        else if(currentPhase == "CA" && phaseTimer > 734) {
+            readyToChangePhase = true
+            currentPhase = "HF"
         }
 
 

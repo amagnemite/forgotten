@@ -594,7 +594,7 @@ WaveSchedule
 			}
 			CharacterAttributes
 			{
-				"move speed bonus"	0.8
+				"move speed bonus"	1.1
 				"damage force reduction" 0.1
 				"rage giving scale" 0.1
 				"airblast vulnerability multiplier" 0.1
@@ -963,7 +963,7 @@ WaveSchedule
 					"damage bonus" 99
 					"damage causes airblast" 1
 					"subtract victim medigun charge on hit" 100
-					"apply z velocity on damage" 5000
+					"apply z velocity on damage" 500
 					"killstreak tier" 3
 					"killstreak idleeffect" 7
 					"killstreak effect" 2002
