@@ -370,7 +370,7 @@ WaveSchedule
 			}
 		}
 
-        //Increased damage super scout, "infects" players with difficult-to-control insane move speed and jump height.
+        //Increased damage super scout, "infects" players with insane move speed and jump height.
         //Infection lasts for long and creates a screen overlay.
         //Mutually exclusive with other screen overlay enemies.
         T_TFBot_Tachycardia
@@ -447,18 +447,19 @@ WaveSchedule
 			ClassIcon demo_burst
 			Tag Cardiomyopathy
 			Tag Special_Disease
-			Health 4500
+			Health 5000
 			Skill Expert
             Scale 1.9
 			WeaponRestrictions PrimaryOnly
 			Attributes HoldFireUntilFullReload
 			Attributes MiniBoss
 			Action Mobber  
+			Item "The Iron Bomber"
 			ItemAttributes
 			{
-				ItemName "TF_WEAPON_GRENADELAUNCHER"
+				ItemName "The Iron Bomber"
 				"clip size upgrade atomic" 16.0
-				"faster reload rate" 0.3
+				"faster reload rate" 0.23
 				"fire rate bonus" 0.05
 				"projectile spread angle penalty" 7
                 "damage bonus" 0.4
@@ -575,7 +576,9 @@ WaveSchedule
 			Scale 1.9
 			Skill Expert
 			Health 60000
+			Item "The Crusader's Crossbow"
 			Item "The Quick-Fix"
+			Item "The Amputator"
 			WeaponRestrictions PrimaryOnly
 			Attributes MiniBoss
 			Item "The Virus Doctor"
@@ -584,10 +587,16 @@ WaveSchedule
 				ItemName "The Virus Doctor"
 				"set item tint RGB" 13328029
 			}
+			ItemAttributes
+			{
+				ItemName "The Amputator"
+				"set item tint RGB" 13328029
+			}
 			CharacterAttributes
 			{
 				"move speed bonus"	0.8
 				"damage force reduction" 0.1
+				"rage giving scale" 0.1
 				"airblast vulnerability multiplier" 0.1
 			}
 		}
@@ -595,7 +604,7 @@ WaveSchedule
 		T_TFBot_UKGR_Tumor
 		{
 			Class Medic
-			Name "Fragment"
+			Name "Malignant Fragment"
 			ClassIcon ukgr_base
             Tag UKGR_Tumor
 			Skill Expert
@@ -603,17 +612,18 @@ WaveSchedule
 			Scale 0.8
 			Item "The Ubersaw"
 			WeaponRestrictions MeleeOnly
-			Item "The Virus Doctor"
-			ItemAttributes
-			{
-				ItemName "The Virus Doctor"
-				"set item tint RGB" 13328029
-			}
+			// Item "The Virus Doctor"
+			// ItemAttributes
+			// {
+			// 	ItemName "The Virus Doctor"
+			// 	"set item tint RGB" 13328029
+			// }
 			CharacterAttributes
 			{
 				"move speed bonus"	2
 				//Screw you vacuum
 				"damage force reduction" 0.1
+				"rage giving scale" 0.5
 				"airblast vulnerability multiplier" 0.1
 			}
 		}
@@ -2274,8 +2284,32 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn {
-			//room 12
-		}
+		// WaveSpawn {
+		// 	Name ws12
+		// 	TotalCount 1
+		// 	MaxActive 1
+		// 	SpawnCount 1
+		// 	WaitForAllDead ws11
+		// 	Where spawnbot
+		// 	TFBot
+		// 	{
+		// 		Template T_TFBot_UKGR
+		// 	}
+		// }
+
+		// WaveSpawn {
+		// 	Name boss_support
+		// 	TotalCount 20
+		// 	MaxActive 20
+		// 	SpawnCount 20
+		// 	WaitForAllSpawned ws12
+		// 	WaitBeforeStarting 5
+		// 	Support 1
+		// 	Where spawnbot_altmode
+		// 	TFBot
+		// 	{
+		// 		Template T_TFBot_UKGR_Tumor
+		// 	}
+		// }
 	}
 }
