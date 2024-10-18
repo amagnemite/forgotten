@@ -10,7 +10,7 @@ PrecacheScriptSound("Halloween.spell_overheal")
 PrecacheScriptSound("Halloween.spell_lightning_cast")
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemorrhagic_fever_flamethrower"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "rd_robot_explosion"})
-PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "medic_healradius_blue_buffed"})
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "soldierbuff_blue_buffed"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeboss_tp_vortex"})
 
 ::diseaseCallbacks <- {
@@ -219,7 +219,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 	}
 
 	addSarcomaThink = function() {
-		printl(activator)
 		//Stage 0 = Unarmed bot (Has SuppressFire) 0.8 scale 1.5 speed
 		//Stage 1 = Melee bot 1.25 scale 1 speed
 		//Stage 2 = Stock shotgun bot 1.5 scale 0.75 speed
@@ -343,11 +342,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		NetProps.SetPropString(activator, "m_iName", "medbot") //needed for particle nonsense
 		activator.ValidateScriptScope()
 		local scope = activator.GetScriptScope()
-		scope.OFFENSIVE <- 0
-		scope.DEFENSIVE <- 1
 		scope.MOVESPEEDBASE <- 0.5
 		scope.HEALTHBONUS <- 200
-		scope.currentState <- 0
 		scope.playersEaten <- 0
 		scope.medigun <- null
 		scope.deadSupport <- 0
@@ -367,7 +363,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(player == null) continue
 			if(!IsPlayerABot(player)) continue
 			if(player == activator) continue
-			if(!player.HasBotTag("ws8") && NetProps.GetPropInt(player, "m_lifeState") != LIFE_ALIVE) continue
+			if(NetProps.GetPropInt(player, "m_lifeState") != LIFE_ALIVE) continue
+			if(!player.HasBotTag("gmedsupport")) continue
 
 			scope.support.append(player)
 			/*
@@ -397,23 +394,26 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				return
 			}
 
-			printl("dead support " + deadSupport)
+			//printl("dead support " + deadSupport)
+			
 			if(deadSupport >= 5 && supportTimer.Expired()) {
 				local LOCATION = Vector(-3122, 2817, 800)
-				DispatchParticleEffect("eyeboss_tp_vortex", LOCATION, Vector())
+				local particle = SpawnEntityFromTable("info_particle_system", {
+					effect_name = "eyeboss_tp_vortex"
+					start_active = true
+					origin = LOCATION
+				})
+				EntFireByHandle(particle, "kill", null, 2, null, null)
 				foreach(supporter in support) {
 					supporter.Teleport(true, LOCATION, false, QAngle(), false, Vector())
 				}
-				printl("spawned bots")
 				deadSupport = 0
 			}
 
 			if(self.GetHealth() < self.GetMaxHealth() && deadSupport < 5) {
 				EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1)
-				currentState = DEFENSIVE
 				//self.AddBotAttribute(IGNORE_ENEMIES)
 				AddThinkToEnt(self, "defensiveThink")
-				//printl("in defense")
 			}
 		}
 
@@ -422,11 +422,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				cleanup()
 				return
 			}
-			printl(self.HasBotAttribute(IGNORE_ENEMIES))
 			if(deadSupport >= 5) {
 				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-				currentState = OFFENSIVE
-				self.RemoveBotAttribute(IGNORE_ENEMIES)
+				//self.RemoveBotAttribute(IGNORE_ENEMIES)
 				supportTimer.Start(10)
 				AddThinkToEnt(self, "offensiveThink")
 				return
@@ -435,7 +433,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			local target = self.GetHealTarget()
 			if(target != null) {
 				DispatchParticleEffect("rd_robot_explosion", target.GetOrigin(), Vector())
-				target.TakeDamageCustom(null, self, null, Vector(0, 0, 0), target.GetCenter(),
+				target.TakeDamageCustom(self, target, medigun, Vector(0, 0, 1), target.GetCenter(),
 					1000, DMG_ENERGYBEAM, TF_DMG_CUSTOM_MERASMUS_ZAP);
 				EmitSoundEx({
 					sound_name = "ambient/grinder/grinderbot_03.wav",
@@ -450,11 +448,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.cleanup <- function() {
 			AddThinkToEnt(self, null)
 			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-			delete OFFENSIVE
-			delete DEFENSIVE
 			delete MOVESPEEDBASE
 			delete HEALTHBONUS
-			delete currentState
 			delete playersEaten
 			delete ::medbot
 			delete ::medBotCallbacks
@@ -468,7 +463,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			self.AddCustomAttribute("move speed bonus", MOVESPEEDBASE + 0.1 * playersEaten, -1)
 			local particle = SpawnEntityFromTable("info_particle_system", {
 				origin = self.GetOrigin()
-				effect_name = "medic_healradius_blue_buffed"
+				effect_name = "soldierbuff_blue_buffed"
 				start_active = true
 			})
 			particle.AcceptInput("SetParent", "medbot", null, null)
@@ -478,33 +473,33 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		::medBotCallbacks <- {
 			OnGameEvent_player_death = function(params) {
 				local victim = GetPlayerFromUserID(params.userid)
-				local attacker = GetPlayerFromUserID(params.attacker)
+				local inflictor = EntIndexToHScript(params.inflictor_entindex)
 				if(IsPlayerABot(victim)) {
-					if(victim.HasBotTag("ws8") && victim != medbot) {
+					if(victim.HasBotTag("gmedsupport")) {
 						medbot.GetScriptScope().deadSupport++
+						printl(victim.GetTeam())
 						EntFireByHandle(victim, "runscriptcode", "self.ForceChangeTeam(TF_TEAM_BLUE, true)", -1, null, null)
-						EntFireByHandle(victim, "runscriptcode", "self.ForceRespawn()", 5, null, null)
-
+						EntFireByHandle(victim, "runscriptcode", "self.ForceRespawn()", -1, null, null)
+						EntFireByHandle(victim, "runscriptcode", "self.AddBotTag(\"gmedsupport\")", -1, null, null)
 					}
 				}
 				else {
-					if(attacker.HasBotTag("ws8")) {
+					if(inflictor.HasBotTag("gmed")) {
 						medbot.AcceptInput("CallScriptFunction", "strengthen", null, null)
 					}
 				}
 			}
 			OnScriptHook_OnTakeDamage = function(params) {
 				local victim = params.const_entity
-				local attacker = params.attacker
+				local inflictor = params.inflictor
 				if(!IsPlayerABot(victim)) return
-				if(IsPlayerABot(victim) && !victim.HasBotTag("ws8")) return
-				if(victim == medbot) return
-				if(attacker == null || !IsPlayerABot(attacker)) return
+				if(IsPlayerABot(victim) && !victim.HasBotTag("gmedsupport")) return
+				if(inflictor == null || !IsPlayerABot(inflictor)) return
 				params.force_friendly_fire = true
 			}
 		}
-		//__CollectGameEventCallbacks(medBotCallbacks)
-		//AddThinkToEnt(activator, "offensiveThink")
+		__CollectGameEventCallbacks(medBotCallbacks)
+		AddThinkToEnt(activator, "offensiveThink")
 	}
 
 	addPlayerDebuffThink = function() {
@@ -687,7 +682,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(!IsPlayerABot(player)) continue
 
 			player.AddCondEx(72, -1, null)
-			if(player.HasBotTag("Sarcoma")) {
+			if(player.HasBotTag("Sarcoma_w6")) {
 				player.AddCustomAttribute("move speed bonus", 0.6, -1)
 				player.AddCustomAttribute("health drain", -2, -1)
 			}
@@ -705,14 +700,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				}
 
 			}
-			/*
 			else if(player.HasBotTag("gmed")) {
-				player.RemoveBotAttribute(IGNORE_ENEMIES)
+				//player.RemoveBotAttribute(IGNORE_ENEMIES)
 				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 				player.GetScriptScope().cleanup()
 				//this deletes the death callback, so for now he'll just have the buffs he gained before containmentbreaker
 			}
-			*/
 		}
 	}
 }

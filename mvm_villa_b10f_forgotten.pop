@@ -2140,8 +2140,10 @@ WaveSchedule
 			
 			Squad {
 				TFBot {
-					Template T_TFBot_Malignant_Tumor
+					//Template T_TFBot_Malignant_Tumor
+					Template T_TFBot_Pathogen_Soldier
 					tag ws8
+					tag gmedsupport
 				}
 				TFBot {
 					Class Medic
@@ -2182,20 +2184,26 @@ WaveSchedule
 					}
 				}
 				TFBot {
-					Template T_TFBot_Malignant_Tumor
+					//Template T_TFBot_Malignant_Tumor
+					Template T_TFBot_Pathogen_Soldier
 					tag ws8
+					tag gmedsupport
 				}
 				TFBot {
-					Template T_TFBot_Malignant_Tumor
+					//Template T_TFBot_Malignant_Tumor
+					Template T_TFBot_Pathogen_Soldier
 					tag ws8
+					tag gmedsupport
 				}
 				TFBot {
 					Template T_TFBot_Pathogen_Soldier
 					tag ws8
+					tag gmedsupport
 				}
 				TFBot {
 					Template T_TFBot_Pathogen_Soldier
 					tag ws8
+					tag gmedsupport
 				}
 			}
 		}
