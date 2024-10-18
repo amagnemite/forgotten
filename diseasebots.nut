@@ -89,7 +89,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 			delete player.GetScriptScope().rageParticle
 		}
-		if (!player.HasBotTag("Malignant_Tumor")) return
+		if(!player.HasBotTag("Malignant_Tumor")) return
 
 		local victim = null
 		
@@ -612,6 +612,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 	}
 	
 	activateHemorrhagicFever = function() {
+		EntFire("fevertrigger", "kill", null, -1)
 		local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
 		// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
 		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
@@ -632,7 +633,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			activator.GetScriptScope().feverTicks = newTicks
 
 			if(newTicks >= 5) {
-				activator.TakeDamage(15, DMG_BURN, owner)
+				activator.TakeDamage(20, DMG_BURN, owner)
 				diseaseCallbacks.playSound("Fire.Engulf", self)
 			}
 		}	

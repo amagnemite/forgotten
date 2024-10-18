@@ -1789,6 +1789,15 @@ WaveSchedule
 			Support Limited
 			Where spawnbot_altmode
 			
+			LastSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Delay 0.1
+				Param "
+					//findTimerBot(1, true, diseaseCallbacks.containmentBreachBuffs, false)
+				"
+			}
+			
 			TFBot {
 				Template TimerBotOnly
 				ClassIcon timer_pink
@@ -1958,7 +1967,6 @@ WaveSchedule
 				Action RunScriptCode
 				Param "setTimerFuncToRun(diseaseCallbacks.containmentBreachBuffs)"
 			}
-			
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
@@ -2032,6 +2040,7 @@ WaveSchedule
 						tags = `Hemorrhagic_Fever`
 					})
 					local trigger = SpawnEntityFromTable(`trigger_multiple`, {
+						targetname = `fevertrigger`
 						origin = Vector(-2592, -864, 1424)
 						filtername = `feverfilter`
 						spawnflags = 1
@@ -2063,6 +2072,26 @@ WaveSchedule
 			SpawnCount 5
 			Where spawnbot_altmode
 			
+			StartWaveOutput { //can't just check for spawned, need to see if it got teleported
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "
+					SpawnEntityFromTable(`filter_tf_bot_has_tag`, {
+						targetname = `sarcomaw6filter`
+						tags = `Sarcoma_w6`
+					})
+					local trigger = SpawnEntityFromTable(`trigger_multiple`, {
+						targetname = `sarcomatrigger`
+						origin = Vector(-2592, -864, 1424)
+						filtername = `sarcomafilter`
+						spawnflags = 1
+						`OnEndTouchAll#1` : `!caller,runscriptcode,diseaseCallbacks.addSarcomaThink(),1,-1`
+						`OnEndTouchAll#2` : `!caller,kill,,2.5,-1`
+					})
+					trigger.SetSolid(2)
+					trigger.SetSize(Vector(-256, -256, -16), Vector(256, 256, 240))
+				"
+			}
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
