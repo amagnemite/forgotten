@@ -103,7 +103,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			filter_type = RECIPIENT_FILTER_GLOBAL
 		})
 		
-		while(victim = Entities.FindByClassnameWithin(victim, "player", player.GetCenter(), 146)) {
+		while(victim = Entities.FindByClassnameWithin(victim, "player", player.GetCenter(), 180)) {
 			if(victim.GetTeam() == TF_TEAM_RED) {
 				local distance = (victim.GetCenter() - player.GetCenter()).Length()
 
