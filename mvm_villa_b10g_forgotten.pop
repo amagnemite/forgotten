@@ -2145,7 +2145,7 @@ WaveSchedule
 					tag ws8
 					tag gmedsupport
 				}
-				TFBot {
+				TFBot { //turns out it needs to be not leader for ignore enemies to apply properly?
 					Class Medic
 					Name "Giant Medic"
 					ClassIcon medic_giant

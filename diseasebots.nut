@@ -395,7 +395,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 
 			//printl("dead support " + deadSupport)
-			
 			if(deadSupport >= 5 && supportTimer.Expired()) {
 				local LOCATION = Vector(-3122, 2817, 800)
 				local particle = SpawnEntityFromTable("info_particle_system", {
@@ -434,7 +433,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(target != null) {
 				DispatchParticleEffect("rd_robot_explosion", target.GetOrigin(), Vector())
 				target.TakeDamageCustom(self, target, medigun, Vector(0, 0, 1), target.GetCenter(),
-					1000, DMG_ENERGYBEAM, TF_DMG_CUSTOM_MERASMUS_ZAP);
+					1000, DMG_BLAST, TF_DMG_CUSTOM_MERASMUS_ZAP);
 				EmitSoundEx({
 					sound_name = "ambient/grinder/grinderbot_03.wav",
 					channel = 6,
@@ -477,7 +476,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				if(IsPlayerABot(victim)) {
 					if(victim.HasBotTag("gmedsupport")) {
 						medbot.GetScriptScope().deadSupport++
-						printl(victim.GetTeam())
+						printl("team " + victim.GetTeam())
 						EntFireByHandle(victim, "runscriptcode", "self.ForceChangeTeam(TF_TEAM_BLUE, true)", -1, null, null)
 						EntFireByHandle(victim, "runscriptcode", "self.ForceRespawn()", -1, null, null)
 						EntFireByHandle(victim, "runscriptcode", "self.AddBotTag(\"gmedsupport\")", -1, null, null)
