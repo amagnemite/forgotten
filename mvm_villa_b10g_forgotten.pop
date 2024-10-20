@@ -53,11 +53,11 @@ WaveSchedule
 			}
 		}
 		Upgrade {
-			Name "+24% Damage"
+			Name "+25% Damage"
 			Attribute "damage bonus"
-			Cap 2.2
-			Increment .24
-			Cost 230
+			Cap 2.5
+			Increment .25
+			Cost 200
 			AllowedWeapons {
 				ItemName "The Amputator"
 			}
@@ -1721,8 +1721,8 @@ WaveSchedule
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 1
-			WaitBeforeStarting 11
-			WaitBetweenSpawns 13
+			WaitBeforeStarting 15
+			WaitBetweenSpawns 14
 			WaitForAllSpawned w5b
 			TFBot
 			{
