@@ -64,7 +64,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		if (player == null) return
 		if(!IsPlayerABot(player)) return
 
-		if(player.HasBotTag("special_disease") && !player.HasBotTag("Malignant_Tumor")) {
+		if(player.HasBotTag("special_disease") && !player.HasBotTag("Malignant_Tumor") && !player.HasBotTag("UKGR_Tumor")) {
 			local center = player.GetCenter() //spawnentityatlocation is dumb
 			uberFlaskNormalSpawner.SpawnEntityAtLocation(center, Vector())
 			//EntFire("uber_flask_normal_prop*", "AddOutput", "renderfx 10", 12)
@@ -85,7 +85,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 			delete player.GetScriptScope().rageParticle
 		}
-		if(!player.HasBotTag("Malignant_Tumor")) return
+		if(!player.HasBotTag("Malignant_Tumor") && !player.HasBotTag("UKGR_Tumor")) return
 
 		local victim = null
 
@@ -148,8 +148,13 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		}
 		else {
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.specialDiseaseCheck()", -1, player, null)
-			if(containmentBreachActive) player.AddCondEx(72, -1, null)
+			if(containmentBreachActive) EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.applyContainmentBreachBuffs()", -1, player, null)
 		}
+	}
+
+	applyContainmentBreachBuffs = function () {
+		if(!activator.HasBotTag("UKGR") && !activator.HasBotTag("UKGR_TUMOR")) return
+		activator.AddCondEx(72, -1, null)
 	}
 
 	specialDiseaseCheck = function() {
@@ -174,6 +179,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					break
 				case "Tachycardia":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_scout_boss.mdl")
+					break
+				case "UKGR_Tumor":
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
 					break
 				case "Malignant_Tumor":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy.mdl")
@@ -545,7 +553,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				tachycardiaDebuffed = true
 				self.SetScriptOverlayMaterial("effects/forgotten_tachycardia_debuff")
 				diseaseCallbacks.playSound("Halloween.spell_lightning_cast", self)
-				self.AddCustomAttribute("move speed penalty", 999, -1)
+				self.AddCustomAttribute("move speed penalty", 2, -1)
 				self.AddCustomAttribute("halloween increased jump height", 15, -1)
 				self.AddCustomAttribute("damage force reduction", 2.5, -1)
 			}

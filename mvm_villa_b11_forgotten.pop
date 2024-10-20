@@ -593,6 +593,14 @@ WaveSchedule
 			{
 				ItemName "The Amputator"
 				"set item tint RGB" 13328029
+				"damage bonus" 1.33
+				"move speed bonus" 3
+				// "add cond on hit" 32
+				// "add cond on hit duration" 20
+				"damage causes airblast" 1
+				"attach particle effect" 16
+				"Paintkit_proto_def_index" 3.16693e-43n
+				"Set_item_texture_wear" 0
 			}
 			CharacterAttributes
 			{
@@ -609,22 +617,23 @@ WaveSchedule
 			Name "Malignant Fragment"
 			ClassIcon ukgr_base
             Tag UKGR_Tumor
-			Tag Malignant_Tumor
+			//Tag Malignant_Tumor
 			Skill Expert
 			Health 125
 			Scale 0.8
 			Item "The Ubersaw"
 			Action Mobber
 			WeaponRestrictions MeleeOnly
-			// Item "The Virus Doctor"
-			// ItemAttributes
-			// {
-			// 	ItemName "The Virus Doctor"
-			// 	"set item tint RGB" 13328029
-			// }
+			Item "The Virus Doctor"
+			ItemAttributes
+			{
+				ItemName "The Virus Doctor"
+				"set item tint RGB" 13328029
+			}
 			CharacterAttributes
 			{
-				"move speed bonus"	2
+				"move speed bonus"	1.1
+				"damage bonus" 0.5
 				//Screw you vacuum
 				"damage force reduction" 0.1
 				"rage giving scale" 0.5
@@ -2338,7 +2347,7 @@ WaveSchedule
 			Name boss_support
 			TotalCount 20
 			MaxActive 20
-			SpawnCount 20
+			SpawnCount 1
 			WaitForAllSpawned ws12
 			WaitBeforeStarting 5
 			Support 1
