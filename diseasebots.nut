@@ -377,7 +377,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				return
 			}
 
-			printl("dead support " + deadSupport)
+			//printl("dead support " + deadSupport)
 			if(deadSupport >= 5 && supportTimer.Expired()) {
 				local LOCATION = Vector(-3122, 2817, 800)
 				local particle = SpawnEntityFromTable("info_particle_system", {
@@ -443,7 +443,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 		scope.strengthen <- function() {
 			playersEaten++
-			self.AddCustomAttribute("max health additive bonus", self.GetMaxHealth() + HEALTHBONUS * playersEaten, -1)
+			self.AddCustomAttribute("max health additive bonus", HEALTHBONUS * playersEaten, -1)
 			self.SetHealth(self.GetHealth() + HEALTHBONUS)
 			self.AddCustomAttribute("damage bonus", 1 + 0.25 * playersEaten, -1)
 			self.AddCustomAttribute("move speed bonus", MOVESPEEDBASE + 0.1 * playersEaten, -1)

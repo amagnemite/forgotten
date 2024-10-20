@@ -116,16 +116,6 @@ __CollectGameEventCallbacks(bossCallbacks)
     })
 
     scope.ukgrThink <- function() {
-        if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
-            AddThinkToEnt(self, null)
-            NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-            return
-        }
-
-        foreach(name, func in thinkTable) {
-            func()
-        }
-
         phaseTimer++
 
         if(readyToChangePhase) {
@@ -387,10 +377,22 @@ __CollectGameEventCallbacks(bossCallbacks)
             readyToChangePhase = true
             currentPhase = HEMORRHAGIC_FEVER
         }
-
-
-        return -1
+       // return -1
     }
+	thinkTable.ukgrThink <- ukgrThink
+	
+	scope.mainThink <- function() {
+		if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
+			AddThinkToEnt(self, null)
+			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
+			return
+		}
 
-    AddThinkToEnt(self, "ukgrThink")
+		foreach(name, func in thinkTable) {
+			func()
+		}
+	}
+    AddThinkToEnt(self, "mainThink")
 }
+
+`the crusader's crossbow`
