@@ -34,12 +34,12 @@ IncludeScript("customweaponsvillaedit.nut", getroottable())
 
         EntFireByHandle(player, "RunScriptCode", "bossCallbacks.checkTags()", -1, player, null)
 	}
-	
+
 	checkTags = function() {
 		if(!activator.HasBotTag("UKGR")) return
 		activator.AcceptInput("RunScriptCode", "bossSpawnFunction()", null, null)
 	}
-	
+
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
@@ -70,11 +70,11 @@ __CollectGameEventCallbacks(bossCallbacks)
 }
 
 ::bossSpawnFunction <- function() {
-    
+
     local scope = self.GetScriptScope()
     scope.thinkTable <- {}
     self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
-    
+
     //==MIMIC ORDER==
     //Hemorrhagic Fever
     //Dyspnea
@@ -86,7 +86,7 @@ __CollectGameEventCallbacks(bossCallbacks)
     //Cardiac Arrest
 
 	HEMORRHAGIC_FEVER <- 0
-	DYSPNEA <- 1 
+	DYSPNEA <- 1
 	MALIGNANT_TUMOR <- 2
 	CARDIOMYOPATHY <- 3
 	TACHYCARDIA <- 4
@@ -107,7 +107,7 @@ __CollectGameEventCallbacks(bossCallbacks)
     scope.currentWeapon <- null
 
     //Disable altmode spawns to block tumors
-    EntFire("spawnbot_altmode", "Disable", null, 1)
+    EntFire("spawnbot_altmode", "Disable", null, 5)
 
     //Prep cardiac arrest particles
     scope.caParticle <- SpawnEntityFromTable("trigger_particle", {
@@ -129,7 +129,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //Reset stat changes from Cardiac Arrest mimic
                     self.RemoveCustomAttribute("fire rate bonus")
                     self.RemoveCustomAttribute("faster reload rate")
-                    currentWeapon = CustomWeapons.GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
+                    currentWeapon = ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
                     //CustomWeapons.EquipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
 
                     self.AcceptInput("DispatchEffect", "ParticleEffectStop", null, null)
@@ -139,7 +139,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //     targetname = "ukgr_hf_particles"
                     //     effect_name = "hemorrhagic_fever_flamethrower"
                     //     start_active = 1
-                    //     origin = self.GetOrigin()  
+                    //     origin = self.GetOrigin()
                     // })
 
                     // EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
@@ -151,8 +151,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     break
                 case DYSPNEA:
                     // EntFire("ukgr_hf_particles", Kill)
-                    CustomWeapons.UnequipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
-                    CustomWeapons.GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
+                    //CustomWeapons.UnequipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
+                    ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
                     //CustomWeapons.EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
                     self.AddCustomAttribute("damage bonus", 0.3, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.1, -1)
@@ -272,7 +272,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //     local player = PlayerInstanceFromIndex(i)
                     //     if(player == null) continue
                     //     if(IsPlayerABot(player)) continue
-                        
+
                     //     player.AcceptInput("SetFogController", "fog_heartbeater", null, null)
                     // }
                     break
@@ -293,7 +293,7 @@ __CollectGameEventCallbacks(bossCallbacks)
             //LOOK UP
             local currentEyeAngles = self.EyeAngles()
 			self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
-            
+
             if(phaseTimer > 275 && !pausePhaseTimerActions) {
                 self.AddBotAttribute(SUPPRESS_FIRE)
                 self.RemoveBotAttribute(ALWAYS_FIRE_WEAPON)
@@ -367,12 +367,12 @@ __CollectGameEventCallbacks(bossCallbacks)
                     pausePhaseTimerActions = true
                 }
             }
-            
+
             if(phaseTimer > 530) {
                 readyToChangePhase = true
                 currentPhase = CARDIAC_ARREST
             }
-            
+
         }
         //It all loops back
         else if(currentPhase == CARDIAC_ARREST && phaseTimer > 734) {
@@ -382,9 +382,10 @@ __CollectGameEventCallbacks(bossCallbacks)
        // return -1
     }
 	thinkTable.ukgrThink <- ukgrThink
-	
+
 	scope.mainThink <- function() {
 		if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
+			delete thinkTable
 			AddThinkToEnt(self, null)
 			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
 			return
