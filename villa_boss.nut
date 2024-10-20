@@ -25,6 +25,17 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
 		})
 	}
 
+    OnGameEvent_player_spawn = function(params) {
+		local player = GetPlayerFromUserID(params.userid)
+
+		if(player == null) return
+		if(player.GetTeam() != TF_TEAM_RED && player.GetTeam() != TF_TEAM_BLUE) return
+
+		if(!IsPlayerABot(player)) return
+
+        EntFireByHandle(player, "RunScriptCode", "bossSpawnFunction()", -1, player, player)
+	}
+
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
