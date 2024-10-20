@@ -607,6 +607,7 @@ WaveSchedule
 			Name "Malignant Fragment"
 			ClassIcon ukgr_base
             Tag UKGR_Tumor
+			Tag Malignant_Tumor
 			Skill Expert
 			Health 125
 			Scale 0.8
@@ -2323,32 +2324,32 @@ WaveSchedule
 			}
 		}
 		
-		// WaveSpawn {
-		// 	Name ws12
-		// 	TotalCount 1
-		// 	MaxActive 1
-		// 	SpawnCount 1
-		// 	WaitForAllDead ws11
-		// 	Where spawnbot
-		// 	TFBot
-		// 	{
-		// 		Template T_TFBot_UKGR
-		// 	}
-		// }
+		WaveSpawn {
+			Name ws12
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitForAllDead ws11
+			Where spawnbot
+			TFBot
+			{
+				Template T_TFBot_UKGR
+			}
+		}
 
-		// WaveSpawn {
-		// 	Name boss_support
-		// 	TotalCount 20
-		// 	MaxActive 20
-		// 	SpawnCount 20
-		// 	WaitForAllSpawned ws12
-		// 	WaitBeforeStarting 5
-		// 	Support 1
-		// 	Where spawnbot_altmode
-		// 	TFBot
-		// 	{
-		// 		Template T_TFBot_UKGR_Tumor
-		// 	}
-		// }
+		WaveSpawn {
+			Name boss_support
+			TotalCount 20
+			MaxActive 20
+			SpawnCount 20
+			WaitForAllSpawned ws12
+			WaitBeforeStarting 5
+			Support 1
+			Where spawnbot_altmode
+			TFBot
+			{
+				Template T_TFBot_UKGR_Tumor
+			}
+		}
 	}
 }

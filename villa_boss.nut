@@ -1,5 +1,60 @@
 IncludeScript("popextensions/customweapons.nut", getroottable())
 
+::bossCallbacks <- {
+	Cleanup = function() {
+		delete ::bossCallbacks
+    }
+
+	OnGameEvent_recalculate_holidays = function(_) {
+		if(GetRoundState() == 3) {
+			Cleanup()
+		}
+	}
+
+	OnGameEvent_mvm_wave_complete = function(_) {
+		Cleanup()
+	}
+
+	playSound = function(soundName, player) { //scope moment
+		EmitSoundEx({
+			sound_name = soundName
+			origin = player.GetOrigin()
+			filter_type = RECIPIENT_FILTER_SINGLE_PLAYER
+			entity = player
+			channel = 6
+		})
+	}
+
+	OnGameEvent_player_death = function(params) {
+		local player = GetPlayerFromUserID(params.userid)
+		if(player == null) return
+		if(!IsPlayerABot(player)) return
+        if(!player.HasBotTag("UKGR_Tumor")) return
+        for (local i = 1; i <= MaxPlayers ; i++)
+        {
+            local player = PlayerInstanceFromIndex(i)
+            if(player == null) continue
+            if(!IsPlayerABot(player)) continue
+            if(!player.HasBotTag("UKGR")) continue
+            player.GetScriptScope().deadTumorCounter = player.GetScriptScope().deadTumorCounter + 1
+        }
+    }
+}
+
+__CollectGameEventCallbacks(bossCallbacks)
+
+::addPneumoniaStickyThink <- function() {
+    local stickyTimer = 0
+    if(stickyTimer == 1.5) DispatchParticleEffect("pneumonia_stickybomb_aura", activator.GetCenter(), Vector())
+    if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
+    else if(stickyTimer == 4) {
+        //Explode and create pneumonia clouds
+        pneumoniaSpawner.SpawnEntityAtEntityOrigin(activator)
+        activator.GetOwner().SecondaryAttack()
+    }
+    return 0.5
+}
+
 ::bossSpawnFunction <- function() {
 
     scope = self.GetScriptScope()
@@ -50,6 +105,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
             phaseTimer = 0
             pausePhaseTimerActions = false
             damageTakenThisPhase = 0
+            DispatchParticleEffect("ukgr_phase_change_flames", self.GetCenter(), Vector())
             switch(currentPhase) {
                 case "HF":
                     //Reset stat changes from Cardiac Arrest mimic
@@ -79,7 +135,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                     EntFire("ukgr_hf_particles", Kill)
                     GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
                     EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
-                    self.AddCustomAttribute("damage bonus", 0.25, -1)
+                    self.AddCustomAttribute("damage bonus", 0.3, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.1, -1)
                     self.AddCustomAttribute("projectile spread angle penalty", 6, -1)
                     self.AddCustomAttribute("faster reload rate", -1, -1)
@@ -89,7 +145,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                     self.AddCustomAttribute("mod projectile heat aim time", 0.6, -1)
                     self.AddCustomAttribute("mod projectile heat no predict target speed", 1, -1)
 
-                    self.AddCustomAttribute("projectile trail particle", "dyspnea_rockettrail", -1)
+                    //self.AddCustomAttribute("projectile trail particle", "dyspnea_rockettrail", -1)
                     self.AddCustomAttribute("add cond on hit", 12, -1)
                     self.AddCustomAttribute("add cond on hit duration", 4, -1)
                     break
@@ -163,7 +219,8 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                     self.AddCustomAttribute("move speed bonus", 1.1, -1)
                     self.AddCustomAttribute("projectile spread angle penalty", 60, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.1, -1)
-                    self.AddCustomAttribute("faster reload rate", 20, -1)
+                    self.AddCustomAttribute("faster reload rate", 30, -1)
+                    //self.AddCustomAttribute("custom projectile model", "models/villa/stickybomb_pneumonia.mdl", -1)
                     GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
                     EquipItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
                     self.AddCustomAttribute("clip size upgrade atomic", -4, -1)
@@ -171,6 +228,13 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                     break
                 case "CA":
                     self.AddWeaponRestriction(PRIMARY_ONLY)
+                    self.AddCondEx(71, 6, null)
+
+                    local caAudioEntity = null
+                    while(caAudioEntity = Entities.FindByName(caAudioEntity, "heartbeat2")) {
+                        caAudioEntity.AcceptInput("PlaySound", null, null, null)
+                    }
+
                     self.AddCondEx(TF_COND_SODAPOPPER_HYPE, 11, null)
                     GiveItem("The Direct Hit", self)
                     EquipItem("The Direct Hit", self)
@@ -270,9 +334,26 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
                 currentPhase = "Pn"
             }
         }
-        else if(currentPhase == "Pn" && phaseTimer > 530) {
-            readyToChangePhase = true
-            currentPhase = "CA"
+        else if(currentPhase == "Pn") {
+            if(!pausePhaseTimerActions) {
+                local pneumoniaSticky = null
+                while(pneumoniaSticky = Entities.FindByClassname(pneumoniaSticky, "tf_projectile_pipe_remote")) {
+                    pneumoniaSticky.ValidateScriptScope()
+                    if(!("isPneumoniaSet" in pneumoniaSticky.GetScriptScope())) {
+                        pneumoniaSticky.GetScriptScope().isPneumoniaSet <- true
+                        EntFireByHandle(pneumoniaSticky, "RunScriptCode", "addPneumoniaStickyThink", -1, pneumoniaSticky, pneumoniaSticky)
+                    }
+                }
+                if(phaseTimer > 40) {
+                    pausePhaseTimerActions = true
+                }
+            }
+            
+            if(phaseTimer > 530) {
+                readyToChangePhase = true
+                currentPhase = "CA"
+            }
+            
         }
         //It all loops back
         else if(currentPhase == "CA" && phaseTimer > 734) {

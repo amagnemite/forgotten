@@ -1,6 +1,7 @@
 ::pneumoniaSpawner <- Entities.FindByName(null, "pneumonia_spawn_maker")
 ::uberFlaskNormalSpawner <- Entities.FindByName(null, "uber_flask_normal_maker")
 ::uberFlaskShortSpawner <- Entities.FindByName(null, "uber_flask_short_maker")
+::containmentBreachActive <- false
 
 PrecacheSound("vo/halloween_haunted1.mp3")
 PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
@@ -147,6 +148,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		}
 		else {
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.specialDiseaseCheck()", -1, player, null)
+			if(containmentBreachActive) player.AddCondEx(72, -1, null)
 		}
 	}
 
@@ -311,12 +313,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					self.AddWeaponRestriction(2)
 					self.RemoveCond(TF_COND_OFFENSEBUFF)
 					// self.AddCustomAttribute("damage bonus", 1, -1)
-					self.AddCustomAttribute("move speed bonus", 0.5, -1)
+					self.AddCustomAttribute("move speed bonus", containmentBreachActive ? 0.6 : 0.5, -1)
 					self.SetScaleOverride(2.15)
 					break
 				case 5:
 					self.AddCond(TF_COND_CRITBOOSTED_USER_BUFF)
-					self.AddCustomAttribute("move speed bonus", 0.0001, -1)
+					self.AddCustomAttribute("move speed bonus", containmentBreachActive ? 0.6 : 0.0001, -1)
 					self.AddCustomAttribute("health drain", -40, -1)
 					self.AddCustomAttribute("dmg taken increased", 2.5, -1)
 					self.SetScaleOverride(2.5)
@@ -599,37 +601,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 	}
 
 	activateHemorrhagicFever = function() {
-		local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
-		// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
-		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
-		hemorrhagicFeverTrigger.ValidateScriptScope()
-		hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
-		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
-			if(!("feverTicks" in activator.GetScriptScope())) {
-				activator.GetScriptScope().feverTicks <- 0
-				return
-			}
-			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-			if(newTicks > 5) {
-				newTicks = 5
-			}
-			else if(newTicks < 0) {
-				newTicks = 0
-			}
-			activator.GetScriptScope().feverTicks = newTicks
-
-			if(newTicks >= 5) {
-				activator.TakeDamage(20, DMG_BURN, owner)
-				diseaseCallbacks.playSound("Fire.Engulf", self)
-			}
-		}
-		// }
-
-		local hemorrhagicFeverParticle = null
-		while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
-			hemorrhagicFeverParticle.AcceptInput("Start", null, null, null)
-		}
-
 		local scope = activator.GetScriptScope()
 		scope.flamethrower <- null
 
@@ -671,6 +642,45 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			attachment_type = 1
 			spawnflags = 64
 		})
+
+		if(containmentBreachActive) {
+			player.AddCustomAttribute("move speed bonus", 0.6, -1)
+			player.AddCustomAttribute("damage bonus", 5, -1)
+			player.AddCustomAttribute("bleeding duration", 5, -1)
+			player.AddCustomAttribute("dmg taken increased", 2, -1)
+			return
+		}
+
+		local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
+		// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
+		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
+		hemorrhagicFeverTrigger.ValidateScriptScope()
+		hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
+		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
+			if(!("feverTicks" in activator.GetScriptScope())) {
+				activator.GetScriptScope().feverTicks <- 0
+				return
+			}
+			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
+			if(newTicks > 5) {
+				newTicks = 5
+			}
+			else if(newTicks < 0) {
+				newTicks = 0
+			}
+			activator.GetScriptScope().feverTicks = newTicks
+
+			if(newTicks >= 5) {
+				activator.TakeDamage(20, DMG_BURN, owner)
+				diseaseCallbacks.playSound("Fire.Engulf", self)
+			}
+		}
+		// }
+
+		local hemorrhagicFeverParticle = null
+		while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
+			hemorrhagicFeverParticle.AcceptInput("Start", null, null, null)
+		}
 	}
 
 	containmentBreachBuffs = function() {
