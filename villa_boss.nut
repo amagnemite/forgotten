@@ -1,4 +1,4 @@
-IncludeScript("popextensions/customweapons.nut", getroottable())
+IncludeScript("customweaponsvillaedit.nut", getroottable())
 
 ::bossCallbacks <- {
 	Cleanup = function() {
@@ -32,7 +32,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
 		if(player.GetTeam() != TF_TEAM_RED && player.GetTeam() != TF_TEAM_BLUE) return
 		if(!IsPlayerABot(player)) return
 
-        EntFireByHandle(player, "RunScriptCode", "boss.checkTags()", -1, activator, null)
+        EntFireByHandle(player, "RunScriptCode", "bossCallbacks.checkTags()", -1, player, null)
 	}
 	
 	checkTags = function() {
@@ -70,7 +70,9 @@ __CollectGameEventCallbacks(bossCallbacks)
 }
 
 ::bossSpawnFunction <- function() {
-    scope = self.GetScriptScope()
+    
+    local scope = self.GetScriptScope()
+    scope.thinkTable <- {}
     self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
     
     //==MIMIC ORDER==
@@ -94,14 +96,14 @@ __CollectGameEventCallbacks(bossCallbacks)
 
     //Is this even necessary??
     //scope.phases = [HEMORRHAGIC_FEVER, DYSPNEA, MALIGNANT_TUMOR, CARDIOMYOPATHY, TACHYCARDIA, SARCOMA, PNEUMONIA, CARDIAC_ARREST]
-    scope.currentPhase = HEMORRHAGIC_FEVER
-    scope.readyToChangePhase = true
-    scope.phaseTimer = 0
-    scope.pausePhaseTimerActions = false
-    scope.spinAngle = 0
-    scope.deadTumorCounter = 0
-    scope.lastPosition = Vector(0, 0, 0)
-    scope.damageTakenThisPhase = 0
+    scope.currentPhase <- HEMORRHAGIC_FEVER
+    scope.readyToChangePhase <- true
+    scope.phaseTimer <- 0
+    scope.pausePhaseTimerActions <- false
+    scope.spinAngle <- 0
+    scope.deadTumorCounter <- 0
+    scope.lastPosition <- Vector(0, 0, 0)
+    scope.damageTakenThisPhase <- 0
 
     //Disable altmode spawns to block tumors
     EntFire("spawnbot_altmode", "Disable", null, 1)
@@ -120,6 +122,10 @@ __CollectGameEventCallbacks(bossCallbacks)
             return
         }
 
+        foreach(name, func in thinkTable) {
+            func()
+        }
+
         phaseTimer++
 
         if(readyToChangePhase) {
@@ -132,8 +138,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //Reset stat changes from Cardiac Arrest mimic
                     self.RemoveCustomAttribute("fire rate bonus")
                     self.RemoveCustomAttribute("faster reload rate")
-                    GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
-                    EquipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
+                    CustomWeapons.GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
+                    CustomWeapons.EquipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
 
                     self.AcceptInput("DispatchEffect", "ParticleEffectStop", null, null)
                     caParticle.AcceptInput("EndTouch", "!activator", self, self)
@@ -154,8 +160,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     break
                 case DYSPNEA:
                     EntFire("ukgr_hf_particles", Kill)
-                    GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
-                    EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
+                    CustomWeapons.GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
+                    CustomWeapons.EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
                     self.AddCustomAttribute("damage bonus", 0.3, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.1, -1)
                     self.AddCustomAttribute("projectile spread angle penalty", 6, -1)
@@ -171,8 +177,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.AddCustomAttribute("add cond on hit duration", 4, -1)
                     break
                 case MALIGNANT_TUMOR:
-                    GiveItem("The Crusader's Crossbow", self)
-                    EquipItem("The Crusader's Crossbow", self)
+                    CustomWeapons.GiveItem("The Crusader's Crossbow", self)
+                    CustomWeapons.EquipItem("The Crusader's Crossbow", self)
                     self.RemoveCustomAttribute("fire rate bonus")
                     self.RemoveCustomAttribute("projectile spread angle penalty")
                     self.RemoveCustomAttribute("faster reload rate")
@@ -202,8 +208,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //Remember to make tumors explode on death and deal 125 dmg to boss
                     break
                 case CARDIOMYOPATHY:
-                    GiveItem("The Iron Bomber", self)
-                    EquipItem("The Iron Bomber", self)
+                    CustomWeapons.GiveItem("The Iron Bomber", self)
+                    CustomWeapons.EquipItem("The Iron Bomber", self)
                     self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
                     self.AddCustomAttribute("damage bonus", 0.5, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.05, -1)
@@ -217,8 +223,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.RemoveCustomAttribute("projectile spread angle penalty")
                     self.RemoveCustomAttribute("clip size upgrade atomic")
                     self.RemoveCustomAttribute("faster reload rate")
-                    // GiveItem("The Amputator", self)
-                    // EquipItem("The Amputator", self)
+                    // CustomWeapons.GiveItem("The Amputator", self)
+                    // CustomWeapons.EquipItem("The Amputator", self)
                     // "Paintkit_proto_def_index" 3.16693e-43n
 				    // "Set_item_texture_wear" 0
                     self.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
@@ -242,8 +248,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.AddCustomAttribute("fire rate bonus", 0.1, -1)
                     self.AddCustomAttribute("faster reload rate", 30, -1)
                     //self.AddCustomAttribute("custom projectile model", "models/villa/stickybomb_pneumonia.mdl", -1)
-                    GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
-                    EquipItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
+                    CustomWeapons.GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
+                    CustomWeapons.EquipItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
                     self.AddCustomAttribute("clip size upgrade atomic", -4, -1)
                     //Attach think to stickies and have them do the rest
                     break
@@ -257,8 +263,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     }
 
                     self.AddCondEx(TF_COND_SODAPOPPER_HYPE, 11, null)
-                    GiveItem("The Direct Hit", self)
-                    EquipItem("The Direct Hit", self)
+                    CustomWeapons.GiveItem("The Direct Hit", self)
+                    CustomWeapons.EquipItem("The Direct Hit", self)
                     self.AddCustomAttribute("fire rate bonus", 0.3, -1)
                     self.AddCustomAttribute("faster reload rate", -0.8, -1)
                     self.AddCustomAttribute("damage bonus", 3, -1)
@@ -343,8 +349,8 @@ __CollectGameEventCallbacks(bossCallbacks)
 
             if(phaseTimer > 666 && !pausePhaseTimerActions) {
                 self.AddWeaponRestriction(PRIMARY_ONLY)
-                GiveItem("The Brass Beast", self)
-                EquipItem("The Brass Beast", self)
+                CustomWeapons.GiveItem("The Brass Beast", self)
+                CustomWeapons.EquipItem("The Brass Beast", self)
                 self.AddCondEx(33, 10, null)
                 self.AddCustomAttribute("damage bonus", 2, -1)
                 self.SetScaleOverride(2.5)

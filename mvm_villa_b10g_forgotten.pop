@@ -2343,10 +2343,17 @@ WaveSchedule
 			WaitBeforeStarting 5
 			Support 1
 			Where spawnbot_altmode
-			TFBot
+			RandomChoice
 			{
-				Template T_TFBot_UKGR_Tumor
+				RandomChoice
+				{
+					TFBot
+					{
+						Template T_TFBot_UKGR_Tumor
+					}
+				}
 			}
+			
 		}
 	}
 }
