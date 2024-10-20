@@ -104,6 +104,7 @@ __CollectGameEventCallbacks(bossCallbacks)
     scope.deadTumorCounter <- 0
     scope.lastPosition <- Vector(0, 0, 0)
     scope.damageTakenThisPhase <- 0
+    scope.currentWeapon <- null
 
     //Disable altmode spawns to block tumors
     EntFire("spawnbot_altmode", "Disable", null, 1)
@@ -128,8 +129,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //Reset stat changes from Cardiac Arrest mimic
                     self.RemoveCustomAttribute("fire rate bonus")
                     self.RemoveCustomAttribute("faster reload rate")
-                    CustomWeapons.GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
-                    CustomWeapons.EquipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
+                    currentWeapon = CustomWeapons.GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
+                    //CustomWeapons.EquipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
 
                     self.AcceptInput("DispatchEffect", "ParticleEffectStop", null, null)
                     caParticle.AcceptInput("EndTouch", "!activator", self, self)
@@ -138,20 +139,21 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //     targetname = "ukgr_hf_particles"
                     //     effect_name = "hemorrhagic_fever_flamethrower"
                     //     start_active = 1
-                    //     origin = activator.GetOrigin()  
+                    //     origin = self.GetOrigin()  
                     // })
 
                     // EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
-                    // EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
+                    // EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + self.EyeAngles().x + " " + self.EyeAngles().y + " " + self.EyeAngles().z, 0.02, null, null)
                     // EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
                     // EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
                     self.AddCustomAttribute("damage bonus", 2, -1)
                     self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
                     break
                 case DYSPNEA:
-                    EntFire("ukgr_hf_particles", Kill)
+                    // EntFire("ukgr_hf_particles", Kill)
+                    CustomWeapons.UnequipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
                     CustomWeapons.GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
-                    CustomWeapons.EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
+                    //CustomWeapons.EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
                     self.AddCustomAttribute("damage bonus", 0.3, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.1, -1)
                     self.AddCustomAttribute("projectile spread angle penalty", 6, -1)
@@ -168,7 +170,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     break
                 case MALIGNANT_TUMOR:
                     CustomWeapons.GiveItem("The Crusader's Crossbow", self)
-                    CustomWeapons.EquipItem("The Crusader's Crossbow", self)
+                    //CustomWeapons.EquipItem("The Crusader's Crossbow", self)
                     self.RemoveCustomAttribute("fire rate bonus")
                     self.RemoveCustomAttribute("projectile spread angle penalty")
                     self.RemoveCustomAttribute("faster reload rate")
@@ -199,7 +201,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     break
                 case CARDIOMYOPATHY:
                     CustomWeapons.GiveItem("The Iron Bomber", self)
-                    CustomWeapons.EquipItem("The Iron Bomber", self)
+                    //CustomWeapons.EquipItem("The Iron Bomber", self)
                     self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
                     self.AddCustomAttribute("damage bonus", 0.5, -1)
                     self.AddCustomAttribute("fire rate bonus", 0.05, -1)
@@ -214,7 +216,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.RemoveCustomAttribute("clip size upgrade atomic")
                     self.RemoveCustomAttribute("faster reload rate")
                     // CustomWeapons.GiveItem("The Amputator", self)
-                    // CustomWeapons.EquipItem("The Amputator", self)
+                    // //CustomWeapons.EquipItem("The Amputator", self)
                     // "Paintkit_proto_def_index" 3.16693e-43n
 				    // "Set_item_texture_wear" 0
                     self.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
@@ -239,7 +241,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.AddCustomAttribute("faster reload rate", 30, -1)
                     //self.AddCustomAttribute("custom projectile model", "models/villa/stickybomb_pneumonia.mdl", -1)
                     CustomWeapons.GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
-                    CustomWeapons.EquipItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
+                    //CustomWeapons.EquipItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
                     self.AddCustomAttribute("clip size upgrade atomic", -4, -1)
                     //Attach think to stickies and have them do the rest
                     break
@@ -254,7 +256,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 
                     self.AddCondEx(TF_COND_SODAPOPPER_HYPE, 11, null)
                     CustomWeapons.GiveItem("The Direct Hit", self)
-                    CustomWeapons.EquipItem("The Direct Hit", self)
+                    //CustomWeapons.EquipItem("The Direct Hit", self)
                     self.AddCustomAttribute("fire rate bonus", 0.3, -1)
                     self.AddCustomAttribute("faster reload rate", -0.8, -1)
                     self.AddCustomAttribute("damage bonus", 3, -1)
@@ -340,7 +342,7 @@ __CollectGameEventCallbacks(bossCallbacks)
             if(phaseTimer > 666 && !pausePhaseTimerActions) {
                 self.AddWeaponRestriction(PRIMARY_ONLY)
                 CustomWeapons.GiveItem("The Brass Beast", self)
-                CustomWeapons.EquipItem("The Brass Beast", self)
+                //CustomWeapons.EquipItem("The Brass Beast", self)
                 self.AddCondEx(33, 10, null)
                 self.AddCustomAttribute("damage bonus", 2, -1)
                 self.SetScaleOverride(2.5)
@@ -391,8 +393,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		foreach(name, func in thinkTable) {
 			func()
 		}
+        return -1
 	}
     AddThinkToEnt(self, "mainThink")
 }
-
-`the crusader's crossbow`
