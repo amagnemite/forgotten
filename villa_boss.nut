@@ -32,6 +32,7 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
 		if(player.GetTeam() != TF_TEAM_RED && player.GetTeam() != TF_TEAM_BLUE) return
 
 		if(!IsPlayerABot(player)) return
+        if(!player.HasBotTag("UKGR")) return
 
         EntFireByHandle(player, "RunScriptCode", "bossSpawnFunction()", -1, player, player)
 	}

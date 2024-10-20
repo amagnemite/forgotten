@@ -580,7 +580,9 @@ WaveSchedule
 			Item "The Quick-Fix"
 			Item "The Amputator"
 			WeaponRestrictions PrimaryOnly
+			Attributes UseBossHealthBar
 			Attributes MiniBoss
+			Action Mobber
 			Item "The Virus Doctor"
 			ItemAttributes
 			{
@@ -612,6 +614,7 @@ WaveSchedule
 			Health 125
 			Scale 0.8
 			Item "The Ubersaw"
+			Action Mobber
 			WeaponRestrictions MeleeOnly
 			// Item "The Virus Doctor"
 			// ItemAttributes
@@ -1767,6 +1770,7 @@ WaveSchedule
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `preassignRoom(\`ws8\`, 2)`, -1)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
+				IncludeScript(`villa_boss.nut`, getroottable())
 			"
 		}
 		StartWaveOutput {
@@ -1779,7 +1783,7 @@ WaveSchedule
 				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
 				EntFire(`altmode_chaos_script`, `CallScriptFunction`, `startWave`, -1)
 				IncludeScript(`altmodenests.nut`, getroottable())
-				IncludeScript(`villa_boss.nut`, getroottable())
+				
 			"
 		}
 		DoneOutput {
