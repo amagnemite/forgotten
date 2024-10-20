@@ -30,13 +30,16 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
 
 		if(player == null) return
 		if(player.GetTeam() != TF_TEAM_RED && player.GetTeam() != TF_TEAM_BLUE) return
-
 		if(!IsPlayerABot(player)) return
-        if(!player.HasBotTag("UKGR")) return
 
-        EntFireByHandle(player, "RunScriptCode", "bossSpawnFunction()", -1, player, player)
+        EntFireByHandle(player, "RunScriptCode", "boss.checkTags()", -1, activator, null)
 	}
-
+	
+	checkTags = function() {
+		if(!activator.HasBotTag("UKGR")) return
+		activator.AcceptInput("RunScriptCode", "bossSpawnFunction()", null, null)
+	}
+	
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
@@ -52,7 +55,6 @@ IncludeScript("popextensions/customweapons.nut", getroottable())
         }
     }
 }
-
 __CollectGameEventCallbacks(bossCallbacks)
 
 ::addPneumoniaStickyThink <- function() {
@@ -68,9 +70,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 }
 
 ::bossSpawnFunction <- function() {
-
     scope = self.GetScriptScope()
-
     self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
     
     //==MIMIC ORDER==
@@ -83,9 +83,18 @@ __CollectGameEventCallbacks(bossCallbacks)
     //Pneumonia
     //Cardiac Arrest
 
+	HEMORRHAGIC_FEVER <- 0
+	DYSPNEA <- 1 
+	MALIGNANT_TUMOR <- 2
+	CARDIOMYOPATHY <- 3
+	TACHYCARDIA <- 4
+	SARCOMA <- 5
+	PNEUMONIA <- 6
+	CARDIAC_ARREST <- 7
+
     //Is this even necessary??
-    //scope.phases = ["HF", "Dy", "MT", "Cm", "Ta", "Sa", "Pn", "CA"]
-    scope.currentPhase = "HF"
+    //scope.phases = [HEMORRHAGIC_FEVER, DYSPNEA, MALIGNANT_TUMOR, CARDIOMYOPATHY, TACHYCARDIA, SARCOMA, PNEUMONIA, CARDIAC_ARREST]
+    scope.currentPhase = HEMORRHAGIC_FEVER
     scope.readyToChangePhase = true
     scope.phaseTimer = 0
     scope.pausePhaseTimerActions = false
@@ -108,7 +117,7 @@ __CollectGameEventCallbacks(bossCallbacks)
         if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
             AddThinkToEnt(self, null)
             NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-            //return
+            return
         }
 
         phaseTimer++
@@ -119,7 +128,7 @@ __CollectGameEventCallbacks(bossCallbacks)
             damageTakenThisPhase = 0
             DispatchParticleEffect("ukgr_phase_change_flames", self.GetCenter(), Vector())
             switch(currentPhase) {
-                case "HF":
+                case HEMORRHAGIC_FEVER:
                     //Reset stat changes from Cardiac Arrest mimic
                     self.RemoveCustomAttribute("fire rate bonus")
                     self.RemoveCustomAttribute("faster reload rate")
@@ -143,7 +152,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.AddCustomAttribute("damage bonus", 2, -1)
                     self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
                     break
-                case "Dy":
+                case DYSPNEA:
                     EntFire("ukgr_hf_particles", Kill)
                     GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
                     EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
@@ -161,7 +170,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.AddCustomAttribute("add cond on hit", 12, -1)
                     self.AddCustomAttribute("add cond on hit duration", 4, -1)
                     break
-                case "MT":
+                case MALIGNANT_TUMOR:
                     GiveItem("The Crusader's Crossbow", self)
                     EquipItem("The Crusader's Crossbow", self)
                     self.RemoveCustomAttribute("fire rate bonus")
@@ -192,7 +201,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     }
                     //Remember to make tumors explode on death and deal 125 dmg to boss
                     break
-                case "Cm":
+                case CARDIOMYOPATHY:
                     GiveItem("The Iron Bomber", self)
                     EquipItem("The Iron Bomber", self)
                     self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
@@ -202,7 +211,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.AddCustomAttribute("clip size upgrade atomic", 76, -1)
                     self.AddCustomAttribute("faster reload rate", 10, -1)
                     break
-                case "Ta":
+                case TACHYCARDIA:
                     self.RemoveCustomAttribute("damage bonus")
                     self.RemoveCustomAttribute("fire rate bonus")
                     self.RemoveCustomAttribute("projectile spread angle penalty")
@@ -219,13 +228,13 @@ __CollectGameEventCallbacks(bossCallbacks)
                     //Debuff function below
                     self.Taunt(TAUNT_BASE_WEAPON, 11)
                     break
-                case "Sa":
+                case SARCOMA:
                     //Oh no I'm unarmed!
                     self.AddWeaponRestriction(SECONDARY_ONLY)
                     self.SetScaleOverride(0.8)
                     self.AddCustomAttribute("move speed bonus", 2, -1)
                     break
-                case "Pn":
+                case PNEUMONIA:
                     self.SetScaleOverride(1.9)
                     self.AddWeaponRestriction(SECONDARY_ONLY)
                     self.AddCustomAttribute("move speed bonus", 1.1, -1)
@@ -238,7 +247,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                     self.AddCustomAttribute("clip size upgrade atomic", -4, -1)
                     //Attach think to stickies and have them do the rest
                     break
-                case "CA":
+                case CARDIAC_ARREST:
                     self.AddWeaponRestriction(PRIMARY_ONLY)
                     self.AddCondEx(71, 6, null)
 
@@ -274,15 +283,15 @@ __CollectGameEventCallbacks(bossCallbacks)
             }
             readyToChangePhase = false
         }
-        if(currentPhase == "HF") {
+        if(currentPhase == HEMORRHAGIC_FEVER) {
             spinAngle = spinAngle + 12
 			self.SnapEyeAngles(QAngle(0, spinAngle, 0))
             if(phaseTimer > 550) {
                 readyToChangePhase = true
-                currentPhase = "Dy"
+                currentPhase = DYSPNEA
             }
         }
-        else if(currentPhase == "Dy") {
+        else if(currentPhase == DYSPNEA) {
             //LOOK UP
             local currentEyeAngles = self.EyeAngles()
 			self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
@@ -295,20 +304,20 @@ __CollectGameEventCallbacks(bossCallbacks)
 
             else if(phaseTimer > 600) {
                 readyToChangePhase = true
-                currentPhase = "MT"
+                currentPhase = MALIGNANT_TUMOR
             }
         }
-        else if(currentPhase == "MT" && deadTumorCounter >= 20) {
+        else if(currentPhase == MALIGNANT_TUMOR && deadTumorCounter >= 20) {
             readyToChangePhase = true
             //It's set to 0 twice but yknow just to be safe
             deadTumorCounter = 0
-            currentPhase = "Cm"
+            currentPhase = CARDIOMYOPATHY
         }
-        else if(currentPhase == "Cm" && phaseTimer > 666) {
+        else if(currentPhase == CARDIOMYOPATHY && phaseTimer > 666) {
             readyToChangePhase = true
-            currentPhase = "Ta"
+            currentPhase = TACHYCARDIA
         }
-        else if(currentPhase == "Ta") {
+        else if(currentPhase == TACHYCARDIA) {
             if(phaseTimer > 133 && !pausePhaseTimerActions) {
                 for (local i = 1; i <= MaxPlayers ; i++)
                 {
@@ -321,10 +330,10 @@ __CollectGameEventCallbacks(bossCallbacks)
             }
             else if(phaseTimer > 1333) {
                 readyToChangePhase = true
-                currentPhase = "Sa"
+                currentPhase = SARCOMA
             }
         }
-        else if(currentPhase == "Sa") {
+        else if(currentPhase == SARCOMA) {
 
             if(damageTakenThisPhase > 5000 && !pausePhaseTimerActions) {
                 self.AddCondEx(71, (14.8 - (phaseTimer / 66.6)), null)
@@ -343,10 +352,10 @@ __CollectGameEventCallbacks(bossCallbacks)
             }
             else if(phaseTimer > 1000) {
                 readyToChangePhase = true
-                currentPhase = "Pn"
+                currentPhase = PNEUMONIA
             }
         }
-        else if(currentPhase == "Pn") {
+        else if(currentPhase == PNEUMONIA) {
             if(!pausePhaseTimerActions) {
                 local pneumoniaSticky = null
                 while(pneumoniaSticky = Entities.FindByClassname(pneumoniaSticky, "tf_projectile_pipe_remote")) {
@@ -363,14 +372,14 @@ __CollectGameEventCallbacks(bossCallbacks)
             
             if(phaseTimer > 530) {
                 readyToChangePhase = true
-                currentPhase = "CA"
+                currentPhase = CARDIAC_ARREST
             }
             
         }
         //It all loops back
-        else if(currentPhase == "CA" && phaseTimer > 734) {
+        else if(currentPhase == CARDIAC_ARREST && phaseTimer > 734) {
             readyToChangePhase = true
-            currentPhase = "HF"
+            currentPhase = HEMORRHAGIC_FEVER
         }
 
 

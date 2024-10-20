@@ -318,7 +318,7 @@ WaveSchedule
 			}
 			CharacterAttributes
 			{
-				"move speed bonus"	1
+				//"move speed bonus"	1
 				"damage force reduction" 0.5
 				"airblast vulnerability multiplier" 0.6
 				"heal rate bonus" 200
@@ -1472,6 +1472,7 @@ WaveSchedule
 			TFBot
 			{
 				Template	T_TFBot_Pneumonia
+				Action Mobber
 			}
 		}
 		WaveSpawn
@@ -1767,9 +1768,9 @@ WaveSchedule
 			Action runscriptcode
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
-				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
-				EntFire(`altmode_chaos_script`, `runscriptcode`, `preassignRoom(\`ws8\`, 2)`, -1)
-				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
+				//EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
+				//EntFire(`altmode_chaos_script`, `runscriptcode`, `preassignRoom(\`ws8\`, 2)`, -1)
+				//EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
 				IncludeScript(`villa_boss.nut`, getroottable())
 			"
 		}
@@ -1781,7 +1782,7 @@ WaveSchedule
 				__CollectGameEventCallbacks(desquad)
 				__CollectGameEventCallbacks(chaosCallbacks)
 				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
-				EntFire(`altmode_chaos_script`, `CallScriptFunction`, `startWave`, -1)
+				//EntFire(`altmode_chaos_script`, `CallScriptFunction`, `startWave`, -1)
 				IncludeScript(`altmodenests.nut`, getroottable())
 				
 			"
@@ -1802,7 +1803,7 @@ WaveSchedule
 				Action RunScriptCode
 				Delay 0.1
 				Param "
-					//findTimerBot(1, true, diseaseCallbacks.containmentBreachBuffs, false)
+					findTimerBot(1, true, diseaseCallbacks.containmentBreachBuffs, false)
 				"
 			}
 			
@@ -1812,523 +1813,514 @@ WaveSchedule
 				Health 60
 			}
 		}
-		// WaveSpawn {
-		// 	Name ws1
-		// 	TotalCount 4
-		// 	MaxActive 4
-		// 	SpawnCount 4
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] {
+			Name ws1
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
+			Where spawnbot_altmode
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws1`)"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws1`)"
+			}
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Tachycardia
-		// 			Tag ws1
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Tachycardia
-		// 			Tag ws1
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Tachycardia
-		// 			Tag ws1
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Giant_Heavyweapons_Deflector
-		// 			Action Mobber
-		// 			Tag ws1
-		// 		}
-		// 	}
-		// }
-		// WaveSpawn {
-		// 	Name ws2
-		// 	TotalCount 4
-		// 	MaxActive 4
-		// 	SpawnCount 4
-		// 	Where spawnbot_altmode
+			Squad {
+				TFBot {
+					Template T_TFBot_Tachycardia
+					Tag ws1
+				}
+				TFBot {
+					Template T_TFBot_Tachycardia
+					Tag ws1
+				}
+				TFBot {
+					Template T_TFBot_Tachycardia
+					Tag ws1
+				}
+				TFBot {
+					Template T_TFBot_Giant_Heavyweapons_Deflector
+					Action Mobber
+					Tag ws1
+				}
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			Name ws2
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
+			Where spawnbot_altmode
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws2`)"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws2`)"
+			}
+			Squad {
+				TFBot {
+					Template T_TFBot_Giant_Soldier_Spammer
+					Action Mobber
+					Tag ws2
+				}
+				TFBot {
+					Template T_TFBot_Pneumonia
+					Tag ws2
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Fist
+					Action Mobber
+					Tag ws2
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Fist
+					Action Mobber
+					Tag ws2
+				}
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			Name ws3
+			TotalCount 7
+			MaxActive 7
+			SpawnCount 7
+			Where spawnbot_altmode
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Giant_Soldier_Spammer
-		// 			Action Mobber
-		// 			Tag ws2
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pneumonia
-		// 			Tag ws2
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Heavyweapons_Fist
-		// 			Action Mobber
-		// 			Tag ws2
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Heavyweapons_Fist
-		// 			Action Mobber
-		// 			Tag ws2
-		// 		}
-		// 	}
-		// }
-		
-		// WaveSpawn {
-		// 	Name ws3
-		// 	TotalCount 7
-		// 	MaxActive 7
-		// 	SpawnCount 7
-		// 	Where spawnbot_altmode
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws3`)"
+			}
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws3`)"
-		// 	}
+			TFBot {
+				Template T_TFBot_Demoman_Samurai
+				Action Mobber
+				Tag ws3
+				CharacterAttributes
+				{
+					"charge time increased" 2
+					"charge recharge rate increased" 7
+					"increased jump height" 2.3
+					"bot custom jump particle"	1
+					"damage bonus"	1.5
+					"cancel falling damage" 1
+					"damage force reduction" 0.5
+				}
+			}
+		}
+		WaveSpawn [$DISABLED] {
+			Name ws4
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 6
+			Where spawnbot_altmode
 			
-		// 	TFBot {
-		// 		Template T_TFBot_Demoman_Samurai
-		// 		Action Mobber
-		// 		Tag ws3
-		// 		CharacterAttributes
-		// 		{
-		// 			"charge time increased" 2
-		// 			"charge recharge rate increased" 7
-		// 			"increased jump height" 2.3
-		// 			"bot custom jump particle"	1
-		// 			"damage bonus"	1.5
-		// 			"cancel falling damage" 1
-		// 			"damage force reduction" 0.5
-		// 		}
-		// 	}
-		// }
-		
-		// WaveSpawn {
-		// 	Name ws4
-		// 	TotalCount 6
-		// 	MaxActive 6
-		// 	SpawnCount 6
-		// 	Where spawnbot_altmode
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws4`)"
+			}
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws4`)"
-		// 	}
-			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Giant_Heavyweapons_Deflector
-		// 			Action Mobber
-		// 			Tag ws4
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pyro
-		// 			Skill Expert
-		// 			Action Mobber
-		// 			Tag ws4
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pyro
-		// 			Skill Expert
-		// 			Action Mobber
-		// 			Tag ws4
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pyro
-		// 			Skill Expert
-		// 			Action Mobber
-		// 			Tag ws4
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pyro
-		// 			Skill Expert
-		// 			Action Mobber
-		// 			Tag ws4
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pyro
-		// 			Skill Expert
-		// 			Action Mobber
-		// 			Tag ws4
-		// 		}
-		// 	}
-		// }
+			Squad {
+				TFBot {
+					Template T_TFBot_Giant_Heavyweapons_Deflector
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+				TFBot {
+					Template T_TFBot_Pyro
+					Skill Expert
+					Action Mobber
+					Tag ws4
+				}
+			}
+		}
 
-		// WaveSpawn { //currently capped at 22 before
-		// 	Name ws5
-		// 	TotalCount 6
-		// 	MaxActive 6
-		// 	SpawnCount 6
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] { //currently capped at 22 before
+			Name ws5
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 6
+			Where spawnbot_altmode
 			
-		// 	LastSpawnOutput { //this should guarantee the timer bot is active
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "setTimerFuncToRun(diseaseCallbacks.containmentBreachBuffs)"
-		// 	}
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws5`)"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws5`)"
+			}
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Giant_Demo_RapidFire
-		// 			Action Mobber
-		// 			Tag ws5
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Heavyweapons_Heavyweight_Champ
-		// 			Skill Expert
-		// 			Action Mobber
-		// 			Tag ws5
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Heavyweapons_Heavyweight_Champ
-		// 			Skill Expert
-		// 			Action Mobber
-		// 			Tag ws5
-		// 		}
-		// 		TFBot {
-		// 			Class Pyro
-		// 			Name "Detonator Pyro"
-		// 			Skill Expert
-		// 			ClassIcon pyro_detonator_lite
-		// 			Item "The Detonator"
-		// 			WeaponRestrictions SecondaryOnly
-		// 			Action Mobber
-		// 			Tag ws5
-		// 		}
-		// 		TFBot {
-		// 			Class Pyro
-		// 			Name "Detonator Pyro"
-		// 			Skill Expert
-		// 			ClassIcon pyro_detonator_lite
-		// 			Item "The Detonator"
-		// 			WeaponRestrictions SecondaryOnly
-		// 			Action Mobber
-		// 			Tag ws5
-		// 		}
-		// 		TFBot {
-		// 			Class Engineer
-		// 			Name "Short Circuit Engie"
-		// 			Skill Expert
-		// 			ClassIcon engineer_shortcircuit_lite
-		// 			Item "The Short Circuit"
-		// 			WeaponRestrictions SecondaryOnly
-		// 			Action Mobber
-		// 			Tag ws5
-		// 		}
-		// 	}
-		// }
+			Squad {
+				TFBot {
+					Template T_TFBot_Giant_Demo_RapidFire
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Heavyweight_Champ
+					Skill Expert
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Heavyweight_Champ
+					Skill Expert
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Class Pyro
+					Name "Detonator Pyro"
+					Skill Expert
+					ClassIcon pyro_detonator_lite
+					Item "The Detonator"
+					WeaponRestrictions SecondaryOnly
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Class Pyro
+					Name "Detonator Pyro"
+					Skill Expert
+					ClassIcon pyro_detonator_lite
+					Item "The Detonator"
+					WeaponRestrictions SecondaryOnly
+					Action Mobber
+					Tag ws5
+				}
+				TFBot {
+					Class Engineer
+					Name "Short Circuit Engie"
+					Skill Expert
+					ClassIcon engineer_shortcircuit_lite
+					Item "The Short Circuit"
+					WeaponRestrictions SecondaryOnly
+					Action Mobber
+					Tag ws5
+				}
+			}
+		}
 		
-		// WaveSpawn {
-		// 	Name ws6
-		// 	TotalCount 1
-		// 	MaxActive 1
-		// 	SpawnCount 1
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] {
+			Name ws6
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Where spawnbot_altmode
 			
-		// 	StartWaveOutput { //can't just check for spawned, need to see if it got teleported
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "
-		// 			SpawnEntityFromTable(`filter_tf_bot_has_tag`, {
-		// 				targetname = `feverfilter`
-		// 				tags = `Hemorrhagic_Fever`
-		// 			})
-		// 			local trigger = SpawnEntityFromTable(`trigger_multiple`, {
-		// 				targetname = `fevertrigger`
-		// 				origin = Vector(-2592, -864, 1424)
-		// 				filtername = `feverfilter`
-		// 				spawnflags = 1
-		// 				`OnEndTouchAll` : `!caller,runscriptcode,diseaseCallbacks.activateHemorrhagicFever(),1,-1`
-		// 			})
-		// 			trigger.SetSolid(2)
-		// 			trigger.SetSize(Vector(-256, -256, -16), Vector(256, 256, 240))
-		// 		"
-		// 	}
+			StartWaveOutput { //can't just check for spawned, need to see if it got teleported
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "
+					SpawnEntityFromTable(`filter_tf_bot_has_tag`, {
+						targetname = `feverfilter`
+						tags = `Hemorrhagic_Fever`
+					})
+					local trigger = SpawnEntityFromTable(`trigger_multiple`, {
+						targetname = `fevertrigger`
+						origin = Vector(-2592, -864, 1424)
+						filtername = `feverfilter`
+						spawnflags = 1
+						`OnEndTouchAll` : `!caller,runscriptcode,diseaseCallbacks.activateHemorrhagicFever(),1,-1`
+					})
+					trigger.SetSolid(2)
+					trigger.SetSize(Vector(-256, -256, -16), Vector(256, 256, 240))
+				"
+			}
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "
-		// 			DoneRoom(`ws6`)
-		// 		"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "
+					DoneRoom(`ws6`)
+				"
+			}
 			
-		// 	TFBot {
-		// 		Template T_TFBot_Hemorrhagic_Fever
-		// 		Tag ws6
-		// 	}
-		// }
+			TFBot {
+				Template T_TFBot_Hemorrhagic_Fever
+				Tag ws6
+			}
+		}
 		
-		// WaveSpawn {
-		// 	Name ws7
-		// 	TotalCount 5
-		// 	MaxActive 5
-		// 	SpawnCount 5
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] {
+			Name ws7
+			TotalCount 5
+			MaxActive 5
+			SpawnCount 5
+			Where spawnbot_altmode
 			
-		// 	StartWaveOutput { //can't just check for spawned, need to see if it got teleported
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "
-		// 			SpawnEntityFromTable(`filter_tf_bot_has_tag`, {
-		// 				targetname = `sarcomaw6filter`
-		// 				tags = `Sarcoma_w6`
-		// 			})
-		// 			local trigger = SpawnEntityFromTable(`trigger_multiple`, {
-		// 				targetname = `sarcomatrigger`
-		// 				origin = Vector(-2592, -864, 1424)
-		// 				filtername = `sarcomaw6filter`
-		// 				spawnflags = 1
-		// 				`OnEndTouchAll#1` : `!caller,runscriptcode,diseaseCallbacks.addSarcomaThink(),1,-1`
-		// 				`OnEndTouchAll#2` : `!caller,kill,,2.5,-1`
-		// 			})
-		// 			trigger.SetSolid(2)
-		// 			trigger.SetSize(Vector(-256, -256, -16), Vector(256, 256, 240))
-		// 		"
-		// 	}
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws7`)"
-		// 	}
+			StartWaveOutput { //can't just check for spawned, need to see if it got teleported
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "
+					SpawnEntityFromTable(`filter_tf_bot_has_tag`, {
+						targetname = `sarcomaw6filter`
+						tags = `Sarcoma_w6`
+					})
+					local trigger = SpawnEntityFromTable(`trigger_multiple`, {
+						targetname = `sarcomatrigger`
+						origin = Vector(-2592, -864, 1424)
+						filtername = `sarcomaw6filter`
+						spawnflags = 1
+						`OnEndTouchAll#1` : `!caller,runscriptcode,diseaseCallbacks.addSarcomaThink(),1,-1`
+						`OnEndTouchAll#2` : `!caller,kill,,2.5,-1`
+					})
+					trigger.SetSolid(2)
+					trigger.SetSize(Vector(-256, -256, -16), Vector(256, 256, 240))
+				"
+			}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws7`)"
+			}
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Malignant_Tumor
-		// 			Tag ws7
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Malignant_Tumor
-		// 			Tag ws7
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Malignant_Tumor
-		// 			Tag ws7
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Malignant_Tumor
-		// 			Tag ws7
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Sarcoma
-		// 			Tag Sarcoma_w6
-		// 			Tag ws7
-		// 		}
-		// 	}
-		// }
+			Squad {
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws7
+				}
+				TFBot {
+					Template T_TFBot_Sarcoma
+					Tag Sarcoma_w6
+					Tag ws7
+				}
+			}
+		}
 		
-		// WaveSpawn {
-		// 	Name ws8
-		// 	TotalCount 6
-		// 	MaxActive 6
-		// 	SpawnCount 6
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] {
+			Name ws8
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 6
+			Where spawnbot_altmode
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws8`)"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws8`)"
+			}
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			//Template T_TFBot_Malignant_Tumor
-		// 			Template T_TFBot_Pathogen_Soldier
-		// 			tag ws8
-		// 			tag gmedsupport
-		// 		}
-		// 		TFBot { //turns out it needs to be not leader for ignore enemies to apply properly?
-		// 			Class Medic
-		// 			Name "Giant Medic"
-		// 			ClassIcon medic_giant
-		// 			Skill Expert
-		// 			Health 4500
-		// 			Item "The Crusader's Crossbow"
-		// 			Item "The Kritzkrieg"
-		// 			WeaponRestrictions PrimaryOnly
-		// 			Attributes MiniBoss
-		// 			Tag ws8
-		// 			Tag gmed
-		// 			Action Mobber
+			Squad {
+				TFBot {
+					//Template T_TFBot_Malignant_Tumor
+					Template T_TFBot_Pathogen_Soldier
+					tag ws8
+					tag gmedsupport
+				}
+				TFBot { //turns out it needs to be not leader for ignore enemies to apply properly?
+					Class Medic
+					Name "Giant Medic"
+					ClassIcon medic_giant
+					Skill Expert
+					Health 4500
+					Item "The Crusader's Crossbow"
+					Item "The Kritzkrieg"
+					WeaponRestrictions PrimaryOnly
+					Attributes MiniBoss
+					Tag ws8
+					Tag gmed
+					Action Mobber
 
-		// 			ItemAttributes
-		// 			{
-		// 				ItemName "The Kritzkrieg"
-		// 				"ubercharge rate bonus" 0.01
-		// 			}
-		// 			CharacterAttributes
-		// 			{
-		// 				"move speed bonus"	0.5
-		// 				"damage force reduction" 0.5
-		// 				"airblast vulnerability multiplier" 0.6
-		// 				"overheal decay bonus" 0.5 //inverted percent
-		// 			}
-		// 			EventChangeAttributes {
-		// 				ShootPlayers {
-		// 					WeaponRestrictions PrimaryOnly
-		// 					ActionOverride Mobber
-		// 				}
-		// 				EatBots {
-		// 					WeaponRestrictions SecondaryOnly
-		// 					Attributes IgnoreEnemies
-		// 					ActionOverride Medic
-		// 				}
-		// 			}
-		// 		}
-		// 		TFBot {
-		// 			//Template T_TFBot_Malignant_Tumor
-		// 			Template T_TFBot_Pathogen_Soldier
-		// 			tag ws8
-		// 			tag gmedsupport
-		// 		}
-		// 		TFBot {
-		// 			//Template T_TFBot_Malignant_Tumor
-		// 			Template T_TFBot_Pathogen_Soldier
-		// 			tag ws8
-		// 			tag gmedsupport
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pathogen_Soldier
-		// 			tag ws8
-		// 			tag gmedsupport
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Pathogen_Soldier
-		// 			tag ws8
-		// 			tag gmedsupport
-		// 		}
-		// 	}
-		// }
+					ItemAttributes
+					{
+						ItemName "The Kritzkrieg"
+						"ubercharge rate bonus" 0.01
+					}
+					CharacterAttributes
+					{
+						"move speed bonus"	0.5
+						"damage force reduction" 0.5
+						"airblast vulnerability multiplier" 0.6
+						"overheal decay bonus" 0.5 //inverted percent
+					}
+					EventChangeAttributes {
+						ShootPlayers {
+							WeaponRestrictions PrimaryOnly
+							ActionOverride Mobber
+						}
+						EatBots {
+							WeaponRestrictions SecondaryOnly
+							Attributes IgnoreEnemies
+							ActionOverride Medic
+						}
+					}
+				}
+				TFBot {
+					//Template T_TFBot_Malignant_Tumor
+					Template T_TFBot_Pathogen_Soldier
+					tag ws8
+					tag gmedsupport
+				}
+				TFBot {
+					//Template T_TFBot_Malignant_Tumor
+					Template T_TFBot_Pathogen_Soldier
+					tag ws8
+					tag gmedsupport
+				}
+				TFBot {
+					Template T_TFBot_Pathogen_Soldier
+					tag ws8
+					tag gmedsupport
+				}
+				TFBot {
+					Template T_TFBot_Pathogen_Soldier
+					tag ws8
+					tag gmedsupport
+				}
+			}
+		}
 		
-		// WaveSpawn {
-		// 	Name ws9
-		// 	TotalCount 4
-		// 	MaxActive 4
-		// 	SpawnCount 4
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] {
+			Name ws9
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
+			Where spawnbot_altmode
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws9`)"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws9`)"
+			}
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Dyspnea
-		// 			Tag ws9
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Medic
-		// 			Tag ws9
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Giant_Pyro
-		// 			Action Mobber
-		// 			Tag ws9
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Cardiomyopathy
-		// 			Tag ws9
-		// 		}
-		// 	}
-		// }
+			Squad {
+				TFBot {
+					Template T_TFBot_Dyspnea
+					Tag ws9
+				}
+				TFBot {
+					Template T_TFBot_Medic
+					Tag ws9
+				}
+				TFBot {
+					Template T_TFBot_Giant_Pyro
+					Action Mobber
+					Tag ws9
+				}
+				TFBot {
+					Template T_TFBot_Cardiomyopathy
+					Tag ws9
+				}
+			}
+		}
 		
-		// WaveSpawn {
-		// 	Name ws10
-		// 	TotalCount 5
-		// 	MaxActive 5
-		// 	SpawnCount 5
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] {
+			Name ws10
+			TotalCount 5
+			MaxActive 5
+			SpawnCount 5
+			Where spawnbot_altmode
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws10`)"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws10`)"
+			}
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Cardiomyopathy
-		// 			Tag ws10
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Medic
-		// 			Tag ws10
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Malignant_Tumor
-		// 			Tag ws10
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Malignant_Tumor
-		// 			Tag ws10
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Malignant_Tumor
-		// 			Tag ws10
-		// 		}
-		// 	}
-		// }
+			Squad {
+				TFBot {
+					Template T_TFBot_Cardiomyopathy
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Medic
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws10
+				}
+				TFBot {
+					Template T_TFBot_Malignant_Tumor
+					Tag ws10
+				}
+			}
+		}
 		
-		// WaveSpawn {
-		// 	Name ws11
-		// 	TotalCount 3
-		// 	MaxActive 3
-		// 	SpawnCount 3
-		// 	Where spawnbot_altmode
+		WaveSpawn [$DISABLED] {
+			Name ws11
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 3
+			Where spawnbot_altmode
 			
-		// 	DoneOutput {
-		// 		Target altmode_chaos_script
-		// 		Action RunScriptCode
-		// 		Param "DoneRoom(`ws11`)"
-		// 	}
+			DoneOutput {
+				Target altmode_chaos_script
+				Action RunScriptCode
+				Param "DoneRoom(`ws11`)"
+			}
 			
-		// 	Squad {
-		// 		TFBot {
-		// 			Template T_TFBot_Engineer_Sentry_Battle
-		// 			Health 1000
-		// 			Tag ws11
-		// 			CharacterAttributes
-		// 			{
-		// 				"damage force reduction" 0.99
-		// 			}
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Engineer_Sentry_Battle
-		// 			Health 1000
-		// 			Tag ws11
-		// 			CharacterAttributes
-		// 			{
-		// 				"damage force reduction" 0.99
-		// 			}
-		// 		}
-		// 		TFBot {
-		// 			Template T_TFBot_Engineer_Sentry_Battle
-		// 			Health 1000
-		// 			Tag ws11
-		// 			CharacterAttributes
-		// 			{
-		// 				"damage force reduction" 0.99
-		// 			}
-		// 		}
-		// 	}
-		// }
-		
+			Squad {
+				TFBot {
+					Template T_TFBot_Engineer_Sentry_Battle
+					Health 1000
+					Tag ws11
+					CharacterAttributes
+					{
+						"damage force reduction" 0.99
+					}
+				}
+				TFBot {
+					Template T_TFBot_Engineer_Sentry_Battle
+					Health 1000
+					Tag ws11
+					CharacterAttributes
+					{
+						"damage force reduction" 0.99
+					}
+				}
+				TFBot {
+					Template T_TFBot_Engineer_Sentry_Battle
+					Health 1000
+					Tag ws11
+					CharacterAttributes
+					{
+						"damage force reduction" 0.99
+					}
+				}
+			}
+		}
 		WaveSpawn {
 			Name ws12
 			TotalCount 1

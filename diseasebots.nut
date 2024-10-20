@@ -245,7 +245,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.selfPush <- SpawnEntityFromTable("trigger_push", {
 			origin = activator.GetCenter()
 			pushdir = QAngle(0, 0, 0)
-			speed = 250
+			speed = 500
 			startdisabled = true
 			spawnflags = 1
 			filtername = "team_blu"
@@ -274,6 +274,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 			if(self.GetLocomotionInterface().IsStuck()) { //safety for altmode, since he tends to hump walls and get stuck
 				printl("sarcoma triggered antistuck")
+				NetProps.SetPropVector(selfPush, "m_vecPushDir", self.EyeAngles() + Vector())
 				EntFireByHandle(selfPush, "Enable", null, -1, null, null)
 				EntFireByHandle(selfPush, "Disable", null, 0.5, null, null)
 			}
@@ -364,30 +365,10 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			local player = PlayerInstanceFromIndex(i)
 			if(player == null) continue
 			if(!IsPlayerABot(player)) continue
-			if(player == activator) continue
 			if(NetProps.GetPropInt(player, "m_lifeState") != LIFE_ALIVE) continue
 			if(!player.HasBotTag("gmedsupport")) continue
 
 			scope.support.append(player)
-			/*
-			player.ValidateScriptScope()
-			player.GetScriptScope().reviveThink <- function() {
-				if(NetProps.GetPropInt(self, "m_lifeState") != LIFE_ALIVE) {
-					if(!("medbot" in getroottable()) || NetProps.GetPropInt(medbot, "m_lifeState") != 0) {
-						AddThinkToEnt(self, null)
-						NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-
-						self.ForceChangeTeam(TEAM_SPECTATOR, true)
-					}
-					else {
-						if(self.GetTeam() != TF_TEAM_BLUE) {
-
-						}
-					}
-				}
-			}
-			AddThinkToEnt(player, "reviveThink")
-			*/
 		}
 
 		scope.offensiveThink <- function() {
@@ -396,7 +377,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				return
 			}
 
-			//printl("dead support " + deadSupport)
+			printl("dead support " + deadSupport)
 			if(deadSupport >= 5 && supportTimer.Expired()) {
 				local LOCATION = Vector(-3122, 2817, 800)
 				local particle = SpawnEntityFromTable("info_particle_system", {
@@ -412,8 +393,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 
 			if(self.GetHealth() < self.GetMaxHealth() && deadSupport < 5) {
+				printl("entering defense")
 				EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1)
-				//self.AddBotAttribute(IGNORE_ENEMIES)
 				AddThinkToEnt(self, "defensiveThink")
 			}
 		}
@@ -424,8 +405,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				return
 			}
 			if(deadSupport >= 5) {
+				printl("entering offense")
 				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-				//self.RemoveBotAttribute(IGNORE_ENEMIES)
 				supportTimer.Start(10)
 				AddThinkToEnt(self, "offensiveThink")
 				return
@@ -447,6 +428,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		}
 
 		scope.cleanup <- function() {
+			//foreac(bot in support) {
+			
+			//}
 			AddThinkToEnt(self, null)
 			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
 			delete MOVESPEEDBASE
@@ -459,6 +443,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 		scope.strengthen <- function() {
 			playersEaten++
+			self.AddCustomAttribute("max health additive bonus", self.GetMaxHealth() + HEALTHBONUS * playersEaten, -1)
 			self.SetHealth(self.GetHealth() + HEALTHBONUS)
 			self.AddCustomAttribute("damage bonus", 1 + 0.25 * playersEaten, -1)
 			self.AddCustomAttribute("move speed bonus", MOVESPEEDBASE + 0.1 * playersEaten, -1)
@@ -478,14 +463,15 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				if(IsPlayerABot(victim)) {
 					if(victim.HasBotTag("gmedsupport")) {
 						medbot.GetScriptScope().deadSupport++
-						printl("team " + victim.GetTeam())
+						//printl("team " + victim.GetTeam())
 						EntFireByHandle(victim, "runscriptcode", "self.ForceChangeTeam(TF_TEAM_BLUE, true)", -1, null, null)
 						EntFireByHandle(victim, "runscriptcode", "self.ForceRespawn()", -1, null, null)
 						EntFireByHandle(victim, "runscriptcode", "self.AddBotTag(\"gmedsupport\")", -1, null, null)
+						//this doesn't clean up the bots, which probably isn't a problem
 					}
 				}
 				else {
-					if(inflictor.HasBotTag("gmed")) {
+					if(IsPlayerABot(inflictor) && inflictor.HasBotTag("gmed")) {
 						medbot.AcceptInput("CallScriptFunction", "strengthen", null, null)
 					}
 				}
@@ -612,7 +598,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
                 break;
             }
         }
-
+		
+		
 		scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
 			targetname = "hemorrhagic_fever_weapon_particles"
 			effect_name = "hemorrhagic_fever_flamethrower"
@@ -621,15 +608,17 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			start_active = 1
 			origin = activator.GetOrigin()
 		})
-
-		// scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
-		// 	particle_name = "hemorrhagic_fever_flamethrower"
-		// 	attachment_type = 4
-		// 	attachment_name = "muzzle"
-		// 	spawnflags = 64
-		// })
-
-		// EntFireByHandle(scope.feverFireParticles, "StartTouch", "!activator", 0.2, scope.flamethrower, scope.flamethrower)
+		
+		/*
+		scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
+			particle_name = "hemorrhagic_fever_flamethrower"
+			attachment_type = 4
+			attachment_name = "muzzle"
+			spawnflags = 64
+		})
+		*/
+		printl(scope.flamethrower)
+		EntFireByHandle(scope.feverFireParticles, "StartTouch", "!activator", -1, scope.flamethrower, scope.flamethrower)
 
 		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
 		EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
@@ -710,7 +699,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 			}
 			else if(player.HasBotTag("gmed")) {
-				//player.RemoveBotAttribute(IGNORE_ENEMIES)
 				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 				player.GetScriptScope().cleanup()
 				//this deletes the death callback, so for now he'll just have the buffs he gained before containmentbreaker
