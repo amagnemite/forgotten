@@ -15,16 +15,6 @@ IncludeScript("customweaponsvillaedit.nut", getroottable())
 		Cleanup()
 	}
 
-	playSound = function(soundName, player) { //scope moment
-		EmitSoundEx({
-			sound_name = soundName
-			origin = player.GetOrigin()
-			filter_type = RECIPIENT_FILTER_SINGLE_PLAYER
-			entity = player
-			channel = 6
-		})
-	}
-
     OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 
@@ -58,6 +48,7 @@ IncludeScript("customweaponsvillaedit.nut", getroottable())
 }
 __CollectGameEventCallbacks(bossCallbacks)
 
+/*
 ::addPneumoniaStickyThink <- function() {
 	//ClientPrint(null, 3, "STICKY THINK ADDED!!")
 	self.SetModelSimple("models/villa/stickybomb_pneumonia.mdl")
@@ -78,7 +69,9 @@ __CollectGameEventCallbacks(bossCallbacks)
 	}
 	AddThinkToEnt(self, "stickyThink")
 }
+*/
 
+//todo: figure out how to clean this scope up
 ::bossSpawnFunction <- function() {
 	thinkTable <- {}
     self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
@@ -105,8 +98,6 @@ __CollectGameEventCallbacks(bossCallbacks)
 
 	WAVEBAR_SLOT_NO <- 1
 
-    //Is this even necessary??
-    //scope.phases = [HEMORRHAGIC_FEVER, DYSPNEA, MALIGNANT_TUMOR, CARDIOMYOPATHY, TACHYCARDIA, SARCOMA, PNEUMONIA, CARDIAC_ARREST]
 	currentPhase <- HEMORRHAGIC_FEVER
     readyToChangePhase <- true
     phaseTimer <- 0
@@ -117,6 +108,7 @@ __CollectGameEventCallbacks(bossCallbacks)
     damageTakenThisPhase <- 0
 	// isUsingMeleeTachycardia <- false
     currentWeapon <- null
+	stickyList <- []
 
     //Disable altmode spawns to block tumors
     EntFire("spawnbot_altmode", "Disable", null, 5)
@@ -127,10 +119,40 @@ __CollectGameEventCallbacks(bossCallbacks)
         attachment_type = 1
         spawnflags = 64
     })
+	
+	//don't forget to precache particle
+	teleportParticle <- SpawnEntityFromTable("info_particle_system", {
+		effect_name = "particle name"
+		start_active = false
+	})
+	
+	playerPush <- SpawnEntityFromTable("trigger_push", {
+		origin = self.GetCenter()
+		pushdir = QAngle(0, 0, 0)
+		speed = 125
+		startdisabled = true
+		spawnflags = 1
+		filtername = "team_red"
+	})
+	scope.selfPush <- SpawnEntityFromTable("trigger_push", {
+		origin = self.GetCenter()
+		pushdir = QAngle(0, 0, 0)
+		speed = 500
+		startdisabled = true
+		spawnflags = 1
+		filtername = "team_blu"
+	})
+	playerPush.SetSolid(2)
+	playerPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
+	playerPush.AcceptInput("SetParent", "!activator", self, self)
+	selfPush.SetSolid(2)
+	selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
+	selfPush.AcceptInput("SetParent", "!activator", self, self)
 
 	hemorrhagicFeverAttrs <- {
 		"damage penalty": 2
 		"bleed duration": 3
+		"damage bonus": 2
 	}
 	
 	dyspneaAttrs <- { //json syntax because string literals get weird
@@ -191,15 +213,15 @@ __CollectGameEventCallbacks(bossCallbacks)
 			case HEMORRHAGIC_FEVER:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
 				self.AddWeaponRestriction(PRIMARY_ONLY)
-				//Reset stat changes from Cardiac Arrest mimic
-				foreach(attr, val in cardiacAttrs) {
+				self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
+				
+				foreach(attr, val in cardiacAttrs) { //Reset stat changes from Cardiac Arrest mimic
 					self.RemoveCustomAttribute(attr)
 				}
 				foreach(attr, val in hemorrhagicFeverAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
 				}
 				::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
-				//CustomWeapons.EquipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
 
 				self.AcceptInput("DispatchEffect", "ParticleEffectStop", null, null)
 				caParticle.AcceptInput("EndTouch", "!activator", self, self)
@@ -215,38 +237,29 @@ __CollectGameEventCallbacks(bossCallbacks)
 				// EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + self.EyeAngles().x + " " + self.EyeAngles().y + " " + self.EyeAngles().z, 0.02, null, null)
 				// EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
 				// EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
-				self.AddCustomAttribute("damage bonus", 2, -1)
-				self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
 				break
 			case DYSPNEA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_dyspnea", WAVEBAR_SLOT_NO)
 				foreach(attr, val in hemorrhagicFeverAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
-				// EntFire("ukgr_hf_particles", Kill)
-				//CustomWeapons.UnequipItem("Upgradeable TF_WEAPON_FLAMETHROWER", self)
-				::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
-				//CustomWeapons.EquipItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
 				foreach(attr, val in dyspneaAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
 				}
+				// EntFire("ukgr_hf_particles", Kill)
+				::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
 				break
 			case MALIGNANT_TUMOR:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_tumor", WAVEBAR_SLOT_NO)
 				::CustomWeapons.GiveItem("The Crusader's Crossbow", self)
-				//CustomWeapons.EquipItem("The Crusader's Crossbow", self)
 				foreach(attr, val in dyspneaAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
-				//Teleports offscreen and then 20 mini versions spawn
-				self.RemoveBotAttribute(SUPPRESS_FIRE)
-				//Teleports to spawnbot_altmode
 				
+				self.RemoveBotAttribute(SUPPRESS_FIRE)
 				
 				deadTumorCounter = 0
-				// local spawnbot = Entities.FindByName(null, "spawnbot_altmode")
-                // spawnbot.AcceptInput("enable", null, null, null)
-                // EntFireByHandle(spawnbot, "Disable", null, 0.5, null, null)
+				//Teleports offscreen and then 20 mini versions spawn
 				for (local i = 1; i <= MaxPlayers ; i++)
 				{
 					local player = PlayerInstanceFromIndex(i)
@@ -255,14 +268,14 @@ __CollectGameEventCallbacks(bossCallbacks)
 					if(!player.HasBotTag("UKGR_Tumor")) continue
 					player.Teleport(true, lastPosition, false, QAngle(), false, Vector())
 				}
-
-				self.Teleport(true, Vector(-2600, -871, 1493), false, QAngle(0,0,0), false, Vector(0,0,0))
+				self.Teleport(true, Vector(-2600, -871, 1493), false, QAngle(), false, Vector()) //Teleports to spawnbot_altmode
+				teleportParticle.SetOrigin(Vector(-2600, -871, 1493))
+				teleportParticle.AcceptInput("Start", null, null, null)
 				//Remember to make tumors explode on death and deal 125 dmg to boss
 				break
 			case CARDIOMYOPATHY:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_burstdemo", WAVEBAR_SLOT_NO)
 				::CustomWeapons.GiveItem("The Iron Bomber", self)
-				//CustomWeapons.EquipItem("The Iron Bomber", self)
 				self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
 				foreach(attr, val in cardiomyopathyAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
@@ -329,9 +342,10 @@ __CollectGameEventCallbacks(bossCallbacks)
 				foreach(attr, val in pneumoniaAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
 				}
+				diseaseCallbacks.pneumoniaBot = self
+				stickyList = [] //wipe the old list
 				//self.AddCustomAttribute("custom projectile model", "models/villa/stickybomb_pneumonia.mdl", -1)
-				::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
-				//CustomWeapons.EquipItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
+				currentWeapon = ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
 				
 				//Attach think to stickies and have them do the rest
 				break
@@ -348,15 +362,12 @@ __CollectGameEventCallbacks(bossCallbacks)
 				foreach(attr, val in pneumoniaAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
-				
-
-				self.AddCondEx(TF_COND_SODAPOPPER_HYPE, 11, null)
-				::CustomWeapons.GiveItem("The Direct Hit", self)
-				//CustomWeapons.EquipItem("The Direct Hit", self)
-				
 				foreach(attr, val in cardiacAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
 				}
+			
+				self.AddCondEx(TF_COND_SODAPOPPER_HYPE, 11, null)
+				::CustomWeapons.GiveItem("The Direct Hit", self)
 
 				caParticle.AcceptInput("StartTouch", "!activator", self, self)
 
@@ -401,7 +412,7 @@ __CollectGameEventCallbacks(bossCallbacks)
                 pausePhaseTimerActions = true
             }
 
-			else if (phaseTimer == 520) {
+			else if (phaseTimer == 520) { //enables spawnbot_altmode for tumors
 				local spawnbot = Entities.FindByName(null, "spawnbot_altmode")
                 spawnbot.AcceptInput("enable", null, null, null)
                 EntFireByHandle(spawnbot, "Disable", null, 0.5, null, null)
@@ -419,7 +430,8 @@ __CollectGameEventCallbacks(bossCallbacks)
         }
         else if(currentPhase == MALIGNANT_TUMOR && (deadTumorCounter >= 20 || phaseTimer > 1000)) {
             readyToChangePhase = true
-			self.Teleport(true, Vector(-2399, 1110, 735), false, QAngle(0,0,0), false, Vector(0,0,0))
+			self.Teleport(true, lastPosition, false, QAngle(), false, Vector())
+			teleportParticle.AcceptInput("Stop", null, null, null)
 			//It's set to 0 twice but yknow just to be safe
             deadTumorCounter = 0
             currentPhase = CARDIOMYOPATHY
@@ -484,25 +496,37 @@ __CollectGameEventCallbacks(bossCallbacks)
         }
         else if(currentPhase == PNEUMONIA) {
             if(!pausePhaseTimerActions) {
-                local pneumoniaSticky = null
-                while(pneumoniaSticky = Entities.FindByClassname(pneumoniaSticky, "tf_projectile_pipe_remote")) {
-                    pneumoniaSticky.ValidateScriptScope()
-					ClientPrint(null, 3, "STICKY FOUND!!")
-                    if(!("isPneumoniaSet" in pneumoniaSticky.GetScriptScope())) {
-                        pneumoniaSticky.GetScriptScope().isPneumoniaSet <- true
-						pneumoniaSticky.AcceptInput("RunScriptCode", "addPneumoniaStickyThink()", null, null)
-                    }
-                }
-                if(phaseTimer > 90) {
-                    pausePhaseTimerActions = true
-                }
+				if((Time() - NetProps.GetPropFloat(currentWeapon, "m_flNextPrimaryAttack")) <= 1) {
+					local sticky = null;
+					while(sticky = Entities.FindByClassname(sticky, "tf_projectile_pipe_remote")) {
+						if(stickyList.find(sticky) == null) {
+							stickyList.append(sticky)
+							sticky.SetModelSimple("models/villa/stickybomb_pneumonia.mdl")
+						}
+					}
+				}
             }
-
+			
+			if(phaseTimer == 100) { //1.5s
+				foreach(sticky in stickyList) {
+					DispatchParticleEffect("pneumonia_stickybomb_aura", sticky.GetCenter(), Vector())
+				}
+				pausePhaseTimerActions = true //stop collecting stickies
+			}
+			
+			if(phaseTimer == 267) { //approx 4s
+				if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
+				foreach(sticky in stickyList) {
+					printl("spawned a pneumonia at sticky")
+					pneumoniaSpawner.SpawnEntityAtLocation(sticky.GetOrigin() + Vector(-192, 0, 0), Vector())
+				}
+				self.PressAltFireButton(0.1)
+			}
+			
             if(phaseTimer > 530) {
                 readyToChangePhase = true
                 currentPhase = CARDIAC_ARREST
             }
-
         }
         //It all loops back
         else if(currentPhase == CARDIAC_ARREST && phaseTimer > 734) {
@@ -511,8 +535,34 @@ __CollectGameEventCallbacks(bossCallbacks)
         }
        // return -1
     }
-	thinkTable.ukgrThink <- ukgrThink
-
+	
+	waitForAllDeadThink <- function() {
+		local allBotsAreDead = true
+		for(local i = 1; i <= MaxPlayers ; i++) {
+			local player = PlayerInstanceFromIndex(i)
+			if(player == null) continue
+			if(!IsPlayerABot(player)) continue
+			if(player == self) continue
+			if(player == timer) continue
+			if(NetProps.GetPropInt(player, "m_lifeState") == 0) {
+				allBotsAreDead = false
+				break
+			}
+			
+			if(allBotsAreDead) {
+				if(timer != null) {
+					timer.TakeDamage(1000, DMG_GENERIC, null)
+				}
+				local spawnbot = Entities.FindByName(null, "spawnbot")
+				self.Teleport(true, spawnbot.GetOrigin(), false, QAngle(), false, Vector())
+				self.RemoveCond(TF_COND_HALLOWEEN_SPEED_BOOST)
+				delete thinkTable.waitForAllDeadThink
+				thinkTable.ukgrThink <- ukgrThink
+			}
+		}
+	}
+	thinkTable.waitForAllDeadThink <- waitForAllDeadThink
+	
 	mainThink <- function() { //this is mostly to make the customattributes think works
 		if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 			delete thinkTable

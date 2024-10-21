@@ -2303,6 +2303,7 @@ WaveSchedule
 			Squad {
 				TFBot {
 					Template T_TFBot_Engineer_Sentry_Battle
+					ClassIcon engineer_armored
 					Health 1000
 					Tag ws11
 					CharacterAttributes
@@ -2312,6 +2313,7 @@ WaveSchedule
 				}
 				TFBot {
 					Template T_TFBot_Engineer_Sentry_Battle
+					ClassIcon engineer_armored
 					Health 1000
 					Tag ws11
 					CharacterAttributes
@@ -2321,6 +2323,7 @@ WaveSchedule
 				}
 				TFBot {
 					Template T_TFBot_Engineer_Sentry_Battle
+					ClassIcon engineer_armored
 					Health 1000
 					Tag ws11
 					CharacterAttributes

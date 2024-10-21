@@ -15,6 +15,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sold
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeboss_tp_vortex"})
 
 ::diseaseCallbacks <- {
+	pneumoniaBot = null
+	
 	Cleanup = function() {
 		for (local i = 1; i <= MaxPlayers ; i++)
 		{
@@ -151,7 +153,31 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(containmentBreachActive) EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.applyContainmentBreachBuffs()", -1, player, null)
 		}
 	}
-
+	
+	setupPneumoniaSpawner = function() {
+		local template = Entities.FindByName(null, "pneumonia_spawn_template")
+		template.ValidateScriptScope()
+		local scope = template.GetScriptScope()
+		
+		scope.PreSpawnInstance <- function(classname, targetname) { //this needs to be present
+			//printl(classname + " " + targetname)
+		}
+	
+		scope.PostSpawn <- function(entities) {
+			foreach(targetname, handle in entities) {
+				if(targetname == "pneumonia_spawn_e_hurt") {
+					handle.ValidateScriptScope()
+					handle.GetScriptScope().owner <- diseaseCallbacks.pneumoniaBot
+					handle.GetScriptScope().takePneumoniaDamage <- function() {
+						activator.TakeDamage(50, DMG_POISON, owner)
+					}
+				}
+				EntFireByHandle(handle, "Kill", null, 2, null, null)
+				//printl(targetname + " " + handle)
+			}
+		}
+	}
+	
 	applyContainmentBreachBuffs = function () {
 		if(!activator.HasBotTag("UKGR") && !activator.HasBotTag("UKGR_TUMOR")) return
 		activator.AddCondEx(72, -1, null)
@@ -202,32 +228,24 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 	}
 
 	addPneumoniaThink = function() {
+		pneumoniaBot = activator
 		activator.GetScriptScope().pneumoniaThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-				//return
-			}
-
-			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
-
-			pneumoniaSpawner.SpawnEntityAtEntityOrigin(self)
-			local pneumoniaEntity = null
-			while(pneumoniaEntity = Entities.FindByName(pneumoniaEntity, "pneumonia_spawn_e_*")) {
-				pneumoniaEntity.ValidateScriptScope()
-				if(!("owner" in pneumoniaEntity.GetScriptScope())) {
-					pneumoniaEntity.GetScriptScope().owner <- self
-					pneumoniaEntity.GetScriptScope().takePneumoniaDamage <- function() {
-						activator.TakeDamage(50, DMG_POISON, owner)
-					}
+				if("pneumoniaBot" in diseaseCallbacks) {
+					pneumoniaBot = null
 				}
-				EntFireByHandle(pneumoniaEntity, "Kill", null, 2, null, null)
 			}
+			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
+			
+			pneumoniaSpawner.SpawnEntityAtEntityOrigin(self)
+			
 			return 1
 		}
 		AddThinkToEnt(activator, "pneumoniaThink")
 	}
-
+	
 	addSarcomaThink = function() {
 		//Stage 0 = Unarmed bot (Has SuppressFire) 0.8 scale 1.5 speed
 		//Stage 1 = Melee bot 1.25 scale 1 speed
@@ -715,6 +733,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 	}
 }
 __CollectGameEventCallbacks(diseaseCallbacks)
+diseaseCallbacks.setupPneumoniaSpawner()
 for (local i = 1; i <= MaxPlayers ; i++)
 {
 	local player = PlayerInstanceFromIndex(i)
