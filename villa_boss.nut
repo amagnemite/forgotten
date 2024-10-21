@@ -57,7 +57,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		if(stickyTimer == 1.5) {
 			DispatchParticleEffect("pneumonia_stickybomb_aura", self.GetCenter(), Vector())
 		}
-		
+
 		if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 		else if(stickyTimer >= 4) {
 			//Explode and create pneumonia clouds
@@ -119,13 +119,13 @@ __CollectGameEventCallbacks(bossCallbacks)
         attachment_type = 1
         spawnflags = 64
     })
-	
+
 	//don't forget to precache particle
 	teleportParticle <- SpawnEntityFromTable("info_particle_system", {
 		effect_name = "particle name"
 		start_active = false
 	})
-	
+
 	playerPush <- SpawnEntityFromTable("trigger_push", {
 		origin = self.GetCenter()
 		pushdir = QAngle(0, 0, 0)
@@ -134,7 +134,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		spawnflags = 1
 		filtername = "team_red"
 	})
-	scope.selfPush <- SpawnEntityFromTable("trigger_push", {
+	selfPush <- SpawnEntityFromTable("trigger_push", {
 		origin = self.GetCenter()
 		pushdir = QAngle(0, 0, 0)
 		speed = 500
@@ -152,9 +152,8 @@ __CollectGameEventCallbacks(bossCallbacks)
 	hemorrhagicFeverAttrs <- {
 		"damage penalty": 2
 		"bleed duration": 3
-		"damage bonus": 2
 	}
-	
+
 	dyspneaAttrs <- { //json syntax because string literals get weird
 		"damage bonus": 0.1,
 		"fire rate bonus": 0.1,
@@ -171,7 +170,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		"add cond on hit": 12,
 		"add cond on hit duration": 4
 	}
-	
+
 	cardiomyopathyAttrs <- {
 		"damage bonus": 0.5,
 		"fire rate bonus": 0.05,
@@ -185,7 +184,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		"move speed bonus": 3,
 		"faster reload rate": 0.5
 	}
-	
+
 	pneumoniaAttrs <- {
 		"damage bonus": 1,
 		"move speed bonus": 1.1,
@@ -196,13 +195,13 @@ __CollectGameEventCallbacks(bossCallbacks)
 		"stickybomb charge rate": 0.001
 		"projectile range increased": 0.35
 	}
-	
+
 	cardiacAttrs <- {
 		"fire rate bonus": 0.3
 		"faster reload rate": -0.8,
 		"damage bonus": 3
 	}
-	
+
 	changePhase <- function() {
 		phaseTimer = 0
 		pausePhaseTimerActions = false
@@ -212,9 +211,10 @@ __CollectGameEventCallbacks(bossCallbacks)
 		switch(currentPhase) {
 			case HEMORRHAGIC_FEVER:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_fever")
 				self.AddWeaponRestriction(PRIMARY_ONLY)
 				self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
-				
+
 				foreach(attr, val in cardiacAttrs) { //Reset stat changes from Cardiac Arrest mimic
 					self.RemoveCustomAttribute(attr)
 				}
@@ -240,6 +240,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case DYSPNEA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_dyspnea", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_dyspnea")
 				foreach(attr, val in hemorrhagicFeverAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
@@ -251,13 +252,14 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case MALIGNANT_TUMOR:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_tumor", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_tumor")
 				::CustomWeapons.GiveItem("The Crusader's Crossbow", self)
 				foreach(attr, val in dyspneaAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
-				
+
 				self.RemoveBotAttribute(SUPPRESS_FIRE)
-				
+
 				deadTumorCounter = 0
 				//Teleports offscreen and then 20 mini versions spawn
 				for (local i = 1; i <= MaxPlayers ; i++)
@@ -275,6 +277,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case CARDIOMYOPATHY:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_burstdemo", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_burstdemo")
 				::CustomWeapons.GiveItem("The Iron Bomber", self)
 				self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
 				foreach(attr, val in cardiomyopathyAttrs) {
@@ -283,20 +286,20 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case TACHYCARDIA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_tachycardia", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_tachycardia")
 				foreach(attr, val in cardiomyopathyAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
 				foreach(attr, val in tachycardiaAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
 				}
-				// ::CustomWeapons.GiveItem("The Crusader's Crossbow", self)
 				// CustomWeapons.GiveItem("The Amputator", self)
 				// //CustomWeapons.EquipItem("The Amputator", self)
 				// "Paintkit_proto_def_index" 3.16693e-43n
 				// "Set_item_texture_wear" 0
 				self.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
 				// self.AddWeaponRestriction(PRIMARY_ONLY)
-				 self.AddWeaponRestriction(MELEE_ONLY)
+				self.AddWeaponRestriction(MELEE_ONLY)
 
 				//He's taking your damn legs
 				for (local i = 1; i <= MaxPlayers ; i++)
@@ -310,10 +313,11 @@ __CollectGameEventCallbacks(bossCallbacks)
 
 				//Taunts to forcefully apply Tachycardia debuff on everyone
 				//Debuff function below
-				self.Taunt(TAUNT_BASE_WEAPON, 11)
+				self.Taunt(TAUNT_BASE_WEAPON, 11) //may want to delay this so it doesn't use demo voiceline?
 				break
 			case SARCOMA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_sarcoma", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_sarcoma")
 				foreach(attr, val in tachycardiaAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
@@ -336,6 +340,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case PNEUMONIA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_pneumonia", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_pneumonia")
 				self.SetScaleOverride(1.9)
 				self.RemoveWeaponRestriction(PRIMARY_ONLY)
 				self.AddWeaponRestriction(SECONDARY_ONLY)
@@ -344,13 +349,13 @@ __CollectGameEventCallbacks(bossCallbacks)
 				}
 				diseaseCallbacks.pneumoniaBot = self
 				stickyList = [] //wipe the old list
-				//self.AddCustomAttribute("custom projectile model", "models/villa/stickybomb_pneumonia.mdl", -1)
 				currentWeapon = ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
-				
+
 				//Attach think to stickies and have them do the rest
 				break
 			case CARDIAC_ARREST:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_cardiac", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "ukgr_cardiac", "ukgr_pneumonia")
 				self.AddWeaponRestriction(PRIMARY_ONLY)
 				self.AddCondEx(71, 6, null)
 
@@ -358,14 +363,14 @@ __CollectGameEventCallbacks(bossCallbacks)
 				while(caAudioEntity = Entities.FindByName(caAudioEntity, "heartbeat2")) {
 					caAudioEntity.AcceptInput("PlaySound", null, null, null)
 				}
-				
+
 				foreach(attr, val in pneumoniaAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
 				foreach(attr, val in cardiacAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
 				}
-			
+
 				self.AddCondEx(TF_COND_SODAPOPPER_HYPE, 11, null)
 				::CustomWeapons.GiveItem("The Direct Hit", self)
 
@@ -480,9 +485,7 @@ __CollectGameEventCallbacks(bossCallbacks)
             if(phaseTimer > 666 && !pausePhaseTimerActions) {
 				self.RemoveWeaponRestriction(SECONDARY_ONLY)
                 self.AddWeaponRestriction(PRIMARY_ONLY)
-                //::CustomWeapons.GiveItem("The Family Business", self)
                 ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_SYRINGEGUN_MEDIC", self)
-                //CustomWeapons.EquipItem("The Brass Beast", self)
                 self.AddCondEx(33, 10, null)
                 self.AddCustomAttribute("damage bonus", 3, -1)
                 self.SetScaleOverride(2.5)
@@ -506,14 +509,14 @@ __CollectGameEventCallbacks(bossCallbacks)
 					}
 				}
             }
-			
+
 			if(phaseTimer == 100) { //1.5s
 				foreach(sticky in stickyList) {
 					DispatchParticleEffect("pneumonia_stickybomb_aura", sticky.GetCenter(), Vector())
 				}
 				pausePhaseTimerActions = true //stop collecting stickies
 			}
-			
+
 			if(phaseTimer == 267) { //approx 4s
 				if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 				foreach(sticky in stickyList) {
@@ -522,7 +525,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				}
 				self.PressAltFireButton(0.1)
 			}
-			
+
             if(phaseTimer > 530) {
                 readyToChangePhase = true
                 currentPhase = CARDIAC_ARREST
@@ -535,7 +538,7 @@ __CollectGameEventCallbacks(bossCallbacks)
         }
        // return -1
     }
-	
+
 	waitForAllDeadThink <- function() {
 		local allBotsAreDead = true
 		for(local i = 1; i <= MaxPlayers ; i++) {
@@ -544,25 +547,25 @@ __CollectGameEventCallbacks(bossCallbacks)
 			if(!IsPlayerABot(player)) continue
 			if(player == self) continue
 			if(player == timer) continue
+			//if(player.HasBotTag("UKGR_tumor")) continue
 			if(NetProps.GetPropInt(player, "m_lifeState") == 0) {
 				allBotsAreDead = false
 				break
 			}
-			
-			if(allBotsAreDead) {
-				if(timer != null) {
-					timer.TakeDamage(1000, DMG_GENERIC, null)
-				}
-				local spawnbot = Entities.FindByName(null, "spawnbot")
-				self.Teleport(true, spawnbot.GetOrigin(), false, QAngle(), false, Vector())
-				self.RemoveCond(TF_COND_HALLOWEEN_SPEED_BOOST)
-				delete thinkTable.waitForAllDeadThink
-				thinkTable.ukgrThink <- ukgrThink
+		}
+		if(allBotsAreDead) {
+			if(timer != null) {
+				timer.TakeDamage(1000, 0, null)
 			}
+			local spawnbot = Entities.FindByName(null, "spawnbot")
+			self.Teleport(true, spawnbot.GetOrigin(), false, QAngle(), false, Vector())
+			self.RemoveCond(TF_COND_HALLOWEEN_SPEED_BOOST)
+			delete thinkTable.waitForAllDeadThink
+			thinkTable.ukgrThink <- ukgrThink
 		}
 	}
 	thinkTable.waitForAllDeadThink <- waitForAllDeadThink
-	
+
 	mainThink <- function() { //this is mostly to make the customattributes think works
 		if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 			delete thinkTable
