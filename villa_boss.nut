@@ -208,6 +208,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		damageTakenThisPhase = 0
 		ClientPrint(null, 3, "Phase changed!")
 		DispatchParticleEffect("ukgr_phase_change_flames", self.GetCenter(), Vector())
+		bossCallbacks.playSound("misc/halloween/spell_fireball_impact.wav")
 		switch(currentPhase) {
 			case HEMORRHAGIC_FEVER:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
@@ -308,7 +309,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 					if(player == null) continue
 					if(IsPlayerABot(player)) continue
 					if(player.GetTeam() != 2) continue
-					player.AddCustomAttribute("SET BONUS: move speed set bonus", 0.3, -1)
+					player.AddCustomAttribute("SET BONUS: move speed set bonus", 0.5, -1)
 				}
 
 				//Taunts to forcefully apply Tachycardia debuff on everyone
@@ -399,8 +400,9 @@ __CollectGameEventCallbacks(bossCallbacks)
             changePhase()
         }
         if(currentPhase == HEMORRHAGIC_FEVER) {
+			local currentEyeAngles = self.EyeAngles()
             spinAngle = spinAngle + 12
-			self.SnapEyeAngles(QAngle(0, spinAngle, 0))
+			self.SnapEyeAngles(QAngle(currentEyeAngles.x, spinAngle, currentEyeAngles.z))
             if(phaseTimer > 1000) {
                 readyToChangePhase = true
                 currentPhase = DYSPNEA
@@ -490,6 +492,12 @@ __CollectGameEventCallbacks(bossCallbacks)
                 self.AddCustomAttribute("damage bonus", 3, -1)
                 self.SetScaleOverride(2.5)
                 pausePhaseTimerActions = true
+				local audioEntity = null
+				while(audioEntity = Entities.FindByName(audioEntity, "sarcoma_evolution_sound")) {
+					audioEntity.AcceptInput("PlaySound", null, null, null)
+				}
+				EntFire("sarcoma_evolution_shake", "StartShake")
+				DispatchParticleEffect("sarcoma_explode", self.GetOrigin(), Vector())
             }
             else if(phaseTimer > 1000) {
                 readyToChangePhase = true
@@ -532,9 +540,18 @@ __CollectGameEventCallbacks(bossCallbacks)
             }
         }
         //It all loops back
-        else if(currentPhase == CARDIAC_ARREST && phaseTimer > 734) {
-            readyToChangePhase = true
-            currentPhase = HEMORRHAGIC_FEVER
+        else if(currentPhase == CARDIAC_ARREST) {
+			
+			if(phaseTimer == 400) {
+				EntFire("wakeup_sound*", "PlaySound")
+				EntFire("wakeup_shake*", "StartShake")
+			}
+
+			else if(phaseTimer > 734) {
+				readyToChangePhase = true
+            	currentPhase = HEMORRHAGIC_FEVER
+			}
+            
         }
        // return -1
     }
