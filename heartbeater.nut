@@ -61,10 +61,10 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 		local sound6 = "mvm/heartbeat6.mp3"
 		local sound7 = "mvm/heartbeat7.mp3"
 		
-		local stunDurationList = [40, 40, 40, 40, 40, 60, 60, 60, 60, 60, 100, 100, 100, 100, 100, 100, 120, 120, 160, 160, 200]
+		local stunDurationList = [40, 40, 40, 40, 60, 60, 60, 60, 60, 100, 100, 100, 100, 100, 100, 120, 120, 160, 160, 200]
 		// Raw sound names, new version calls ambient_generic entities instead
 		//local stunDurationAudioList = [sound1, sound2, sound3, sound3, sound3, sound4, sound5, sound6, sound7]
-		local stunDurationAudioList = ["heartbeat1", "heartbeat1", "heartbeat1", "heartbeat1", "heartbeat1", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat4", "heartbeat4", "heartbeat5", "heartbeat6", "heartbeat7"]
+		local stunDurationAudioList = ["heartbeat1", "heartbeat1", "heartbeat1", "heartbeat1", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat4", "heartbeat4", "heartbeat5", "heartbeat6", "heartbeat7"]
 		local stunDurationChoice = 2
 		local activeDuration = 0
 		local eligibleForStatChange = false
@@ -106,7 +106,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 			}
 			
 			if(activeDuration == 0 && eligibleForStun) { //if not stunned and eligible for stun
-				stunDurationChoice = bossIsBuffed ? RandomInt(0,9) : RandomInt(0,16)
+				stunDurationChoice = bossIsBuffed ? RandomInt(0,8) : RandomInt(0,21)
 				//printl("Stun Audio: " + stunDurationAudioList[stunDurationChoice])
 				//printl("Stun Duration: " + stunDurationList[stunDurationChoice])
 				

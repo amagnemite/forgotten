@@ -232,7 +232,7 @@ WaveSchedule
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 0.8
+				"move speed bonus" 1
 			}
 		}
 
@@ -248,7 +248,7 @@ WaveSchedule
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 0.8
+				"move speed bonus" 1
 			}
 		}
 
@@ -264,7 +264,7 @@ WaveSchedule
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 0.8
+				"move speed bonus" 1
 			}
 		}
 
@@ -280,7 +280,7 @@ WaveSchedule
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 0.8
+				"move speed bonus" 1
 			}
 		}
 
@@ -1132,7 +1132,7 @@ WaveSchedule
 			TFBot {
 				Template TimerBotOnly
 				ClassIcon timer_pink
-				Health 100
+				Health 90
 				//Health 10
 			}
 		}
@@ -1822,7 +1822,7 @@ WaveSchedule
 				Health 60
 			}
 		}
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws1
 			TotalCount 4
 			MaxActive 4
@@ -1855,7 +1855,7 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws2
 			TotalCount 4
 			MaxActive 4
@@ -1889,7 +1889,7 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws3
 			TotalCount 7
 			MaxActive 7
@@ -1918,7 +1918,7 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws4
 			TotalCount 6
 			MaxActive 6
@@ -1970,7 +1970,7 @@ WaveSchedule
 			}
 		}
 
-		WaveSpawn [$DISABLED] { //currently capped at 22 before
+		WaveSpawn { //currently capped at 22 before
 			Name ws5
 			TotalCount 6
 			MaxActive 6
@@ -2034,7 +2034,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws6
 			TotalCount 1
 			MaxActive 1
@@ -2075,7 +2075,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws7
 			TotalCount 5
 			MaxActive 5
@@ -2133,7 +2133,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws8
 			TotalCount 6
 			MaxActive 6
@@ -2216,7 +2216,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws9
 			TotalCount 4
 			MaxActive 4
@@ -2250,7 +2250,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws10
 			TotalCount 5
 			MaxActive 5
@@ -2287,7 +2287,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			Name ws11
 			TotalCount 3
 			MaxActive 3

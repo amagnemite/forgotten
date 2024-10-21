@@ -30,6 +30,14 @@ IncludeScript("customweaponsvillaedit.nut", getroottable())
 		activator.AcceptInput("RunScriptCode", "bossSpawnFunction()", null, null)
 	}
 
+	OnGameEvent_player_hurt = function(params) {
+		local player = GetPlayerFromUserID(params.userid)
+		if(player == null) return
+		if(!IsPlayerABot(player)) return
+        if(!player.HasBotTag("UKGR")) return
+        player.damageTakenThisPhase = player.damageTakenThisPhase + params.damageamount 
+    }
+
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
@@ -193,7 +201,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		"faster reload rate": 30,
 		"clip size upgrade atomic": -4
 		"stickybomb charge rate": 0.001
-		"projectile range increased": 0.35
+		"projectile range increased": 0.8
 	}
 
 	cardiacAttrs <- {
@@ -208,7 +216,12 @@ __CollectGameEventCallbacks(bossCallbacks)
 		damageTakenThisPhase = 0
 		ClientPrint(null, 3, "Phase changed!")
 		DispatchParticleEffect("ukgr_phase_change_flames", self.GetCenter(), Vector())
-		bossCallbacks.playSound("misc/halloween/spell_fireball_impact.wav")
+		EmitSoundEx({
+			sound_name = "misc/halloween/spell_fireball_impact.wav",
+			channel = 6,
+			origin = self.GetCenter(),
+			filter_type = RECIPIENT_FILTER_GLOBAL
+		})
 		switch(currentPhase) {
 			case HEMORRHAGIC_FEVER:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
@@ -529,7 +542,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 				foreach(sticky in stickyList) {
 					printl("spawned a pneumonia at sticky")
-					pneumoniaSpawner.SpawnEntityAtLocation(sticky.GetOrigin() + Vector(-192, 0, 0), Vector())
+					pneumoniaSpawner.SpawnEntityAtLocation(sticky.GetOrigin() + Vector(0, 0, 0), Vector())
 				}
 				self.PressAltFireButton(0.1)
 			}
