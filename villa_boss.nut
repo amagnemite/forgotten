@@ -1,5 +1,8 @@
 IncludeScript("customweaponsvillaedit.nut", getroottable())
 
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_tachycardia_intro"})
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
+
 ::bossCallbacks <- {
 	Cleanup = function() {
 		delete ::bossCallbacks
@@ -130,9 +133,16 @@ __CollectGameEventCallbacks(bossCallbacks)
         spawnflags = 64
     })
 
+	//Prep tachycardia particles
+    taParticle <- SpawnEntityFromTable("trigger_particle", {
+        particle_name = "ukgr_tachycardia_intro"
+        attachment_type = 1
+        spawnflags = 64
+    })
+
 	//don't forget to precache particle
 	teleportParticle <- SpawnEntityFromTable("info_particle_system", {
-		effect_name = "particle name"
+		effect_name = "ukgr_teleport_spellwheel"
 		start_active = false
 	})
 
@@ -160,12 +170,12 @@ __CollectGameEventCallbacks(bossCallbacks)
 	selfPush.AcceptInput("SetParent", "!activator", self, self)
 
 	hemorrhagicFeverAttrs <- {
-		"damage penalty": 2
-		"bleed duration": 3
+		"damage penalty": 3.5
+		// "bleed duration": 3
 	}
 
 	dyspneaAttrs <- { //json syntax because string literals get weird
-		"damage bonus": 0.1,
+		"damage bonus": 0.25,
 		"fire rate bonus": 0.1,
 		"projectile spread angle penalty": 60,
 		"faster reload rate": -1,
@@ -182,7 +192,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 	}
 
 	cardiomyopathyAttrs <- {
-		"damage bonus": 0.5,
+		"damage bonus": 0.75,
 		"fire rate bonus": 0.05,
 		"projectile spread angle penalty": 10,
 		"clip size upgrade atomic": 16,
@@ -193,6 +203,14 @@ __CollectGameEventCallbacks(bossCallbacks)
 		"damage bonus": 3,
 		"move speed bonus": 3,
 		"faster reload rate": 0.5
+	}
+
+	buffSarcomaAttrs <- {
+		"damage bonus": 4.9,
+		"projectile spread angle penalty": 10,
+		"fire rate bonus": 0.6,
+		"faster reload rate": 0.8,
+		"clip size upgrade atomic": 160
 	}
 
 	pneumoniaAttrs <- {
@@ -317,6 +335,10 @@ __CollectGameEventCallbacks(bossCallbacks)
 				// self.AddWeaponRestriction(PRIMARY_ONLY)
 				self.AddWeaponRestriction(MELEE_ONLY)
 
+				taParticle.AcceptInput("StartTouch", "!activator", self, self)
+				EntFireByHandle(taParticle, "EndTouch", "!activator", 2, self, self)
+				EntFireByHandle(self, "DispatchEffect", "ParticleEffectStop", 2, self, self)
+
 				//He's taking your damn legs
 				for (local i = 1; i <= MaxPlayers ; i++)
 				{
@@ -355,6 +377,9 @@ __CollectGameEventCallbacks(bossCallbacks)
 				self.AddCustomAttribute("move speed bonus", 2, -1)
 				break
 			case PNEUMONIA:
+				foreach(attr, val in buffSarcomaAttrs) {
+					self.RemoveCustomAttribute(attr)
+				}
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_pneumonia", WAVEBAR_SLOT_NO)
 				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_pneumonia")
 				self.SetScaleOverride(1.9)
@@ -371,7 +396,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case CARDIAC_ARREST:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_cardiac", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "ukgr_cardiac", "ukgr_pneumonia")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_cardiac")
 				self.AddWeaponRestriction(PRIMARY_ONLY)
 				self.AddCondEx(71, 6, null)
 
@@ -499,12 +524,14 @@ __CollectGameEventCallbacks(bossCallbacks)
                 pausePhaseTimerActions = true
             }
 
-            if(phaseTimer > 666 && !pausePhaseTimerActions) {
+            if(phaseTimer > 333 && !pausePhaseTimerActions) {
 				self.RemoveWeaponRestriction(SECONDARY_ONLY)
                 self.AddWeaponRestriction(PRIMARY_ONLY)
                 ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_SYRINGEGUN_MEDIC", self)
                 self.AddCondEx(33, 10, null)
-                self.AddCustomAttribute("damage bonus", 3, -1)
+                foreach(attr, val in buffSarcomaAttrs) {
+					self.AddCustomAttribute(attr, val, -1)
+				}
                 self.SetScaleOverride(2.5)
                 pausePhaseTimerActions = true
 				local audioEntity = null

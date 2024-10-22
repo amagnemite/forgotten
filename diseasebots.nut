@@ -680,16 +680,18 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				return
 			}
 			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-			if(newTicks > 5) {
-				newTicks = 5
+			if(ticksToAdd > 0) diseaseCallbacks.playSound("player/pl_burnpain3.wav", self)
+			else {
+				diseaseCallbacks.playSound("player/flame_out.wav", self)
+				if(newTicks >= 10) newTicks = 9
 			}
-			else if(newTicks < 0) {
-				newTicks = 0
-			}
+			
+			if(newTicks > 40) newTicks = 40
+			else if(newTicks < 0) newTicks = 0
 			activator.GetScriptScope().feverTicks = newTicks
 
-			if(newTicks >= 5) {
-				activator.TakeDamage(20, DMG_BURN, owner)
+			if(newTicks >= 10) {
+				activator.TakeDamage(5 + (newTicks * 0.5), DMG_BURN, owner)
 				diseaseCallbacks.playSound("Fire.Engulf", self)
 			}
 		}
