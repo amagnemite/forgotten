@@ -975,8 +975,6 @@ WaveSchedule
 				{
 					ItemName "The Direct Hit"
 					"damage bonus" 3
-					"provide on active" 1
-					"dmg from melee increased" 1.5
 					"fire rate bonus" 0.3
 					"faster reload rate" -0.8
 					"killstreak tier" 3
@@ -986,8 +984,6 @@ WaveSchedule
 				ItemAttributes
 				{
 					ItemName "The Market Gardener"
-					"provide on active" 1
-					"dmg from melee increased" 2
 					"damage bonus" 99
 					"damage causes airblast" 1
 					"subtract victim medigun charge on hit" 100
@@ -998,6 +994,7 @@ WaveSchedule
 				}
 				CharacterAttributes
 				{
+					"dmg from melee increased" 2
 					"damage force reduction" 0.0000000001
 					"airblast vulnerability multiplier" 0.0000000001
 					"override footstep sound set" 3
