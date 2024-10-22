@@ -77,10 +77,13 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 		if(player.HasBotTag("Hemorrhagic_Fever")) {
 			EntFire("hemorrhagic_fever_trigger", "Disable")
+			/*
 			local hemorrhagicFeverParticle = null
 			while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
 				hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
 			}
+			*/
+			EntFire("hemorrhagic_fever_fire_particles", "Stop")
 			EntFire("hemorrhagic_fever_weapon_particles", "Stop")
 			if(player.GetScriptScope().rageParticle.IsValid()) {
 				player.GetScriptScope().rageParticle.Kill()
@@ -149,8 +152,11 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.addPlayerDebuffThink()", -1, player, null)
 		}
 		else {
+			player.ValidateScriptScope()
+			player.GetScriptScope().onContainmentBreach <- function() {
+				self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST)
+			}
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.specialDiseaseCheck()", -1, player, null)
-			if(containmentBreachActive) EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.applyContainmentBreachBuffs()", -1, player, null)
 		}
 	}
 	
@@ -160,7 +166,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		local scope = template.GetScriptScope()
 		
 		scope.PreSpawnInstance <- function(classname, targetname) { //this needs to be present
-			//printl(classname + " " + targetname)
+		
 		}
 	
 		scope.PostSpawn <- function(entities) {
@@ -173,14 +179,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					}
 				}
 				EntFireByHandle(handle, "Kill", null, 2, null, null)
-				//printl(targetname + " " + handle)
 			}
 		}
-	}
-	
-	applyContainmentBreachBuffs = function () {
-		if(!activator.HasBotTag("UKGR") && !activator.HasBotTag("UKGR_TUMOR")) return
-		activator.AddCondEx(72, -1, null)
 	}
 
 	specialDiseaseCheck = function() {
@@ -233,12 +233,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-				//if("pneumoniaBot" in diseaseCallbacks) { fix this later
-				//	pneumoniaBot = null
-				//}
 			}
-			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 			
+			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 			pneumoniaSpawner.SpawnEntityAtEntityOrigin(self)
 			
 			return 1
@@ -356,10 +353,13 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				default:
 					break
 			}
+			/*
 			local audioEntity = null
 			while(audioEntity = Entities.FindByName(audioEntity, "sarcoma_evolution_sound")) {
 				audioEntity.AcceptInput("PlaySound", null, null, null)
 			}
+			*/
+			EntFire("sarcoma_evolution_sound", "PlaySound")
 			EntFire("sarcoma_evolution_shake", "StartShake")
 			DispatchParticleEffect("sarcoma_explode", self.GetOrigin(), Vector())
 			EntFireByHandle(sarcomaPush, "Disable", null, 0.5, null, null)
@@ -375,7 +375,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		activator.ValidateScriptScope()
 		local scope = activator.GetScriptScope()
 		scope.MOVESPEEDBASE <- 0.5
-		scope.HEALTHBONUS <- 200
+		scope.HEALTHBONUS <- 400
 		scope.playersEaten <- 0
 		scope.medigun <- null
 		scope.deadSupport <- 0
@@ -445,7 +445,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(target != null) {
 				DispatchParticleEffect("rd_robot_explosion", target.GetOrigin(), Vector())
 				target.TakeDamageCustom(self, target, medigun, Vector(0, 0, 1), target.GetCenter(),
-					1000, DMG_BLAST, TF_DMG_CUSTOM_MERASMUS_ZAP);
+					40, DMG_BLAST, TF_DMG_CUSTOM_MERASMUS_ZAP); //kills in approx a second
 				EmitSoundEx({
 					sound_name = "ambient/grinder/grinderbot_03.wav",
 					channel = 6,
@@ -514,6 +514,11 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				params.force_friendly_fire = true
 			}
 		}
+		
+		scope.onContainmentBreach <- function() {
+			self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST)
+		}
+		
 		__CollectGameEventCallbacks(medBotCallbacks)
 		AddThinkToEnt(activator, "offensiveThink")
 	}
@@ -538,7 +543,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.tachycardiaDebuffed <- false
 		scope.playerDebuffThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
-				delete self.GetScriptScope().thinkTable.playerDebuffThink
+				delete thinkTable.playerDebuffThink
 				return
 			}
 			if(timeCounter < DEFAULTTIME) {
@@ -628,7 +633,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
             }
         }
 		
-		
 		scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
 			targetname = "hemorrhagic_fever_weapon_particles"
 			effect_name = "hemorrhagic_fever_flamethrower"
@@ -661,16 +665,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			spawnflags = 64
 		})
 
-		if(containmentBreachActive) {
-			player.AddCustomAttribute("move speed bonus", 0.6, -1)
-			player.AddCustomAttribute("damage bonus", 5, -1)
-			player.AddCustomAttribute("bleeding duration", 5, -1)
-			player.AddCustomAttribute("dmg taken increased", 2, -1)
-			return
-		}
-
 		local hemorrhagicFeverTrigger = Entities.FindByName(null, "hemorrhagic_fever_trigger")
-		// while(hemorrhagicFeverTrigger = Entities.FindByName(hemorrhagicFeverTrigger, "hemorrhagic_fever_trigger")) {
 		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
 		hemorrhagicFeverTrigger.ValidateScriptScope()
 		hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
@@ -699,11 +694,30 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				diseaseCallbacks.playSound("Fire.Engulf", self)
 			}
 		}
-		// }
-
+	
+		/*
 		local hemorrhagicFeverParticle = null
 		while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
 			hemorrhagicFeverParticle.AcceptInput("Start", null, null, null)
+		}
+		*/
+		EntFire("hemorrhagic_fever_fire_particles", "Start")
+		
+		scope.onContainmentBreach <- function() {
+			self.AddCustomAttribute("move speed bonus", 0.6, -1)
+			self.AddCustomAttribute("damage bonus", 5, -1)
+			self.AddCustomAttribute("bleeding duration", 5, -1)
+			self.AddCustomAttribute("dmg taken increased", 2, -1)
+
+			EntFire("hemorrhagic_fever_trigger", "Disable", null, -1)
+			self.GetScriptScope().rageParticle.AcceptInput("StartTouch", "!activator", self, self)
+			/*
+			local hemorrhagicFeverParticle = null
+			while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
+				hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
+			}
+			*/
+			EntFire("hemorrhagic_fever_fire_particles", "Stop")
 		}
 	}
 
@@ -715,28 +729,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(!IsPlayerABot(player)) continue
 			if(NetProps.GetPropInt(player, "m_lifeState") != 0) continue
 
-			player.AddCondEx(72, -1, null)
 			if(player.HasBotTag("Sarcoma_w6")) {
 				player.AddCustomAttribute("move speed bonus", 0.6, -1)
 				player.AddCustomAttribute("health drain", -2, -1)
-			}
-			else if(player.HasBotTag("Hemorrhagic_Fever")) {
-				player.AddCustomAttribute("move speed bonus", 0.6, -1)
-				player.AddCustomAttribute("damage bonus", 5, -1)
-				player.AddCustomAttribute("bleeding duration", 5, -1)
-				player.AddCustomAttribute("dmg taken increased", 2, -1)
-
-				EntFire("hemorrhagic_fever_trigger", "Disable", null, -1)
-				player.GetScriptScope().rageParticle.AcceptInput("StartTouch", "!activator", player, player)
-				local hemorrhagicFeverParticle = null
-				while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
-					hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
-				}
-			}
-			else if(player.HasBotTag("gmed")) {
-				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-				player.GetScriptScope().cleanup()
-				//this deletes the death callback, so for now he'll just have the buffs he gained before containmentbreaker
 			}
 		}
 	}

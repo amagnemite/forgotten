@@ -597,43 +597,16 @@ __CollectGameEventCallbacks(bossCallbacks)
         }
        // return -1
     }
-	
-	/*
-	waitForAllDeadThink <- function() {
-		local allBotsAreDead = true
-		for(local i = 1; i <= MaxPlayers ; i++) {
-			local player = PlayerInstanceFromIndex(i)
-			if(player == null) continue
-			if(!IsPlayerABot(player)) continue
-			if(player == self) continue
-			if(player == timer) continue
-			//if(player.HasBotTag("UKGR_tumor")) continue
-			if(NetProps.GetPropInt(player, "m_lifeState") == 0) {
-				allBotsAreDead = false
-				break
-			}
-		}
-		if(allBotsAreDead) {
-			if(timer != null) {
-				timer.TakeDamage(1000, 0, null)
-			}
-			local spawnbot = Entities.FindByName(null, "spawnbot")
-			self.Teleport(true, spawnbot.GetOrigin(), false, QAngle(), false, Vector())
-			self.RemoveCond(TF_COND_HALLOWEEN_SPEED_BOOST)
-			//ClientPrint(null, 3, "ukgr has been released")
-			delete thinkTable.waitForAllDeadThink
-			thinkTable.ukgrThink <- ukgrThink
-		}
-	}
-	thinkTable.waitForAllDeadThink <- waitForAllDeadThink
-	*/
-	
 	thinkTable.ukgrThink <- ukgrThink
-	mainThink <- function() { //this is mostly to make the customattributes think works
+	
+	mainThink <- function() { //this is mostly to make the customweapons think works
 		if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 			delete thinkTable
 			AddThinkToEnt(self, null)
 			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
+			foreach(k, v in GetScriptScope()) {
+			
+			}
 			return
 		}
 
