@@ -884,7 +884,7 @@ WaveSchedule
 			Where spawnbot_invasion
 			TotalCount 18
 			MaxActive 6
-			SpawnCount 2
+			SpawnCount 3
 			WaitBeforeStarting 13
 			WaitBetweenSpawns 3
 			WaitForAllSpawned w1aa
@@ -923,7 +923,7 @@ WaveSchedule
 			Param
 			"
 				EntFire(`gamerules`, `RunScriptFile`, `heartbeater.nut`, -1)
-				EntFire(`altmode_roof_wave_start_reviveonly_relay`, `RunScriptCode`, `heartbeaterCallbacks.updateMaxSpeed()`, 0)
+				heartbeaterCallbacks.updateMaxSpeed()
 				self.AcceptInput(`Trigger`, null, null, null)
 			"
 		}
@@ -933,8 +933,7 @@ WaveSchedule
 			Action	RunScriptCode
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
-				self.AcceptInput(`CallScriptFunction`, `teleportToSpawn`, null, null)
-				//EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
+				teleportToSpawn()
 				EntFire(`door_red_*`, `Unlock`, null, -1)
 			"
 		}
@@ -1369,8 +1368,7 @@ WaveSchedule
 			Action	RunScriptCode
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
-				self.AcceptInput(`CallScriptFunction`, `teleportToSpawn`, null, null)
-				//EntFire(`altmode_wave_finished_relay`, `CallScriptFunction`, `teleportToSpawn`)
+				teleportToSpawn()
 				EntFire(`door_red_*`, `Unlock`, null, -1)
 			"
 		}
@@ -1805,7 +1803,6 @@ WaveSchedule
 				EntFire(`gamerules`, `RunScriptFile`, `diseasebots.nut`, -1)
 				EntFire(`altmode_chaos_script`, `CallScriptFunction`, `startWave`, -1)
 				IncludeScript(`altmodenests.nut`, getroottable())
-				//IncludeScript(`villa_boss.nut`, getroottable())
 			"
 		}
 		DoneOutput {
@@ -1824,7 +1821,8 @@ WaveSchedule
 				Action RunScriptCode
 				Delay 0.1
 				Param "
-					findTimerBot(1, true, diseaseCallbacks.containmentBreachBuffs, false)
+					//findTimerBot(1, true, diseaseCallbacks.containmentBreachBuffs, false)
+					findTimerBot(1, true, null, false)
 				"
 			}
 			
@@ -1844,7 +1842,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws1`)"
+				Param "DoneRoom(`ws1`, true)"
 			}
 			
 			Squad {
@@ -1920,7 +1918,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws2`)"
+				Param "DoneRoom(`ws2`, true)"
 			}
 			Squad {
 				TFBot {
@@ -1975,7 +1973,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws3`)"
+				Param "DoneRoom(`ws3`, true)"
 			}
 			
 			TFBot {
@@ -2011,7 +2009,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws4`)"
+				Param "DoneRoom(`ws4`, true)"
 			}
 			
 			Squad {
@@ -2088,7 +2086,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws5`)"
+				Param "DoneRoom(`ws5`, true)"
 			}
 			
 			Squad {
@@ -2195,7 +2193,7 @@ WaveSchedule
 				Target altmode_chaos_script
 				Action RunScriptCode
 				Param "
-					DoneRoom(`ws6`)
+					DoneRoom(`ws6`, true)
 				"
 			}
 			
@@ -2243,7 +2241,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws7`)"
+				Param "DoneRoom(`ws7`, true)"
 			}
 			
 			Squad {
@@ -2321,7 +2319,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws8`)"
+				Param "DoneRoom(`ws8`, true)"
 			}
 			
 			Squad {
@@ -2442,7 +2440,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws9`)"
+				Param "DoneRoom(`ws9`, true)"
 			}
 			
 			Squad {
@@ -2499,7 +2497,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws10`)"
+				Param "DoneRoom(`ws10`, true)"
 			}
 			
 			Squad {
@@ -2577,7 +2575,7 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "DoneRoom(`ws11`)"
+				Param "DoneRoom(`ws11`, true)"
 			}
 			
 			Squad {

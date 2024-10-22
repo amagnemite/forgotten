@@ -154,7 +154,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		else {
 			player.ValidateScriptScope()
 			player.GetScriptScope().onContainmentBreach <- function() {
-				self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST)
+				self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
 			}
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.specialDiseaseCheck()", -1, player, null)
 		}
@@ -256,6 +256,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.sarcomaStage <- 0
 		scope.sarcomaThresholds <- [12, 24, 36, 48, 70, 999999] //Time to reach each stage, in seconds
 		scope.sarcomaNextStage <- scope.sarcomaThresholds[0]
+		scope.containmentBreachActive <- false
 
 		scope.sarcomaPush <- SpawnEntityFromTable("trigger_push", {
 			origin = activator.GetCenter()
@@ -279,7 +280,13 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.selfPush.SetSolid(2)
 		scope.selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
 		scope.selfPush.AcceptInput("SetParent", "!activator", activator, activator)
-
+		
+		scope.onContainmentBreach <- function() {
+			self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
+			containmentBreachActive = true
+			self.AddCustomAttribute("health drain", -2, -1)
+		}
+		
 		activator.GetScriptScope().sarcomaThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
@@ -516,7 +523,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		}
 		
 		scope.onContainmentBreach <- function() {
-			self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST)
+			EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
+			cleanup()
 		}
 		
 		__CollectGameEventCallbacks(medBotCallbacks)
@@ -669,21 +677,23 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
 		hemorrhagicFeverTrigger.ValidateScriptScope()
 		hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
-		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) {
+		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) { //defined in map
 			if(!("feverTicks" in activator.GetScriptScope())) {
 				activator.GetScriptScope().feverTicks <- 0
 				return
 			}
 			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-			if(ticksToAdd > 0) diseaseCallbacks.playSound("player/pl_burnpain3.wav", self)
+			if(ticksToAdd > 0) {
+				diseaseCallbacks.playSound("player/pl_burnpain3.wav", self)
+			}
 			else {
 				diseaseCallbacks.playSound("player/flame_out.wav", self)
 				if(newTicks >= 10) newTicks = 9
 				activator.ExtinguishPlayerBurning()
 			}
 			
-			if(newTicks > 40) newTicks = 40
-			else if(newTicks < 0) newTicks = 0
+			newTicks = newTicks > 40 ? 40 : ((newTicks < 0) ? 0 : newticks)
+
 			activator.GetScriptScope().feverTicks = newTicks
 
 			if(newTicks >= 10) {
@@ -704,6 +714,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		EntFire("hemorrhagic_fever_fire_particles", "Start")
 		
 		scope.onContainmentBreach <- function() {
+			self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
 			self.AddCustomAttribute("move speed bonus", 0.6, -1)
 			self.AddCustomAttribute("damage bonus", 5, -1)
 			self.AddCustomAttribute("bleeding duration", 5, -1)
@@ -718,21 +729,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 			*/
 			EntFire("hemorrhagic_fever_fire_particles", "Stop")
-		}
-	}
-
-	containmentBreachBuffs = function() {
-		for (local i = 1; i <= MaxPlayers ; i++)
-		{
-			local player = PlayerInstanceFromIndex(i)
-			if(player == null) continue
-			if(!IsPlayerABot(player)) continue
-			if(NetProps.GetPropInt(player, "m_lifeState") != 0) continue
-
-			if(player.HasBotTag("Sarcoma_w6")) {
-				player.AddCustomAttribute("move speed bonus", 0.6, -1)
-				player.AddCustomAttribute("health drain", -2, -1)
-			}
 		}
 	}
 }
