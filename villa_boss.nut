@@ -2,6 +2,7 @@ IncludeScript("customweaponsvillaedit.nut", getroottable())
 
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_tachycardia_intro"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
 
 ::bossCallbacks <- {
 	Cleanup = function() {
@@ -87,7 +88,16 @@ __CollectGameEventCallbacks(bossCallbacks)
 //todo: figure out how to clean this scope up
 ::bossSpawnFunction <- function() {
 	thinkTable <- {}
-    self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
+    self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic_ukgr.mdl")
+
+	unusualParticle <- SpawnEntityFromTable("info_particle_system", {
+		effect_name = "boss_halo"
+		start_active = true
+	})
+
+	unusualParticle.AcceptInput("SetParent", "!activator", self, self)
+	unusualParticle.AcceptInput("SetParentAttachment", "head", self, self)
+
 	local objRes = Entities.FindByClassname(null, "tf_objective_resource")
 
     //==MIMIC ORDER==
