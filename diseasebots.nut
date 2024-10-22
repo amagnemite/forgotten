@@ -6,6 +6,8 @@
 PrecacheSound("vo/halloween_haunted1.mp3")
 PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
 PrecacheSound("ambient/grinder/grinderbot_03.wav")
+PrecacheSound("player/pl_burnpain3.wav")
+PrecacheSound("player/flame_out.wav")
 PrecacheScriptSound("Weapon_DragonsFury.BonusDamageHit")
 PrecacheScriptSound("Halloween.spell_overheal")
 PrecacheScriptSound("Halloween.spell_lightning_cast")
@@ -207,7 +209,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_scout_boss.mdl")
 					break
 				case "UKGR_Tumor":
-					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
+					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic_ukgr.mdl")
 					break
 				case "Malignant_Tumor":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy.mdl")
@@ -304,7 +306,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 			if(self.GetLocomotionInterface().IsStuck()) { //safety for altmode, since he tends to hump walls and get stuck
 				//printl("sarcoma triggered antistuck")
-				local angles = self.GetEyeAngles()
+				local angles = self.EyeAngles()
 				local newYaw = (ceil(angles.y) + 180) % 360
 				
 				NetProps.SetPropVector(selfPush, "m_vecPushDir", Vector(angles.x, newYaw, 0))
@@ -646,7 +648,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			effect_name = "hemorrhagic_fever_flamethrower"
 			//effect_name = "teleporter_mvm_bot_persist"
 			//effect_name = "flamethrower_halloween"
-			start_active = 1
+			start_active = 0
 			origin = activator.GetOrigin()
 		})
 		
@@ -683,12 +685,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				return
 			}
 			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-			if(ticksToAdd > 0) {
-				diseaseCallbacks.playSound("player/pl_burnpain3.wav", self)
-			}
+			//ClientPrint(null, 3, "New ticks at " + newTicks)
+			if(ticksToAdd > 0) diseaseCallbacks.playSound("player/pl_burnpain3.wav", activator)
 			else {
-				diseaseCallbacks.playSound("player/flame_out.wav", self)
-				if(newTicks >= 10) newTicks = 9
+				diseaseCallbacks.playSound("player/flame_out.wav", activator)
+				if(newTicks >= 7) {
+					newTicks = 7
+					// ClientPrint(null, 3, "New ticks above 10, setting to 9...")
+				}
 				activator.ExtinguishPlayerBurning()
 			}
 			
@@ -697,11 +701,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			activator.GetScriptScope().feverTicks = newTicks
 
 			if(newTicks >= 10) {
+				//ClientPrint(null, 3, "Ouch! Doing " + (5 + (newTicks * 0.5)) + " damage")
 				activator.TakeDamage(5 + (newTicks * 0.5), DMG_BURN, owner)
 				//Doesn't burn player but plays on fire voicelines pog
 				activator.IgnitePlayer()
-				activator.ViewPunch(QAngle(-20, 0, 0))
-				diseaseCallbacks.playSound("Fire.Engulf", self)
+				activator.ViewPunch(QAngle(-10, 0, 0))
+				diseaseCallbacks.playSound("Fire.Engulf", activator)
 			}
 		}
 	
@@ -716,7 +721,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.onContainmentBreach <- function() {
 			self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
 			self.AddCustomAttribute("move speed bonus", 0.6, -1)
-			self.AddCustomAttribute("damage bonus", 5, -1)
+			self.AddCustomAttribute("damage bonus", 1.5, -1)
 			self.AddCustomAttribute("bleeding duration", 5, -1)
 			self.AddCustomAttribute("dmg taken increased", 2, -1)
 
@@ -775,4 +780,8 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
 
 	diseaseCallbacks.playSound("Halloween.spell_overheal", self)
+}
+
+::testSound <- function() {
+	diseaseCallbacks.playSound("player/flame_out.wav", activator)
 }

@@ -1,5 +1,6 @@
 IncludeScript("customweaponsvillaedit.nut", getroottable())
 
+PrecacheSound("misc/halloween/spell_fireball_impact.wav")
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_tachycardia_intro"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
@@ -17,6 +18,11 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 
 	OnGameEvent_mvm_wave_complete = function(_) {
 		Cleanup()
+	}
+
+	OnGameEvent_mvm_wave_failed = function(_) {
+		EntFire("boss_halo_*","SetParent","")
+		EntFire("boss_halo_*","AddOutput","origin 0 0 0")
 	}
 
     OnGameEvent_player_spawn = function(params) {
@@ -91,6 +97,7 @@ __CollectGameEventCallbacks(bossCallbacks)
     self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic_ukgr.mdl")
 
 	unusualParticle <- SpawnEntityFromTable("info_particle_system", {
+		targetname = "boss_halo_particle"
 		effect_name = "boss_halo"
 		start_active = true
 	})
@@ -216,7 +223,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 	}
 
 	buffSarcomaAttrs <- {
-		"damage bonus": 4.9,
+		"damage bonus": 3,
 		"projectile spread angle penalty": 10,
 		"fire rate bonus": 0.6,
 		"faster reload rate": 0.8,
@@ -315,7 +322,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 					player.Teleport(true, lastPosition, false, QAngle(), false, Vector())
 				}
 				self.Teleport(true, Vector(-2600, -871, 1493), false, QAngle(), false, Vector()) //Teleports to spawnbot_altmode
-				teleportParticle.SetOrigin(Vector(-2600, -871, 1493))
+				teleportParticle.SetOrigin(lastPosition)
 				teleportParticle.AcceptInput("Start", null, null, null)
 				//Remember to make tumors explode on death and deal 125 dmg to boss
 				break
@@ -348,16 +355,6 @@ __CollectGameEventCallbacks(bossCallbacks)
 				taParticle.AcceptInput("StartTouch", "!activator", self, self)
 				EntFireByHandle(taParticle, "EndTouch", "!activator", 2, self, self)
 				EntFireByHandle(self, "DispatchEffect", "ParticleEffectStop", 2, self, self)
-
-				//He's taking your damn legs
-				for (local i = 1; i <= MaxPlayers ; i++)
-				{
-					local player = PlayerInstanceFromIndex(i)
-					if(player == null) continue
-					if(IsPlayerABot(player)) continue
-					if(player.GetTeam() != 2) continue
-					player.AddCustomAttribute("SET BONUS: move speed set bonus", 0.5, -1)
-				}
 
 				//Taunts to forcefully apply Tachycardia debuff on everyone
 				//Debuff function below
@@ -504,6 +501,8 @@ __CollectGameEventCallbacks(bossCallbacks)
                     local player = PlayerInstanceFromIndex(i)
                     if(player == null) continue
                     if(IsPlayerABot(player)) continue
+					//He's taking your damn legs
+					player.AddCustomAttribute("SET BONUS: move speed set bonus", 0.5, -1)
                     player.AddCondEx(32, 18, null)
                 }
                 pausePhaseTimerActions = true
@@ -614,9 +613,9 @@ __CollectGameEventCallbacks(bossCallbacks)
 			delete thinkTable
 			AddThinkToEnt(self, null)
 			NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-			foreach(k, v in GetScriptScope()) {
+			// foreach(k, v in GetScriptScope()) {
 			
-			}
+			// }
 			return
 		}
 

@@ -2726,7 +2726,7 @@ WaveSchedule
 				Name "Heavy"
 				ClassIcon heavy
 				Action Mobber
-				Skill Hard
+				Skill Easy
 				Health 1500
 				Scale 1.5
 				CharacterAttributes
