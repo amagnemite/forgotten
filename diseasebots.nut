@@ -684,6 +684,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			else {
 				diseaseCallbacks.playSound("player/flame_out.wav", self)
 				if(newTicks >= 10) newTicks = 9
+				activator.ExtinguishPlayerBurning()
 			}
 			
 			if(newTicks > 40) newTicks = 40
@@ -692,6 +693,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 
 			if(newTicks >= 10) {
 				activator.TakeDamage(5 + (newTicks * 0.5), DMG_BURN, owner)
+				//Doesn't burn player but plays on fire voicelines pog
+				activator.IgnitePlayer()
+				activator.ViewPunch(QAngle(-20, 0, 0))
 				diseaseCallbacks.playSound("Fire.Engulf", self)
 			}
 		}
