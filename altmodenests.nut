@@ -80,29 +80,15 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 SpawnEntityFromTable("bot_hint_sentrygun", {
 	targetname = "nest_alt_4"
 	startdisabled = true
-	origin = Vector(-1232, 2512, 576)
-	angles = QAngle(0, 240, 0)
-	teamnum = TF_TEAM_BLUE
-})
-SpawnEntityFromTable("bot_hint_sentrygun", {
-	targetname = "nest_alt_4"
-	startdisabled = true
-	origin = Vector(-1056, 1920, 576)
-	angles = QAngle(0, 150, 0)
-	teamnum = TF_TEAM_BLUE
-})
-SpawnEntityFromTable("bot_hint_engineer_nest", {
-	targetname = "nest_alt_4"
-	startdisabled = true
-	origin = Vector(-1232, 2512, 576)
+	origin = Vector(-1040, 2192, 576)
 	angles = QAngle(0, 240, 0)
 	teamnum = TF_TEAM_BLUE
 })
 SpawnEntityFromTable("bot_hint_engineer_nest", {
 	targetname = "nest_alt_4"
 	startdisabled = true
-	origin = Vector(-1056, 1920, 576)
-	angles = QAngle(0, 150, 0)
+	origin = Vector(-1040, 2192, 576)
+	angles = QAngle(0, 240, 0)
 	teamnum = TF_TEAM_BLUE
 })
 
@@ -150,38 +136,6 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 	teamnum = TF_TEAM_BLUE
 })
 
-//nests 6
-SpawnEntityFromTable("bot_hint_sentrygun", {
-	targetname = "nest_alt_6"
-	startdisabled = true
-	origin = Vector(-3106, 3001, 1088)
-	angles = QAngle(0, 225, 0)
-	teamnum = TF_TEAM_BLUE
-})
-SpawnEntityFromTable("bot_hint_engineer_nest", {
-	targetname = "nest_alt_6"
-	startdisabled = true
-	origin = Vector(-3106, 3001, 1088)
-	angles = QAngle(0, 225, 0)
-	teamnum = TF_TEAM_BLUE
-})
-
-//nests 7
-SpawnEntityFromTable("bot_hint_sentrygun", {
-	targetname = "nest_alt_7"
-	startdisabled = true
-	origin = Vector(-1186, 3908, 1280)
-	angles = QAngle(0, 225, 0)
-	teamnum = TF_TEAM_BLUE
-})
-SpawnEntityFromTable("bot_hint_engineer_nest", {
-	targetname = "nest_alt_7"
-	startdisabled = true
-	origin = Vector(-1186, 3908, 1280)
-	angles = QAngle(0, 225, 0)
-	teamnum = TF_TEAM_BLUE
-})
-
 SpawnEntityFromTable("filter_tf_bot_has_tag", {
 	targetname = "engibotfilter"
 	tags = "ws11"
@@ -201,8 +155,8 @@ scope.nests2 <- ["nest_leftfirst_5", "nest_alt_2"]
 scope.nests3 <- ["nest_left_1", "nest_right_1", "nest_alt_3"]
 scope.nests4 <- ["nest_leftfirst_1", "nest_alt_4"]
 scope.nests5 <- ["nest_alt_5"]
-scope.nests6 <- ["nest_rightsecond_3", "nest_rightsecond_9", "nest_alt_6"]
-scope.nests7 <- ["nest_leftsecond_5", "nest_leftsecond_6", "nest_alt_7"]
+scope.nests6 <- ["nest_rightsecond_3", "nest_rightsecond_9"]
+scope.nests7 <- ["nest_leftsecond_5", "nest_leftsecond_6"]
 
 scope.activateNests <- function() {
 	local altmodeScope = Entities.FindByName(null, "altmode_chaos_script").GetScriptScope()

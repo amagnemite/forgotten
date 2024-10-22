@@ -29,14 +29,16 @@ IncludeScript("customweaponsvillaedit.nut", getroottable())
 		if(!activator.HasBotTag("UKGR")) return
 		activator.AcceptInput("RunScriptCode", "bossSpawnFunction()", null, null)
 	}
-
+	
+	/*
 	OnGameEvent_player_hurt = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
 		if(!IsPlayerABot(player)) return
         if(!player.HasBotTag("UKGR")) return
-        player.damageTakenThisPhase = player.damageTakenThisPhase + params.damageamount 
+        player.GetScriptScope().damageTakenThisPhase = player.GetScriptScope().damageTakenThisPhase + params.damageamount 
     }
+	*/
 
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
@@ -104,7 +106,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 	PNEUMONIA <- 6
 	CARDIAC_ARREST <- 7
 
-	WAVEBAR_SLOT_NO <- 1
+	WAVEBAR_SLOT_NO <- 0
 
 	currentPhase <- HEMORRHAGIC_FEVER
     readyToChangePhase <- true
@@ -214,7 +216,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		phaseTimer = 0
 		pausePhaseTimerActions = false
 		damageTakenThisPhase = 0
-		ClientPrint(null, 3, "Phase changed!")
+		//ClientPrint(null, 3, "Phase changed!")
 		DispatchParticleEffect("ukgr_phase_change_flames", self.GetCenter(), Vector())
 		EmitSoundEx({
 			sound_name = "misc/halloween/spell_fireball_impact.wav",
@@ -225,7 +227,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 		switch(currentPhase) {
 			case HEMORRHAGIC_FEVER:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_fever")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_fever")
 				self.AddWeaponRestriction(PRIMARY_ONLY)
 				self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
 
@@ -254,7 +256,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case DYSPNEA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_dyspnea", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_dyspnea")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_dyspnea")
 				foreach(attr, val in hemorrhagicFeverAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
@@ -266,7 +268,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case MALIGNANT_TUMOR:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_tumor", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_tumor")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_tumor")
 				::CustomWeapons.GiveItem("The Crusader's Crossbow", self)
 				foreach(attr, val in dyspneaAttrs) {
 					self.RemoveCustomAttribute(attr)
@@ -291,7 +293,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case CARDIOMYOPATHY:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_burstdemo", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_burstdemo")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_burstdemo")
 				::CustomWeapons.GiveItem("The Iron Bomber", self)
 				self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
 				foreach(attr, val in cardiomyopathyAttrs) {
@@ -300,7 +302,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case TACHYCARDIA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_tachycardia", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_tachycardia")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_tachycardia")
 				foreach(attr, val in cardiomyopathyAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
@@ -331,7 +333,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case SARCOMA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_sarcoma", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_sarcoma")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_sarcoma")
 				foreach(attr, val in tachycardiaAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
@@ -354,7 +356,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				break
 			case PNEUMONIA:
 				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_pneumonia", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_iszClassIcon", "ukgr_pneumonia")
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_pneumonia")
 				self.SetScaleOverride(1.9)
 				self.RemoveWeaponRestriction(PRIMARY_ONLY)
 				self.AddWeaponRestriction(SECONDARY_ONLY)
@@ -440,7 +442,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 
 			else if (phaseTimer == 599) {
 				lastPosition = self.GetOrigin()
-				ClientPrint(null, 3, "Last position set! " + lastPosition.x + " " + lastPosition.y + " " + lastPosition.z)
+				//ClientPrint(null, 3, "Last position set! " + lastPosition.x + " " + lastPosition.y + " " + lastPosition.z)
 			}
 
             else if(phaseTimer > 600) {
@@ -514,7 +516,7 @@ __CollectGameEventCallbacks(bossCallbacks)
             }
             else if(phaseTimer > 1000) {
                 readyToChangePhase = true
-				ClientPrint(null, 3, "Switching to Pneumonia!")
+				//ClientPrint(null, 3, "Switching to Pneumonia!")
                 currentPhase = PNEUMONIA
             }
         }
@@ -568,7 +570,8 @@ __CollectGameEventCallbacks(bossCallbacks)
         }
        // return -1
     }
-
+	
+	/*
 	waitForAllDeadThink <- function() {
 		local allBotsAreDead = true
 		for(local i = 1; i <= MaxPlayers ; i++) {
@@ -590,12 +593,15 @@ __CollectGameEventCallbacks(bossCallbacks)
 			local spawnbot = Entities.FindByName(null, "spawnbot")
 			self.Teleport(true, spawnbot.GetOrigin(), false, QAngle(), false, Vector())
 			self.RemoveCond(TF_COND_HALLOWEEN_SPEED_BOOST)
+			//ClientPrint(null, 3, "ukgr has been released")
 			delete thinkTable.waitForAllDeadThink
 			thinkTable.ukgrThink <- ukgrThink
 		}
 	}
 	thinkTable.waitForAllDeadThink <- waitForAllDeadThink
-
+	*/
+	
+	thinkTable.ukgrThink <- ukgrThink
 	mainThink <- function() { //this is mostly to make the customattributes think works
 		if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 			delete thinkTable

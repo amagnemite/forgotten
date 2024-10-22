@@ -18,7 +18,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 			player.RemoveCustomAttribute("move speed penalty")
 			player.RemoveCustomAttribute("halloween increased jump height")
 			player.RemoveCustomAttribute("uber duration bonus")
-			if("drainShieldThink" in player.GetScriptScope().thinkTable) {
+			if("thinkTable" in player.GetScriptScope() && "drainShieldThink" in player.GetScriptScope().thinkTable) {
 				delete player.GetScriptScope().thinkTable.drainShieldThink
 			}
 		}
@@ -106,7 +106,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 			}
 			
 			if(activeDuration == 0 && eligibleForStun) { //if not stunned and eligible for stun
-				stunDurationChoice = bossIsBuffed ? RandomInt(0,8) : RandomInt(0,21)
+				stunDurationChoice = bossIsBuffed ? RandomInt(0,8) : RandomInt(0,19)
 				//printl("Stun Audio: " + stunDurationAudioList[stunDurationChoice])
 				//printl("Stun Duration: " + stunDurationList[stunDurationChoice])
 				

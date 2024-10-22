@@ -233,9 +233,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
-				if("pneumoniaBot" in diseaseCallbacks) {
-					pneumoniaBot = null
-				}
+				//if("pneumoniaBot" in diseaseCallbacks) { fix this later
+				//	pneumoniaBot = null
+				//}
 			}
 			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 			
@@ -299,8 +299,11 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 
 			if(self.GetLocomotionInterface().IsStuck()) { //safety for altmode, since he tends to hump walls and get stuck
-				printl("sarcoma triggered antistuck")
-				NetProps.SetPropVector(selfPush, "m_vecPushDir", self.EyeAngles() + Vector())
+				//printl("sarcoma triggered antistuck")
+				local angles = self.GetEyeAngles()
+				local newYaw = (ceil(angles.y) + 180) % 360
+				
+				NetProps.SetPropVector(selfPush, "m_vecPushDir", Vector(angles.x, newYaw, 0))
 				EntFireByHandle(selfPush, "Enable", null, -1, null, null)
 				EntFireByHandle(selfPush, "Disable", null, 0.5, null, null)
 			}
@@ -433,7 +436,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(deadSupport >= 5) {
 				printl("entering offense")
 				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-				supportTimer.Start(10)
+				supportTimer.Start(7.5)
 				AddThinkToEnt(self, "offensiveThink")
 				return
 			}
@@ -643,7 +646,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			spawnflags = 64
 		})
 		*/
-		printl(scope.flamethrower)
+		//printl(scope.flamethrower)
 		EntFireByHandle(scope.feverFireParticles, "StartTouch", "!activator", -1, scope.flamethrower, scope.flamethrower)
 
 		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
@@ -704,6 +707,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			local player = PlayerInstanceFromIndex(i)
 			if(player == null) continue
 			if(!IsPlayerABot(player)) continue
+			if(NetProps.GetPropInt(player, "m_lifeState") != 0) continue
 
 			player.AddCondEx(72, -1, null)
 			if(player.HasBotTag("Sarcoma_w6")) {
@@ -716,13 +720,12 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				player.AddCustomAttribute("bleeding duration", 5, -1)
 				player.AddCustomAttribute("dmg taken increased", 2, -1)
 
-				EntFire("hemorrhagic_fever_trigger", "Disable")
+				EntFire("hemorrhagic_fever_trigger", "Disable", null, -1)
 				player.GetScriptScope().rageParticle.AcceptInput("StartTouch", "!activator", player, player)
 				local hemorrhagicFeverParticle = null
 				while(hemorrhagicFeverParticle = Entities.FindByName(hemorrhagicFeverParticle, "hemorrhagic_fever_fire_particles")) {
 					hemorrhagicFeverParticle.AcceptInput("Stop", null, null, null)
 				}
-
 			}
 			else if(player.HasBotTag("gmed")) {
 				EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
