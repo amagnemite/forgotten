@@ -261,3 +261,4 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 	}
 }
 __CollectGameEventCallbacks(heartbeaterCallbacks)
+heartbeaterCallbacks.updateMaxSpeed()
