@@ -2388,9 +2388,9 @@ WaveSchedule
 		
 		WaveSpawn {
 			Name ws8
-			TotalCount 6
-			MaxActive 6
-			SpawnCount 6
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
 			Where spawnbot_altmode
 			
 			DoneOutput {
@@ -2411,6 +2411,22 @@ WaveSchedule
 							ActionOverride Mobber
 						}
 					}
+				}
+				TFBot {
+					Template T_TFBot_Heavyweapons_Fist
+					Tag ws8
+					EventChangeAttributes {
+						Default {
+							ActionOverride Passive
+						}
+						SwitchToMobber {
+							ActionOverride Mobber
+						}
+					}
+				}
+				TFBot {
+					Template T_TFBot_Pneumonia
+					Tag ws8
 				}
 				TFBot {
 					Template T_TFBot_Pneumonia

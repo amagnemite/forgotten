@@ -174,6 +174,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			foreach(targetname, handle in entities) {
 				if(targetname == "pneumonia_spawn_e_hurt") {
 					handle.ValidateScriptScope()
+					if(!("diseaseCallbacks" in getroottable()) {
+						return
+					}
 					handle.GetScriptScope().owner <- diseaseCallbacks.pneumoniaBot
 					handle.GetScriptScope().takePneumoniaDamage <- function() {
 						activator.TakeDamage(50, DMG_POISON, owner)
