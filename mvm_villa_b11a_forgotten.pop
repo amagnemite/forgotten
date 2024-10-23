@@ -349,6 +349,7 @@ WaveSchedule
 			{
 				ItemName "The Quick-Fix"
 				"ubercharge rate bonus" 0.01
+				"mod weapon blocks healing" 1
 			}
 			CharacterAttributes
 			{
