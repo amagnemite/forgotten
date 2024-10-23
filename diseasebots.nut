@@ -260,6 +260,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.sarcomaNextStage <- scope.sarcomaThresholds[0]
 		scope.containmentBreachActive <- false
 
+		activator.AddBotAttribute(USE_BOSS_HEALTH_BAR)
+
 		scope.sarcomaPush <- SpawnEntityFromTable("trigger_push", {
 			origin = activator.GetCenter()
 			pushdir = QAngle(0, 0, 0)
@@ -705,7 +707,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				activator.TakeDamage(5 + (newTicks * 0.5), DMG_BURN, owner)
 				//Doesn't burn player but plays on fire voicelines pog
 				activator.IgnitePlayer()
-				activator.ViewPunch(QAngle(-10, 0, 0))
+				activator.ViewPunch(QAngle(-5, 0, 0))
 				diseaseCallbacks.playSound("Fire.Engulf", activator)
 			}
 		}

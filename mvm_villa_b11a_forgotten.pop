@@ -546,6 +546,7 @@ WaveSchedule
 			//Attributes SuppressFire
 			Attributes MiniBoss
 			Attributes HoldFireUntilFullReload
+			Attributes UseBossHealthBar
 			Action Mobber  
 			//Item "Upgradeable TF_WEAPON_FLAMETHROWER"
 			Item "The Triclops"
@@ -1447,6 +1448,7 @@ WaveSchedule
 			{
 				Template	T_TFBot_Sarcoma
 				Tag Sarcoma
+				//Attributes UseBossHealthBar
 			}
 		}
 		WaveSpawn
@@ -1577,6 +1579,7 @@ WaveSchedule
 			{
 				Template	T_TFBot_Sarcoma
 				Tag Sarcoma
+				//Attributes UseBossHealthBar
 			}
 		}
 		WaveSpawn
