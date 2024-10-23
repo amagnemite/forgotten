@@ -620,7 +620,7 @@ WaveSchedule
 			Scale 1.9
 			Skill Expert
 			//Health 55000 for phase 3
-			Health 30000
+			Health 70000
 			Item "The Crusader's Crossbow"
 			Item "The Quick-Fix"
 			Item "The Amputator"
@@ -670,7 +670,7 @@ WaveSchedule
             Tag UKGR_Tumor
 			//Tag Malignant_Tumor
 			Skill Expert
-			Health 125
+			Health 150
 			Scale 0.8
 			Item "The Ubersaw"
 			Action Mobber
@@ -759,6 +759,38 @@ WaveSchedule
 		TFBot
 		{
 			Class Sniper
+			Skill Hard
+			MaxVisionRange 3000
+		}
+	}
+	Mission
+	{
+		Objective Spy
+		Where spawnbot
+		InitialCooldown 35
+		CooldownTime 20
+		BeginAtWave 7
+		RunForThisManyWaves 1
+		DesiredCount 2
+		TFBot
+		{
+			Class Spy
+			Name Spy
+			Skill Expert
+		}
+	}
+	Mission {
+		Objective Sniper
+		InitialCooldown 20
+		Where spawnbot_sniper
+		BeginAtWave 7
+		RunForThisManyWaves 1
+		CooldownTime 30
+		DesiredCount 2
+		
+		TFBot
+		{
+			Template T_TFBot_Sniper_Sydney_Sleeper
 			Skill Hard
 			MaxVisionRange 3000
 		}
@@ -995,7 +1027,7 @@ WaveSchedule
 			Where	spawnbot_boss
             TFBot
 			{
-				Health	50000
+				Health	45000
 				Class Soldier
 				Name "Cardiac Arrest"
 				ClassIcon cardiac_arrest_bp
@@ -2574,6 +2606,7 @@ WaveSchedule
 				IncludeScript(`diseasebots.nut`, getroottable())
 				//IncludeScript(`villa_boss_callbacks.nut`, getroottable())
 				IncludeScript(`villa_boss.nut`, getroottable())
+				EntFire(`sniper_*`, Enable)
 			"
 		}
 		DoneOutput {
@@ -2620,6 +2653,23 @@ WaveSchedule
 			TFBot {
 				Template T_TFBot_Pathogen_Soldier
 				tag gmedsupport
+			}
+		}
+
+		WaveSpawn {
+			Name boss_support
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 45
+			WaitBetweenSpawnsAfterDeath 15
+			Support 1
+			Where spawnbot
+			TFBot
+			{
+				Class Scout
+				Item "The Back Scatter"
+				Skill Expert
 			}
 		}
 
