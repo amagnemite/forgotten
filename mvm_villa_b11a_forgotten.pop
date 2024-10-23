@@ -220,19 +220,37 @@ WaveSchedule
 	
 	Templates 
 	{
+		T_TFBot_Giant_Pyro_NoAirblast
+		{
+			Class Pyro
+			Name "Giant Pyro"
+			ClassIcon pyro_giant
+			Skill Expert
+			Health 3000
+			WeaponRestrictions PrimaryOnly
+			Attributes MiniBoss
+			CharacterAttributes
+			{
+				"move speed bonus"	0.5
+				"damage force reduction" 0.6
+				"airblast vulnerability multiplier" 0.6
+				"override footstep sound set" 6
+				"airblast disabled" 1
+			}
+		}
 		T_TFBot_Pathogen_Soldier
 		{
 			Class Soldier
 			Name "Pathogen"
 			ClassIcon blackdead
             Action Mobber  
-			Skill Expert
+			Skill Normal
 			WeaponRestrictions MeleeOnly
 			CharacterAttributes
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 1
+				"move speed bonus" 0.8
 			}
 		}
 
@@ -242,13 +260,13 @@ WaveSchedule
 			Name "Pathogen"
 			ClassIcon blackdead
             Action Mobber  
-			Skill Expert
+			Skill Normal
 			WeaponRestrictions MeleeOnly
 			CharacterAttributes
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 1
+				"move speed bonus" 0.8
 			}
 		}
 
@@ -258,13 +276,13 @@ WaveSchedule
 			Name "Pathogen"
 			ClassIcon blackdead
             Action Mobber  
-			Skill Expert
+			Skill Normal
 			WeaponRestrictions MeleeOnly
 			CharacterAttributes
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 1
+				"move speed bonus" 0.8
 			}
 		}
 
@@ -274,13 +292,13 @@ WaveSchedule
 			Name "Pathogen"
 			ClassIcon blackdead
             Action Mobber  
-			Skill Expert
+			Skill Normal
 			WeaponRestrictions MeleeOnly
 			CharacterAttributes
 			{
 				"increased jump height" 2
 				// "damage bonus" 0.001
-				"move speed bonus" 1
+				"move speed bonus" 0.8
 			}
 		}
 
@@ -421,6 +439,7 @@ WaveSchedule
 			ClassIcon malignant_tumor_bp
             Tag Malignant_Tumor
 			Tag Special_Disease
+			Attributes DisableDodge
 			Skill Easy
             Scale 0.6
 			Health 65
@@ -510,7 +529,7 @@ WaveSchedule
             ItemAttributes
 			{
 				ItemName "The Family Business"
-				"damage bonus" 18
+				"damage bonus" 13
 				"override projectile type" 6
                 "clip size penalty" 1
 				"fire rate bonus" 0.7
@@ -546,7 +565,7 @@ WaveSchedule
 			//Attributes SuppressFire
 			Attributes MiniBoss
 			Attributes HoldFireUntilFullReload
-			Attributes UseBossHealthBar
+			// Attributes UseBossHealthBar
 			Action Mobber  
 			//Item "Upgradeable TF_WEAPON_FLAMETHROWER"
 			Item "The Triclops"
@@ -579,13 +598,14 @@ WaveSchedule
             Tag UKGR
 			Scale 1.9
 			Skill Expert
-			Health 75000
+			Health 55000
 			Item "The Crusader's Crossbow"
 			Item "The Quick-Fix"
 			Item "The Amputator"
 			WeaponRestrictions PrimaryOnly
 			Attributes UseBossHealthBar
 			Attributes MiniBoss
+			Attributes DisableDodge
 			Action Mobber
 			Item "The Virus Doctor"
 			ItemAttributes
@@ -628,6 +648,7 @@ WaveSchedule
 			Item "The Ubersaw"
 			Action Mobber
 			WeaponRestrictions MeleeOnly
+			Attributes DisableDodge
 			Item "The Virus Doctor"
 			ItemAttributes
 			{
@@ -2017,7 +2038,7 @@ WaveSchedule
 			
 			Squad {
 				TFBot {
-					Template T_TFBot_Giant_Pyro
+					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
 					EventChangeAttributes {
 						Default {
@@ -2029,7 +2050,7 @@ WaveSchedule
 					}
 				}
 				TFBot {
-					Template T_TFBot_Giant_Pyro
+					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
 					EventChangeAttributes {
 						Default {
@@ -2041,7 +2062,7 @@ WaveSchedule
 					}
 				}
 				TFBot {
-					Template T_TFBot_Giant_Pyro
+					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
 					EventChangeAttributes {
 						Default {
@@ -2053,7 +2074,7 @@ WaveSchedule
 					}
 				}
 				TFBot {
-					Template T_TFBot_Giant_Pyro
+					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
 					EventChangeAttributes {
 						Default {
@@ -2464,7 +2485,7 @@ WaveSchedule
 					Tag ws9
 				}
 				TFBot {
-					Template T_TFBot_Giant_Pyro
+					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws9
 					EventChangeAttributes {
 						Default {
@@ -2632,136 +2653,6 @@ WaveSchedule
 			TFBot
 			{
 				Template T_TFBot_UKGR
-			}
-		}
-
-		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			WaitBeforeStarting 10
-			WaitBetweenSpawnsAfterDeath 20
-			Support 1
-			Where spawnbot
-			TFBot
-			{
-				Class Soldier
-				Name "Rapid Fire Soldier"
-				ClassIcon soldier_spammer
-				Action Mobber
-				Skill Expert
-				Health 1250
-				Scale 1.5
-				CharacterAttributes
-				{
-					"fire rate bonus" 0.5
-					"faster reload rate" -0.8
-					"damage force reduction" 0.1
-				}
-			}
-		}
-
-		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			WaitBeforeStarting 17
-			WaitBetweenSpawnsAfterDeath 16
-			Support 1
-			Where spawnbot
-			TFBot
-			{
-				Class Demoman
-				Name "Burst Fire Demo"
-				ClassIcon demo_burst
-				Action Mobber
-				Attributes HoldFireUntilFullReload
-				Skill Expert
-				Health 1500
-				Scale 1.5
-				CharacterAttributes
-				{
-					"fire rate bonus" 0.05
-					"faster reload rate" 0.8
-					"damage force reduction" 0.1
-				}
-			}
-		}
-
-		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			WaitBeforeStarting 40
-			WaitBetweenSpawnsAfterDeath 15
-			Support 1
-			Where spawnbot
-			TFBot
-			{
-				Class Demoman
-				Name "Burst Fire Demo"
-				ClassIcon demo_burst
-				Action Mobber
-				Attributes HoldFireUntilFullReload
-				Skill Expert
-				Health 1500
-				Scale 1.5
-				CharacterAttributes
-				{
-					"fire rate bonus" 0.05
-					"faster reload rate" 0.8
-					"damage force reduction" 0.1
-				}
-			}
-		}
-
-		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			WaitBeforeStarting 25
-			WaitBetweenSpawnsAfterDeath 21
-			Support 1
-			Where spawnbot
-			TFBot
-			{
-				Class Heavyweapons
-				Name "Heavy"
-				ClassIcon heavy
-				Action Mobber
-				Skill Easy
-				Health 1500
-				Scale 1.5
-				CharacterAttributes
-				{
-					"damage force reduction" 0.1
-				}
-			}
-		}
-
-		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			WaitBeforeStarting 40
-			WaitBetweenSpawnsAfterDeath 15
-			Support 1
-			Where spawnbot
-			TFBot
-			{
-				Class Soldier
-				Name "Rapid Fire Soldier"
-				ClassIcon soldier_spammer
-				Action Mobber
-				Skill Expert
-				Health 1250
-				Scale 1.5
-				CharacterAttributes
-				{
-					"fire rate bonus" 0.5
-					"faster reload rate" -0.8
-					"damage force reduction" 0.1
-				}
 			}
 		}
 

@@ -636,6 +636,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		local scope = activator.GetScriptScope()
 		scope.flamethrower <- null
 
+		activator.AddBotAttribute(USE_BOSS_HEALTH_BAR)
+
 		for(local i = 0; i < NetProps.GetPropArraySize(activator, "m_hMyWeapons"); i++) {
 			local wep = NetProps.GetPropEntityArray(activator, "m_hMyWeapons", i)
 
