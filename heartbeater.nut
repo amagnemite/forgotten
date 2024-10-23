@@ -136,6 +136,9 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 				if(modeToUse == PRIMARYMODE && self.GetHealth() <= self.GetMaxHealth() * 0.5) {
 					dhParticle.AcceptInput("StartTouch", "!activator", self, self)
                 }
+				else {
+					modeToUse = MELEEMODE
+				}
 			}
 			
 			if(self.GetCondDuration(TF_COND_MVM_BOT_STUN_RADIOWAVE) != 0) return //if actively stunned, return
@@ -164,7 +167,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 				self.AddCustomAttribute("move speed bonus", 1.75 * playerMaxMoveSpeed, -1)
 			}
 
-			if(self.GetHealth() > self.GetMaxHealth() * 0.5) return
+			// if(self.GetHealth() > self.GetMaxHealth() * 0.5) return
 
 			self.ClearAllWeaponRestrictions()
 			if(modeToUse == PRIMARYMODE) {
