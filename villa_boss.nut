@@ -227,14 +227,14 @@ __CollectGameEventCallbacks(bossCallbacks)
 		"projectile spread angle penalty": 10,
 		"fire rate bonus": 0.6,
 		"faster reload rate": 0.8,
-		"clip size upgrade atomic": 160
+		"clip size bonus": 4
 	}
 
 	pneumoniaAttrs <- {
 		"damage bonus": 1,
 		"move speed bonus": 1.1,
 		"projectile spread angle penalty": 60,
-		"fire rate bonus": 0.1,
+		"fire rate bonus": 0.01,
 		"faster reload rate": 30,
 		"clip size upgrade atomic": -4
 		"stickybomb charge rate": 0.001
@@ -392,6 +392,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				self.SetScaleOverride(1.9)
 				self.RemoveWeaponRestriction(PRIMARY_ONLY)
 				self.AddWeaponRestriction(SECONDARY_ONLY)
+				self.AddBotAttribute(ALWAYS_FIRE_WEAPON)
 				foreach(attr, val in pneumoniaAttrs) {
 					self.AddCustomAttribute(attr, val, -1)
 				}
@@ -573,6 +574,7 @@ __CollectGameEventCallbacks(bossCallbacks)
 				foreach(sticky in stickyList) {
 					DispatchParticleEffect("pneumonia_stickybomb_aura", sticky.GetCenter(), Vector())
 				}
+				self.RemoveBotAttribute(ALWAYS_FIRE_WEAPON)
 				pausePhaseTimerActions = true //stop collecting stickies
 			}
 
