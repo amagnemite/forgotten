@@ -387,8 +387,8 @@ __CollectGameEventCallbacks(bossCallbacks)
 				foreach(attr, val in buffSarcomaAttrs) {
 					self.RemoveCustomAttribute(attr)
 				}
-				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_pneumonia", WAVEBAR_SLOT_NO)
-				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_pneumonia")
+				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "pneumonia_bp", WAVEBAR_SLOT_NO)
+				NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "pneumonia_bp")
 				self.SetScaleOverride(1.9)
 				self.RemoveWeaponRestriction(PRIMARY_ONLY)
 				self.AddWeaponRestriction(SECONDARY_ONLY)
