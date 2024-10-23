@@ -573,7 +573,7 @@ WaveSchedule
 			Tag Hemorrhagic_Fever
 			// Will drop super big potion on death
 			//Tag Special_Disease ither reorganize death callback or ???
-			Health 25000
+			Health 20000
 			Skill Expert
             Scale 1.9
 			//WeaponRestrictions PrimaryOnly
@@ -594,6 +594,12 @@ WaveSchedule
 			{
 				ItemName "The Triclops"
 				"set item tint RGB" 13328029
+			}
+			ItemAttributes
+			{
+				ItemName "TF_WEAPON_SHOTGUN_PYRO"
+				"faster reload rate" 0.7
+				"fire rate bonus" 0.7
 			}
 			CharacterAttributes
 			{
