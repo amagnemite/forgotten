@@ -515,7 +515,7 @@ finaleThink <- function() {
 			currentPhase = MALIGNANT_TUMOR
 		}
 	}
-	else if(currentPhase == MALIGNANT_TUMOR && (deadTumorCounter >= 16 || phaseTimer > 1000)) {
+	else if(currentPhase == MALIGNANT_TUMOR && (deadTumorCounter >= 15 || phaseTimer > 1000)) {
 		readyToChangePhase = true
 		self.Teleport(true, lastPosition, false, QAngle(), false, Vector())
 		teleportParticle.AcceptInput("Stop", null, null, null)

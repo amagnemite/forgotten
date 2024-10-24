@@ -1027,7 +1027,7 @@ WaveSchedule
 			Where	spawnbot_boss
             TFBot
 			{
-				Health	45000
+				Health	40000
 				Class Soldier
 				Name "Cardiac Arrest"
 				ClassIcon cardiac_arrest_bp
@@ -1074,7 +1074,7 @@ WaveSchedule
 				}
 				CharacterAttributes
 				{
-					"dmg from melee increased" 2
+					"dmg from melee increased" 1.5
 					"damage force reduction" 0.0000000001
 					"airblast vulnerability multiplier" 0.0000000001
 					"override footstep sound set" 3
@@ -1084,6 +1084,7 @@ WaveSchedule
 		}
 		WaveSpawn {
 			WaitBeforeStarting 70
+			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -1097,6 +1098,7 @@ WaveSchedule
 		}
 		WaveSpawn {
 			WaitBeforeStarting 80
+			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -1110,6 +1112,7 @@ WaveSchedule
 		}
 		WaveSpawn {
 			WaitBeforeStarting 90
+			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -1123,6 +1126,7 @@ WaveSchedule
 		}
 		WaveSpawn {
 			WaitBeforeStarting 95
+			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
@@ -2622,7 +2626,7 @@ WaveSchedule
 				IncludeScript(`diseasebots.nut`, getroottable())
 				//IncludeScript(`villa_boss_callbacks.nut`, getroottable())
 				IncludeScript(`villa_boss.nut`, getroottable())
-				EntFire(`sniper_*`, Enable)
+				EntFire(`sniper_*`, `Enable`)
 			"
 		}
 		DoneOutput {
@@ -2678,21 +2682,40 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			WaitBeforeStarting 45
-			WaitBetweenSpawnsAfterDeath 15
+			WaitBetweenSpawnsAfterDeath 10
 			Support 1
 			Where spawnbot
 			TFBot
 			{
 				Class Scout
-				Item "The Back Scatter"
+				Attributes AlwaysCrit
+				Action Mobber
 				Skill Expert
 			}
 		}
 
 		WaveSpawn {
 			Name boss_support
-			TotalCount 16
-			MaxActive 16
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 60
+			WaitBetweenSpawnsAfterDeath 10
+			Support 1
+			Where spawnbot
+			TFBot
+			{
+				Class Scout
+				Attributes AlwaysCrit
+				Action Mobber
+				Skill Expert
+			}
+		}
+
+		WaveSpawn {
+			Name boss_support
+			TotalCount 15
+			MaxActive 15
 			SpawnCount 1
 			WaitBeforeStarting 5
 			Support 1
