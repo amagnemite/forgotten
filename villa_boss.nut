@@ -7,8 +7,8 @@ unusualParticle <- SpawnEntityFromTable("info_particle_system", {
 	start_active = true
 })
 
-unusualParticle.AcceptInput("SetParent", "!self", self, self)
-unusualParticle.AcceptInput("SetParentAttachment", "head", self, self)
+unusualParticle.AcceptInput("SetParent", "!activator", self, null)
+unusualParticle.AcceptInput("SetParentAttachment", "head", null, null)
 
 local objRes = Entities.FindByClassname(null, "tf_objective_resource")
 
@@ -84,10 +84,10 @@ selfPush <- SpawnEntityFromTable("trigger_push", {
 })
 playerPush.SetSolid(2)
 playerPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
-playerPush.AcceptInput("SetParent", "!self", self, self)
+playerPush.AcceptInput("SetParent", "!activator", self, self)
 selfPush.SetSolid(2)
 selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
-selfPush.AcceptInput("SetParent", "!self", self, self)
+selfPush.AcceptInput("SetParent", "!activator", self, self)
 
 hemorrhagicFeverAttrs <- {
 	"damage penalty": 4.5
@@ -153,7 +153,7 @@ cardiacAttrs <- {
 ::ukgr <- self
 NetProps.SetPropString(self, "m_iName", "ukgr") //needed for particle nonsense
 MOVESPEEDBASE <- 0.5
-HEALTHBONUS <- 400
+HEALTHBONUS <- 100
 playersEaten <- 0
 medigun <- null
 deadSupport <- 0
@@ -169,6 +169,8 @@ for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
 }
 
 startPhase1 <-  function() {
+	//self.GenerateAndWearItem("The Crusader's Crossbow")
+	//self.GetActiveWeapon().AddAttribute("reload speed", 0.5, -1)
 	local arena2Origin = Entities.FindByName(null, "spawnbot_arena2").GetOrigin()
 	for(local i = 1; i <= MaxPlayers; i++) {
 		local player = PlayerInstanceFromIndex(i)
@@ -195,7 +197,7 @@ offensiveThink <- function() {
 	if(self.GetHealth() < self.GetMaxHealth() && deadSupport < 5) {
 		printl("entering defense")
 		EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1)
-		delete thinkTable[offensiveThink]
+		delete thinkTable.offensiveThink
 		thinkTable.defensiveThink <- defensiveThink
 	}
 }
@@ -205,7 +207,7 @@ defensiveThink <- function() {
 		printl("entering offense")
 		EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 		supportTimer.Start(7.5)
-		delete thinkTable[defensiveTThink]
+		delete thinkTable.defensiveThink
 		thinkTable.offensiveThink <- offensiveThink
 		return
 	}
@@ -213,16 +215,18 @@ defensiveThink <- function() {
 	local target = self.GetHealTarget()
 	if(target != null) {
 		target.TakeDamageCustom(self, self, null, Vector(0, 0, 1), target.GetCenter(),
-			40, DMG_BLAST, TF_DMG_CUSTOM_MERASMUS_ZAP); //kills in approx half a second
+			3, DMG_BLAST, TF_DMG_CUSTOM_MERASMUS_ZAP); //kills in approx a second
 	}
 }
 
 strengthen <- function() {
 	playersEaten++
-	self.AddCustomAttribute("max health additive bonus", HEALTHBONUS * playersEaten, -1)
+	//self.AddCustomAttribute("max health additive bonus", HEALTHBONUS * playersEaten, -1)
 	self.SetHealth(self.GetHealth() + HEALTHBONUS)
 	self.AddCustomAttribute("damage bonus", 1 + 0.25 * playersEaten, -1)
 	self.AddCustomAttribute("move speed bonus", MOVESPEEDBASE + 0.1 * playersEaten, -1)
+	self.AddCondEx(TF_COND_CRITBOOSTED_USER_BUFF, 1 * playersEaten, null)
+	self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, 1 * playersEaten, null)
 	local particle = SpawnEntityFromTable("info_particle_system", {
 		origin = self.GetOrigin()
 		effect_name = "soldierbuff_blue_buffed"
@@ -241,6 +245,7 @@ strengthen <- function() {
 			if(victim.HasBotTag("gmedsupport")) {
 				ukgr.GetScriptScope().deadSupport++
 				//printl("team " + victim.GetTeam())
+				victim.ValidateScriptScope()
 				EntFireByHandle(victim, "runscriptcode", "self.ForceChangeTeam(TF_TEAM_BLUE, true)", -1, null, null)
 				EntFireByHandle(victim, "runscriptcode", "self.ForceRespawn()", -1, null, null)
 				EntFireByHandle(victim, "runscriptcode", "self.AddBotTag(\"gmedsupport\")", -1, null, null)
@@ -251,7 +256,7 @@ strengthen <- function() {
 					EmitSoundEx({
 						sound_name = "ambient/grinder/grinderbot_03.wav",
 						channel = 6,
-						origin = target.GetCenter(),
+						origin = victim.GetCenter(),
 						filter_type = RECIPIENT_FILTER_PAS
 					})
 					ukgr.AcceptInput("CallScriptFunction", "strengthen", null, null)
@@ -271,7 +276,6 @@ strengthen <- function() {
 		if(!IsPlayerABot(victim)) return
 		if(IsPlayerABot(victim) && !victim.HasBotTag("gmedsupport")) return
 		if(inflictor == null || !IsPlayerABot(inflictor)) return
-		printl("friendly fire")
 		params.force_friendly_fire = true
 	}
 }
@@ -290,7 +294,7 @@ changePhase <- function() {
 		origin = self.GetCenter(),
 		filter_type = RECIPIENT_FILTER_GLOBAL
 	})
-	switch(currentPhase) {
+	switch(currentFinalePhase) {
 		case HEMORRHAGIC_FEVER:
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_fever")
@@ -479,16 +483,16 @@ finaleThink <- function() {
 	if(readyToChangePhase) {
 		changePhase()
 	}
-	if(currentPhase == HEMORRHAGIC_FEVER) {
+	if(currentFinalePhase == HEMORRHAGIC_FEVER) {
 		local currentEyeAngles = self.EyeAngles()
 		spinAngle = spinAngle + 12
 		self.SnapEyeAngles(QAngle(currentEyeAngles.x, spinAngle, currentEyeAngles.z))
 		if(phaseTimer > 1000) {
 			readyToChangePhase = true
-			currentPhase = DYSPNEA
+			currentFinalePhase = DYSPNEA
 		}
 	}
-	else if(currentPhase == DYSPNEA) {
+	else if(currentFinalePhase == DYSPNEA) {
 		//LOOK UP actually nvm he keeps missing for some reasons
 		// local currentEyeAngles = self.EyeAngles()
 		// self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
@@ -512,22 +516,22 @@ finaleThink <- function() {
 
 		else if(phaseTimer > 600) {
 			readyToChangePhase = true
-			currentPhase = MALIGNANT_TUMOR
+			currentFinalePhase = MALIGNANT_TUMOR
 		}
 	}
-	else if(currentPhase == MALIGNANT_TUMOR && (deadTumorCounter >= 15 || phaseTimer > 1000)) {
+	else if(currentFinalePhase == MALIGNANT_TUMOR && (deadTumorCounter >= 15 || phaseTimer > 1000)) {
 		readyToChangePhase = true
 		self.Teleport(true, lastPosition, false, QAngle(), false, Vector())
 		teleportParticle.AcceptInput("Stop", null, null, null)
 		//It's set to 0 twice but yknow just to be safe
 		deadTumorCounter = 0
-		currentPhase = CARDIOMYOPATHY
+		currentFinalePhase = CARDIOMYOPATHY
 	}
-	else if(currentPhase == CARDIOMYOPATHY && phaseTimer > 666) {
+	else if(currentFinalePhase == CARDIOMYOPATHY && phaseTimer > 666) {
 		readyToChangePhase = true
-		currentPhase = TACHYCARDIA
+		currentFinalePhase = TACHYCARDIA
 	}
-	else if(currentPhase == TACHYCARDIA) {
+	else if(currentFinalePhase == TACHYCARDIA) {
 		if(phaseTimer > 133 && !pausePhaseTimerActions) {
 			for (local i = 1; i <= MaxPlayers ; i++)
 			{
@@ -556,10 +560,10 @@ finaleThink <- function() {
 		// }
 		if(phaseTimer > 1333) {
 			readyToChangePhase = true
-			currentPhase = SARCOMA
+			currentFinalePhase = SARCOMA
 		}
 	}
-	else if(currentPhase == SARCOMA) {
+	else if(currentFinalePhase == SARCOMA) {
 		if(damageTakenThisPhase > 5000 && !pausePhaseTimerActions) {
 			self.AddCondEx(71, (14.8 - (phaseTimer / 66.6)), null)
 			self.SetScaleOverride(1.9)
@@ -583,10 +587,10 @@ finaleThink <- function() {
 		else if(phaseTimer > 1000) {
 			readyToChangePhase = true
 			//ClientPrint(null, 3, "Switching to Pneumonia!")
-			currentPhase = PNEUMONIA
+			currentFinalePhase = PNEUMONIA
 		}
 	}
-	else if(currentPhase == PNEUMONIA) {
+	else if(currentFinalePhase == PNEUMONIA) {
 		if(!pausePhaseTimerActions) {
 			if((Time() - NetProps.GetPropFloat(currentWeapon, "m_flNextPrimaryAttack")) <= 1) {
 				local sticky = null;
@@ -621,11 +625,11 @@ finaleThink <- function() {
 
 		if(phaseTimer > 530) {
 			readyToChangePhase = true
-			currentPhase = CARDIAC_ARREST
+			currentFinalePhase = CARDIAC_ARREST
 		}
 	}
 	//It all loops back
-	else if(currentPhase == CARDIAC_ARREST) {
+	else if(currentFinalePhase == CARDIAC_ARREST) {
 
 		if(phaseTimer == 400) {
 			EntFire("wakeup_sound*", "PlaySound")
@@ -634,7 +638,7 @@ finaleThink <- function() {
 
 		else if(phaseTimer > 734) {
 			readyToChangePhase = true
-			currentPhase = HEMORRHAGIC_FEVER
+			currentFinalePhase = HEMORRHAGIC_FEVER
 		}
 
 	}
@@ -648,9 +652,16 @@ cleanup <- function() {
 		delete ::phase1Callbacks
 	}
 	NetProps.SetPropString(self, "m_iName", null)
+	local preserved = {
+		"self" : null
+		"__vname" : null
+		"__vrefs" : null
+	}
 	local scope = self.GetScriptScope()
 	foreach(key, val in scope) { //doesn't kill ents, but map reset gets them eventually
-		delete scope[key]
+		if(!(key in preserved)) { //why can you delete self
+			delete scope[key]
+		}
 	}
 }
 

@@ -621,11 +621,13 @@ WaveSchedule
 			Scale 1.9
 			Skill Expert
 			//Health 55000 for phase 3
-			Health 70000
-			//Item "The Crusader's Crossbow"
+			//Health 70000
+			Health 30000
+			Item "The Crusader's Crossbow"
 			Item "The Quick-Fix"
 			Item "The Amputator"
-			WeaponRestrictions MeleeOnly
+			//WeaponRestrictions MeleeOnly
+			WeaponRestrictions PrimaryOnly
 			Attributes UseBossHealthBar
 			Attributes MiniBoss
 			Attributes DisableDodge
@@ -652,6 +654,10 @@ WaveSchedule
 			ItemAttributes {
 				Itemname "The Quick-Fix"
 				"ubercharge rate bonus" 0.01
+			}
+			ItemAttributes {
+				ItemName "The Crusader's Crossbow"
+				"faster reload rate" 0.5
 			}
 			CharacterAttributes
 			{
@@ -2616,17 +2622,21 @@ WaveSchedule
 	Wave { //wave 7, the 7th day, 7 * 7
 		InitWaveOutput {
 			Target altmode_init_reviveonly_relay
-			Action trigger
+			Action RunScriptCode
+			Param "
+				self.AcceptInput(`trigger`, null, null, null)
+				EntFire(`spawnbot`, `Disable`)
+			"
 		}
 		StartWaveOutput {
-			//Target altmode_arena2_wave_start_reviveonly_relay
-			Target altmode_chaos_wave_start_reviveonly_relay
+			Target altmode_arena2_wave_start_reviveonly_relay
+			//Target altmode_chaos_wave_start_reviveonly_relay
 			Action runscriptcode
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
 				IncludeScript(`diseasebots.nut`, getroottable())
-				//IncludeScript(`villa_boss_callbacks.nut`, getroottable())
-				IncludeScript(`villa_boss.nut`, getroottable())
+				IncludeScript(`villa_boss_callbacks.nut`, getroottable())
+				//IncludeScript(`villa_boss.nut`, getroottable())
 				EntFire(`sniper_*`, `Enable`)
 			"
 		}
@@ -2639,12 +2649,12 @@ WaveSchedule
 			TotalCount 1
 			MaxActive 1
 			SpawnCount 1
-			//Where spawnbot_arena2
-			Where Spawnbot
+			Where spawnbot_arena2
+			//Where Spawnbot
 			TFBot
 			{
 				Template T_TFBot_UKGR
-				EventChangeAttributes [$DISABLED] {
+				EventChangeAttributes {
 					ShootPlayers {
 						WeaponRestrictions PrimaryOnly
 						ActionOverride Mobber
@@ -2658,7 +2668,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn [$DISABLED] {
+		WaveSpawn {
 			TotalCount 5
 			MaxActive 5
 			SpawnCount 5
