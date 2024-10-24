@@ -135,6 +135,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 		}
 
+		//WE LOVE MIXING GUARD CLAUSES
+		if(player.HasBotTag("UKGR_Tumor")) return
+
 		local center = player.GetCenter() + Vector(0, 0, 20)
 		uberFlaskShortSpawner.SpawnEntityAtLocation(center, Vector())
 		//EntFire("uber_flask_short_prop*", "AddOutput", "renderfx 10", 1)
@@ -358,13 +361,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					self.RemoveCond(TF_COND_OFFENSEBUFF)
 					// self.AddCustomAttribute("damage bonus", 1, -1)
 					self.AddCustomAttribute("move speed bonus", containmentBreachActive ? 0.6 : 0.5, -1)
+					self.AddCustomAttribute("dmg taken increased", 1.5, -1)
 					self.SetScaleOverride(2.15)
 					break
 				case 5:
 					self.AddCond(TF_COND_CRITBOOSTED_USER_BUFF)
 					self.AddCustomAttribute("move speed bonus", containmentBreachActive ? 0.6 : 0.0001, -1)
-					self.AddCustomAttribute("health drain", -40, -1)
-					self.AddCustomAttribute("dmg taken increased", 2.5, -1)
+					self.AddCustomAttribute("health drain", -50, -1)
+					self.AddCustomAttribute("dmg taken increased", 4, -1)
 					self.SetScaleOverride(2.5)
 					break
 				default:
@@ -594,7 +598,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				diseaseCallbacks.playSound("Halloween.spell_lightning_cast", self)
 				self.AddCustomAttribute("move speed penalty", 2, -1)
 				self.AddCustomAttribute("halloween increased jump height", 15, -1)
-				self.AddCustomAttribute("damage force reduction", 2.5, -1)
+				self.AddCustomAttribute("damage force reduction", 1.5, -1)
 			}
 			else if(!self.InCond(32) && tachycardiaDebuffed) {
 				tachycardiaDebuffed = false
@@ -746,7 +750,7 @@ for (local i = 1; i <= MaxPlayers ; i++)
 
 ::applyFlaskBoost <- function() {
 	local selfHealth = self.GetHealth()
-	self.SetHealth(selfHealth + 40)
+	self.SetHealth(selfHealth + 300)
 
 	local scope = self.GetScriptScope()
 	if(!("medigun" in scope) || !medigun.IsValid()) {
@@ -767,11 +771,11 @@ for (local i = 1; i <= MaxPlayers ; i++)
 
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
 	//printl("uber meter " + uberMeter)
-	local newUberMeter = uberMeter + 0.12 < 1 ? uberMeter + 0.12 : 1
+	local newUberMeter = uberMeter + 0.5 < 1 ? uberMeter + 0.5 : 1
 	NetProps.SetPropFloat(medigun, "m_flChargeLevel", newUberMeter)
 
 	local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")
-	local newRageMeter = rageMeter + 12 < 100 ? rageMeter + 12 : 100
+	local newRageMeter = rageMeter + 50 < 100 ? rageMeter + 50 : 100
 	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
 
 	diseaseCallbacks.playSound("Halloween.spell_overheal", self)

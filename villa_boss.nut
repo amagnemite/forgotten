@@ -296,6 +296,7 @@ changePhase <- function() {
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_fever")
 			self.AddWeaponRestriction(PRIMARY_ONLY)
+			self.RemoveWeaponRestriction(MELEE_ONLY)
 			self.AddBotAttribute(ALWAYS_FIRE_WEAPON) //Carries over to Dyspnea phase! Removed by the think later
 
 			foreach(attr, val in cardiacAttrs) { //Reset stat changes from Cardiac Arrest mimic

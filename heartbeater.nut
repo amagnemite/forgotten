@@ -110,14 +110,12 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 				//printl("Stun Audio: " + stunDurationAudioList[stunDurationChoice])
 				//printl("Stun Duration: " + stunDurationList[stunDurationChoice])
 				
-				/*
 				EmitSoundEx({
 					sound_name = stunDurationAudioList[stunDurationChoice],
 					channel = 6,
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
 				})
-				*/
 				
 				//EntFire("tf_gamerules", "playvo", stunDurationAudioList[stunDurationChoice])
 				
