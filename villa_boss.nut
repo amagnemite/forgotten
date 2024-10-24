@@ -90,12 +90,12 @@ selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
 selfPush.AcceptInput("SetParent", "!self", self, self)
 
 hemorrhagicFeverAttrs <- {
-	"damage penalty": 3.5
+	"damage penalty": 4.5
 	// "bleed duration": 3
 }
 
 dyspneaAttrs <- { //json syntax because string literals get weird
-	"damage bonus": 0.25,
+	"damage bonus": 0.4,
 	"fire rate bonus": 0.1,
 	"projectile spread angle penalty": 60,
 	"faster reload rate": -1,
@@ -112,7 +112,7 @@ dyspneaAttrs <- { //json syntax because string literals get weird
 }
 
 cardiomyopathyAttrs <- {
-	"damage bonus": 0.75,
+	"damage bonus": 1,
 	"fire rate bonus": 0.05,
 	"projectile spread angle penalty": 10,
 	"clip size upgrade atomic": 16,
@@ -120,9 +120,8 @@ cardiomyopathyAttrs <- {
 }
 
 tachycardiaAttrs <- {
-	"damage bonus": 3,
-	"move speed bonus": 3,
-	"faster reload rate": 0.5
+	"damage bonus": 2,
+	"move speed bonus": 3
 }
 
 buffSarcomaAttrs <- {
@@ -134,7 +133,7 @@ buffSarcomaAttrs <- {
 }
 
 pneumoniaAttrs <- {
-	"damage bonus": 1,
+	"damage bonus": 0.5,
 	"move speed bonus": 1.1,
 	"projectile spread angle penalty": 60,
 	"fire rate bonus": 0.01,
@@ -145,7 +144,7 @@ pneumoniaAttrs <- {
 }
 
 cardiacAttrs <- {
-	"fire rate bonus": 0.3
+	"fire rate bonus": 0.12
 	"faster reload rate": -0.8,
 	"damage bonus": 3
 }

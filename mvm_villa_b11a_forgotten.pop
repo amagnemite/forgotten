@@ -640,7 +640,7 @@ WaveSchedule
 			{
 				ItemName "The Amputator"
 				"set item tint RGB" 13328029
-				"damage bonus" 0.67
+				// "damage bonus" 0.67
 				"move speed bonus" 3
 				// "add cond on hit" 32
 				// "add cond on hit duration" 20
