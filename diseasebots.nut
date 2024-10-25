@@ -34,7 +34,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			player.SetScriptOverlayMaterial(null)
 			player.RemoveCustomAttribute("move speed penalty")
 			player.RemoveCustomAttribute("halloween increased jump height")
-			player.RemoveCustomAttribute("damage force reduction")
+			player.RemoveCustomAttribute("damage force increase")
 			if("playerDebuffThink" in player.GetScriptScope().thinkTable) {
 				delete player.GetScriptScope().thinkTable.playerDebuffThink
 			}
@@ -598,14 +598,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				diseaseCallbacks.playSound("Halloween.spell_lightning_cast", self)
 				self.AddCustomAttribute("move speed penalty", 2, -1)
 				self.AddCustomAttribute("halloween increased jump height", 15, -1)
-				self.AddCustomAttribute("damage force reduction", 1.5, -1)
+				self.AddCustomAttribute("damage force increase", 1.5, -1)
 			}
 			else if(!self.InCond(32) && tachycardiaDebuffed) {
 				tachycardiaDebuffed = false
 				self.SetScriptOverlayMaterial(null)
 				self.RemoveCustomAttribute("move speed penalty")
 				self.RemoveCustomAttribute("halloween increased jump height")
-				self.RemoveCustomAttribute("damage force reduction")
+				self.RemoveCustomAttribute("damage force increase")
 			}
 		}
 		scope.thinkTable.playerDebuffThink <- scope.playerDebuffThink
