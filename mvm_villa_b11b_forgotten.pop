@@ -643,6 +643,7 @@ WaveSchedule
 			Attributes UseBossHealthBar
 			Attributes MiniBoss
 			Attributes DisableDodge
+			Attributes HoldFireUntilFullReload
 			Action Mobber
 			Item "The Virus Doctor"
 			ItemAttributes
@@ -670,6 +671,10 @@ WaveSchedule
 			ItemAttributes {
 				ItemName "The Crusader's Crossbow"
 				"faster reload rate" 0.5
+				"projectile spread angle penalty" 3
+				"faster reload rate" 0.125
+				"clip size bonus" 4
+				"fire rate bonus" 0.01
 			}
 			CharacterAttributes
 			{
@@ -1845,11 +1850,11 @@ WaveSchedule
 		{
 			Name w5c
 			Where spawnbot
-			TotalCount 4
-			MaxActive 4
+			TotalCount 3
+			MaxActive 3
 			SpawnCount 1
 			WaitBeforeStarting 15
-			WaitBetweenSpawns 14
+			WaitBetweenSpawns 19
 			WaitForAllSpawned w5b
 			TFBot
 			{

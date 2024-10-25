@@ -60,7 +60,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 	cleanupPhase1Support = function() { //if some of the phase 1 soldiers are still floating around
 		local support = ukgr.GetScriptScope().support
 		foreach(bot in support) {
-			if(NetProps.GetPropInt(bot, "m_iLifeState") == 0) {
+			printl(bot)
+			if(NetProps.GetPropInt(bot, "m_lifeState") == 0) {
 				bot.TakeDamage(1000, 0, self)
 			}
 		}
@@ -83,7 +84,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 						delete scope.thinkTable.defensiveThink
 					}
 					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-					Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
+					//Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
+					EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", 3)
 					EntFire("gamerules", "runscriptcode", "bossCallbacks.cleanupPhase1Support()",  5)
 					//self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
 					ukgr.RemoveWeaponRestriction(SECONDARY_ONLY)
@@ -91,6 +93,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					ukgr.RemoveCustomAttribute("move speed bonus")
 					ukgr.RemoveCondEx(TF_COND_CRITBOOSTED_USER_BUFF, true)
 					ukgr.RemoveCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, true)
+					ukgr.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
 				case 3:
 					local spawnbotOrigin = Entities.FindByName(null, "spawnbot").GetOrigin()
 					local playerTeleportLocation = Vector(-2252, 2209, 579)
@@ -111,13 +114,15 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					EntFire("spawnbot", "Enable", null, 10)
 					//delete bossCallbacks.OnScriptHook_OnTakeDamage
 
-					//ScreenFade(null, 0, 0, 0, 255, 0.75, 1.5, 2) fix timing
+					ScreenFade(null, 0, 0, 0, 255, 0.75, 1.5, 2) //fix timing
 					for(local i = 1; i <= MaxPlayers ; i++) {
 						local player = PlayerInstanceFromIndex(i)
 						if(player == null) continue
 						if(IsPlayerABot(player)) continue
 
-						player.Teleport(true, playerTeleportLocation, true, QAngle(0, -115, 0), false, Vector())
+						//player.Teleport(true, playerTeleportLocation, true, QAngle(0, -115, 0), false, Vector())
+						EntFireByHandle(player, "runscriptcode", "self.Teleport(true, Vector(-2252, 2209, 579), true, QAngle(0, -115, 0), false, Vector())",
+							1, null, null)
 					}
 					break
 			}
@@ -130,34 +135,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 		if(player == null) return
 		if(!IsPlayerABot(player)) return
         if(!player.HasBotTag("UKGR_Tumor")) return
-        for (local i = 1; i <= MaxPlayers ; i++)
-        {
-            ukgr.GetScriptScope().deadTumorCounter++
-			ukgr.TakeDamageEx(ukgr, ukgr, null, Vector(1, 0, 0), ukgr.GetCenter(), 125, DMG_BLAST)
-        }
+		ukgr.GetScriptScope().deadTumorCounter++
+		ukgr.TakeDamageEx(ukgr, ukgr, null, Vector(1, 0, 0), ukgr.GetCenter(), 125, DMG_BLAST)
     }
 }
 __CollectGameEventCallbacks(bossCallbacks)
-
-/*
-::addPneumoniaStickyThink <- function() {
-	//ClientPrint(null, 3, "STICKY THINK ADDED!!")
-	self.SetModelSimple("models/villa/stickybomb_pneumonia.mdl")
-	stickyTimer <- 0
-	stickyThink <- function() {
-		if(stickyTimer == 1.5) {
-			DispatchParticleEffect("pneumonia_stickybomb_aura", self.GetCenter(), Vector())
-		}
-
-		if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
-		else if(stickyTimer >= 4) {
-			//Explode and create pneumonia clouds
-			pneumoniaSpawner.SpawnEntityAtLocation(self.GetOrigin() + Vector(-192, 0, 0), Vector(0,0,0))
-			NetProps.GetPropEntity(self, "m_hThrower").PressAltFireButton(0.1)
-		}
-		stickyTimer += 0.5
-		return 0.5
-	}
-	AddThinkToEnt(self, "stickyThink")
-}
-*/

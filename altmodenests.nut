@@ -160,9 +160,14 @@ scope.nests7 <- ["nest_leftsecond_5", "nest_leftsecond_6"]
 
 scope.activateNests <- function() {
 	local altmodeScope = Entities.FindByName(null, "altmode_chaos_script").GetScriptScope()
-	local room = altmodeScope.getRoom("ws11")
-	local list = "nests" + room
-	foreach(name in self.GetScriptScope()[list]) {
-		EntFire(name, "Enable")
+	if(altmodeScope.getContainmentBreakerState()) { //let them loose if containment breaker
+		EntFire("bot_hint*", "Enable")
+	}
+	else {
+		local room = altmodeScope.getRoom("ws11")
+		local list = "nests" + room
+		foreach(name in self.GetScriptScope()[list]) {
+			EntFire(name, "Enable")
+		}
 	}
 }
