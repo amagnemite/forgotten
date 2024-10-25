@@ -778,7 +778,7 @@ for (local i = 1; i <= MaxPlayers ; i++)
 ::applyFlaskBoost <- function(flaskLevel) {
 	local selfHealth = self.GetHealth()
 	//Level 2 = tumor potions
-	local hpBoost = (flaskLevel = 2) ? 80 : 300
+	local hpBoost = (flaskLevel == 2) ? 80 : 300
 	self.SetHealth(selfHealth + hpBoost)
 
 	local scope = self.GetScriptScope()
@@ -798,7 +798,7 @@ for (local i = 1; i <= MaxPlayers ; i++)
 		return
 	}
 
-	local uberBoost = (flaskLevel = 2) ? 0.15 : 0.5
+	local uberBoost = (flaskLevel == 2) ? 0.15 : 0.5
 	local rageBoost = uberBoost * 100
 
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
