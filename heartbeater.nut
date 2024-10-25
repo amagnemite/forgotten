@@ -106,7 +106,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 			}
 			
 			if(activeDuration == 0 && eligibleForStun) { //if not stunned and eligible for stun
-				stunDurationChoice = bossIsBuffed ? RandomInt(0,8) : RandomInt(0,19)
+				stunDurationChoice = bossIsBuffed ? RandomInt(0,8) : RandomInt(0,16) //Yes it maxes out at 19 but I don't like the ultra long delays
 				//printl("Stun Audio: " + stunDurationAudioList[stunDurationChoice])
 				//printl("Stun Duration: " + stunDurationList[stunDurationChoice])
 				

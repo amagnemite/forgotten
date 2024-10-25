@@ -8,6 +8,8 @@ PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
 PrecacheSound("ambient/grinder/grinderbot_03.wav")
 PrecacheSound("player/pl_burnpain3.wav")
 PrecacheSound("player/flame_out.wav")
+PrecacheSound("player/drown3.wav")
+PrecacheSound("ambient/levels/labs/teleport_mechanism_windup1.wav")
 PrecacheScriptSound("Weapon_DragonsFury.BonusDamageHit")
 PrecacheScriptSound("Halloween.spell_overheal")
 PrecacheScriptSound("Halloween.spell_lightning_cast")
@@ -182,7 +184,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					}
 					handle.GetScriptScope().owner <- diseaseCallbacks.pneumoniaBot
 					handle.GetScriptScope().takePneumoniaDamage <- function() {
-						activator.TakeDamage(50, DMG_POISON, owner)
+						diseaseCallbacks.playSound("player/drown3.wav", activator)
+						activator.TakeDamage(20, DMG_POISON, owner)
+						activator.ViewPunch(QAngle(-6, 0, 0))
 					}
 				}
 				EntFireByHandle(handle, "Kill", null, 2, null, null)
@@ -262,6 +266,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.sarcomaNextStage <- scope.sarcomaThresholds[0]
 		scope.containmentBreachActive <- false
 
+		scope.chargeupParticle <- SpawnEntityFromTable("info_particle_system", {
+			effect_name = "sarcoma_chargeparticle"
+			start_active = false
+		})
+
+		scope.chargeupParticle.AcceptInput("SetParent", "!activator", activator, activator)
+		scope.chargeupParticle.AcceptInput("SetParentAttachment", "center_attachment", null, null)
+
 		activator.SetUseBossHealthBar(true)
 
 		SpawnEntityFromTable("filter_tf_bot_has_tag", {
@@ -304,6 +316,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
+				if(chargeupParticle.IsValid()) {
+					sarcomaPush.Kill()
+				}
 				if(sarcomaPush.IsValid()) {
 					sarcomaPush.Kill()
 				}
@@ -326,12 +341,24 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			}
 
 			sarcomaProgress++
+			if(sarcomaProgress == sarcomaNextStage - 2) {
+				EntFireByHandle(chargeupParticle, "Start", null, -1, null, null)
+				EmitSoundEx({
+					sound_name = "ambient/levels/labs/teleport_mechanism_windup1.wav",
+					channel = 6,
+					origin = player.GetCenter(),
+					filter_type = RECIPIENT_FILTER_GLOBAL
+				})
+			}
 			if(sarcomaProgress < sarcomaNextStage) return 1
 
 			sarcomaStage++
 			sarcomaNextStage = sarcomaThresholds[sarcomaStage]
 			NetProps.SetPropVector(sarcomaPush, "m_vecPushDir", self.EyeAngles() + Vector())
 			EntFireByHandle(sarcomaPush, "Enable", null, -1, null, null)
+
+			EntFireByHandle(chargeupParticle, "Stop", null, -1, null, null)
+
 			switch(sarcomaStage) {
 				case 1:
 					self.RemoveBotAttribute(SUPPRESS_FIRE)
@@ -748,9 +775,11 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	}
 }
 
-::applyFlaskBoost <- function() {
+::applyFlaskBoost <- function(flaskLevel) {
 	local selfHealth = self.GetHealth()
-	self.SetHealth(selfHealth + 300)
+	//Level 2 = tumor potions
+	local hpBoost = (flaskLevel = 2) ? 80 : 300
+	self.SetHealth(selfHealth + hpBoost)
 
 	local scope = self.GetScriptScope()
 	if(!("medigun" in scope) || !medigun.IsValid()) {
@@ -769,18 +798,17 @@ for (local i = 1; i <= MaxPlayers ; i++)
 		return
 	}
 
+	local uberBoost = (flaskLevel = 2) ? 0.15 : 0.5
+	local rageBoost = uberBoost * 100
+
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
 	//printl("uber meter " + uberMeter)
-	local newUberMeter = uberMeter + 0.5 < 1 ? uberMeter + 0.5 : 1
+	local newUberMeter = uberMeter + uberBoost < 1 ? uberMeter + uberBoost : 1
 	NetProps.SetPropFloat(medigun, "m_flChargeLevel", newUberMeter)
 
 	local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")
-	local newRageMeter = rageMeter + 50 < 100 ? rageMeter + 50 : 100
+	local newRageMeter = rageMeter + rageBoost < 100 ? rageMeter + rageBoost : 100
 	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
 
 	diseaseCallbacks.playSound("Halloween.spell_overheal", self)
-}
-
-::testSound <- function() {
-	diseaseCallbacks.playSound("player/flame_out.wav", activator)
 }
