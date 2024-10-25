@@ -584,7 +584,7 @@ finaleThink <- function() {
 			EmitSoundEx({
 				sound_name = "ambient/levels/labs/teleport_mechanism_windup1.wav",
 				channel = 6,
-				origin = player.GetCenter(),
+				origin = self.GetCenter(),
 				filter_type = RECIPIENT_FILTER_GLOBAL
 			})
 		}
