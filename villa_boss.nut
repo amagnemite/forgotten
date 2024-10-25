@@ -10,13 +10,13 @@ unusualParticle <- SpawnEntityFromTable("info_particle_system", {
 unusualParticle.AcceptInput("SetParent", "!activator", self, null)
 unusualParticle.AcceptInput("SetParentAttachment", "head", null, null)
 
-chargeupParticle <- SpawnEntityFromTable("info_particle_system", {
+sarcomaMimicParticle <- SpawnEntityFromTable("info_particle_system", {
 	effect_name = "sarcoma_chargeparticle"
 	start_active = false
 })
 
-chargeupParticle.AcceptInput("SetParent", "!activator", self, null)
-chargeupParticle.AcceptInput("SetParentAttachment", "center_attachment", null, null)
+sarcomaMimicParticle.AcceptInput("SetParent", "!activator", self, null)
+sarcomaMimicParticle.AcceptInput("SetParentAttachment", "center_attachment", null, null)
 
 local objRes = Entities.FindByClassname(null, "tf_objective_resource")
 
@@ -580,7 +580,7 @@ finaleThink <- function() {
 		}
 
 		if(phaseTimer == 200) {
-			EntFireByHandle(chargeupParticle, "Start", null, -1, null, null)
+			sarcomaMimicParticle.AcceptInput("Start", null, null, null)
 			EmitSoundEx({
 				sound_name = "ambient/levels/labs/teleport_mechanism_windup1.wav",
 				channel = 6,
@@ -590,7 +590,7 @@ finaleThink <- function() {
 		}
 
 		if(phaseTimer > 333 && !pausePhaseTimerActions) {
-			EntFireByHandle(chargeupParticle, "Stop", null, -1, null, null)
+			EntFireByHandle(sarcomaMimicParticle, "Stop", null, -1, null, null)
 			self.RemoveWeaponRestriction(SECONDARY_ONLY)
 			self.AddWeaponRestriction(PRIMARY_ONLY)
 			::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_SYRINGEGUN_MEDIC", self)
