@@ -145,8 +145,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		local center = player.GetCenter() + Vector(0, 0, 20)
 		uberFlaskShortSpawner.SpawnEntityAtLocation(center, Vector())
 		//EntFire("uber_flask_short_prop*", "AddOutput", "renderfx 10", 1)
-		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1)", -1)
-		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1)", -1)
+		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 2)", -1)
+		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 2)", -1)
 	}
 
 	OnGameEvent_player_spawn = function(params) {
