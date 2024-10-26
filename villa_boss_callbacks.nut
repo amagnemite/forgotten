@@ -62,7 +62,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 		foreach(bot in support) {
 			printl(bot)
 			if(NetProps.GetPropInt(bot, "m_lifeState") == 0) {
-				bot.TakeDamage(1000, 0, self)
+				bot.TakeDamage(1000, 0, bot)
 			}
 		}
 	}
@@ -76,6 +76,15 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 
 			switch(scope.mainPhase) {
 				case 2:
+					foreach(player, datatable in losecond.players) {
+						if(player.InCond(TF_COND_HALLOWEEN_GHOST_MODE)) {
+							player.ForceRespawn()
+							if(datatable.reanimEntity && datatable.reanimEntity.IsValid()) {
+								datatable.reanimEntity.Kill();		
+								datatable.reanimCount++;
+							}
+						}
+					}
 					delete ::phase1Callbacks
 					if("offensiveThink" in scope.thinkTable) {
 						delete scope.thinkTable.offensiveThink
@@ -84,8 +93,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 						delete scope.thinkTable.defensiveThink
 					}
 					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-					//Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
-					EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", 3)
+					Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
+					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", 3)
 					EntFire("gamerules", "runscriptcode", "bossCallbacks.cleanupPhase1Support()",  5)
 					//self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
 					ukgr.RemoveWeaponRestriction(SECONDARY_ONLY)

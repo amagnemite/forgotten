@@ -204,7 +204,7 @@ offensiveThink <- function() {
 
 	if(self.GetHealth() < self.GetMaxHealth() && deadSupport < 5) {
 		printl("entering defense")
-		EntFire("pop_interface", "ChangeBotAttributes", "EatBots", 3) //delay to let support walk out
+		EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1) //delay to let support walk out
 		delete thinkTable.offensiveThink
 		thinkTable.defensiveThink <- defensiveThink
 	}
