@@ -5,6 +5,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
 
+EntFire("fog_heartbeater", "TurnOff")
+
 ::bossCallbacks <- {
 	ukgr = null
 
@@ -104,8 +106,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					ukgr.RemoveCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, true)
 					ukgr.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
 				case 3:
-					local spawnbotOrigin = Entities.FindByName(null, "spawnbot").GetOrigin()
-					local playerTeleportLocation = Vector(-2252, 2209, 579)
+					local spawnbotOrigin = Entities.FindByName(null, "spawnbot_boss").GetOrigin()
+					//local playerTeleportLocation = Vector(-2252, 2209, 579)
 
 					EntFire("teleport_relay", "CancelPending")
 					EntFire("teleport_player_to_arena" "Disable") //change this to roof for 2
@@ -130,7 +132,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 						if(IsPlayerABot(player)) continue
 
 						//player.Teleport(true, playerTeleportLocation, true, QAngle(0, -115, 0), false, Vector())
-						EntFireByHandle(player, "runscriptcode", "self.Teleport(true, Vector(-2252, 2209, 579), true, QAngle(0, -115, 0), false, Vector())",
+						EntFireByHandle(player, "runscriptcode", "self.Teleport(true, Vector(-2909, 3766, 2251), true, QAngle(2, -42.31, 0), false, Vector())",
 							1, null, null)
 					}
 					break
