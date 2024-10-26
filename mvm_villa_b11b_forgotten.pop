@@ -2656,7 +2656,8 @@ WaveSchedule
 				IncludeScript(`diseasebots.nut`, getroottable())
 				IncludeScript(`villa_boss_callbacks.nut`, getroottable())
 				//IncludeScript(`villa_boss.nut`, getroottable())
-				EntFire(`sniper_*`, `Enable`)
+				EntFire(`sniper_*`, `Disable`)
+				EntFire(`fog_heartbeater`, `TurnOff`)
 			"
 		}
 		DoneOutput {
@@ -2712,7 +2713,7 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			WaitBeforeStarting 45
-			WaitBetweenSpawnsAfterDeath 10
+			WaitBetweenSpawnsAfterDeath 15
 			Support 1
 			Where spawnbot_roof
 			TFBot
@@ -2730,7 +2731,7 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			WaitBeforeStarting 60
-			WaitBetweenSpawnsAfterDeath 10
+			WaitBetweenSpawnsAfterDeath 12
 			Support 1
 			Where spawnbot_roof
 			TFBot

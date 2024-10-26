@@ -128,7 +128,7 @@ cardiomyopathyAttrs <- {
 }
 
 tachycardiaAttrs <- {
-	"damage bonus": 2,
+	"damage bonus": 4,
 	"move speed bonus": 3
 }
 

@@ -5,8 +5,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
 
-EntFire("fog_heartbeater", "TurnOff")
-
 ::bossCallbacks <- {
 	ukgr = null
 
