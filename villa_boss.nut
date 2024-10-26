@@ -15,7 +15,7 @@ sarcomaMimicParticle <- SpawnEntityFromTable("info_particle_system", {
 	start_active = false
 })
 
-sarcomaMimicParticle.AcceptInput("SetParent", "!activator", self, null)
+sarcomaMimicParticle.AcceptInput("SetParent", "!activator", self, self)
 sarcomaMimicParticle.AcceptInput("SetParentAttachment", "center_attachment", null, null)
 
 local objRes = Entities.FindByClassname(null, "tf_objective_resource")

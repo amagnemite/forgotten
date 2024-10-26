@@ -326,7 +326,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				AddThinkToEnt(self, null)
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
 				if(chargeupParticle.IsValid()) {
-					sarcomaPush.Kill()
+					chargeupParticle.Kill()
 				}
 				if(sarcomaPush.IsValid()) {
 					sarcomaPush.Kill()
