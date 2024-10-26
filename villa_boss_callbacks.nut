@@ -136,7 +136,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 		if(!IsPlayerABot(player)) return
         if(!player.HasBotTag("UKGR_Tumor")) return
 		ukgr.GetScriptScope().deadTumorCounter++
-		ukgr.TakeDamageEx(ukgr, ukgr, null, Vector(1, 0, 0), ukgr.GetCenter(), 125, DMG_BLAST)
+		ukgr.TakeDamageEx(ukgr, ukgr, null, Vector(1, 0, 0), ukgr.GetCenter(), 150, DMG_BLAST)
     }
 }
 __CollectGameEventCallbacks(bossCallbacks)

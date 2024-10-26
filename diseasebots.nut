@@ -10,6 +10,7 @@ PrecacheSound("player/pl_burnpain3.wav")
 PrecacheSound("player/flame_out.wav")
 PrecacheSound("player/drown3.wav")
 PrecacheSound("ambient/levels/labs/teleport_mechanism_windup1.wav")
+PrecacheSound("misc/halloween/spell_spawn_boss.wav")
 PrecacheScriptSound("Weapon_DragonsFury.BonusDamageHit")
 PrecacheScriptSound("Halloween.spell_overheal")
 PrecacheScriptSound("Halloween.spell_lightning_cast")
@@ -186,7 +187,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 					handle.GetScriptScope().owner <- diseaseCallbacks.pneumoniaBot
 					handle.GetScriptScope().takePneumoniaDamage <- function() {
 						diseaseCallbacks.playSound("player/drown3.wav", activator)
-						activator.TakeDamage(20, DMG_POISON, owner)
+						activator.TakeDamage(25, DMG_POISON, owner)
 						activator.ViewPunch(QAngle(-6, 0, 0))
 					}
 				}
@@ -275,6 +276,13 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 		scope.chargeupParticle.AcceptInput("SetParent", "!activator", activator, activator)
 		scope.chargeupParticle.AcceptInput("SetParentAttachment", "center_attachment", null, null)
 
+		EmitSoundEx({
+			sound_name = "misc/halloween/spell_spawn_boss.wav",
+			channel = 6,
+			origin = activator.GetCenter(),
+			filter_type = RECIPIENT_FILTER_GLOBAL
+		})
+
 		activator.SetUseBossHealthBar(true)
 
 		SpawnEntityFromTable("filter_tf_bot_has_tag", {
@@ -328,6 +336,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 				}
 				delete sarcomaPush
 				delete selfPush
+				delete chargeupParticle
 				return
 			}
 
@@ -622,7 +631,7 @@ for (local i = 1; i <= MaxPlayers ; i++)
 ::applyFlaskBoost <- function(flaskLevel) {
 	local selfHealth = self.GetHealth()
 	//Level 2 = tumor potions
-	local hpBoost = (flaskLevel == 2) ? 80 : 300
+	local hpBoost = (flaskLevel == 2) ? 80 : 500
 	self.SetHealth(selfHealth + hpBoost)
 
 	local scope = self.GetScriptScope()
@@ -642,7 +651,7 @@ for (local i = 1; i <= MaxPlayers ; i++)
 		return
 	}
 
-	local uberBoost = (flaskLevel == 2) ? 0.15 : 0.5
+	local uberBoost = (flaskLevel == 2) ? 0.15 : 1
 	local rageBoost = uberBoost * 100
 
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")

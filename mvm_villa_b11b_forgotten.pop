@@ -147,6 +147,7 @@ WaveSchedule
 			SecondaryAttributes
 			{
 				"special item description" "Medibeam can now target bots and damage them. Disconnects if shield is activated."
+				"special item description 2" "Default and Vaccinator ubercharges do NOT increase damage."
 			}
 			
 			OnApply {
@@ -176,7 +177,7 @@ WaveSchedule
 			SecondaryAttributes
 			{
 				"special item description" "Medibeam can now target bots and damage them. Disconnects if shield is activated." 
-				"special item description 2" "Damage is tripled during a uber."
+				"special item description 2" "Kritzkrieg ubercharges triple damage dealt."
 			}
 			
 			OnApply {
@@ -207,7 +208,7 @@ WaveSchedule
 			SecondaryAttributes
 			{
 				"special item description" "Medibeam can now target bots and damage them. Disconnects if shield is activated." 
-				"special item description 2" "Damage is tripled during a uber."
+				"special item description 2" "Quick-Fix ubercharges triple damage dealt."
 			}
 			
 			OnApply {
@@ -404,6 +405,7 @@ WaveSchedule
 				"fire rate bonus" 0.2
 				"projectile spread angle penalty" 7
                 "damage bonus" 0.125
+				"projectile speed increased" 0.6
 				"projectile trail particle" dyspnea_rockettrail
 			}
 			CharacterAttributes
@@ -634,7 +636,7 @@ WaveSchedule
 			Skill Expert
 			//Health 55000 for phase 3
 			//Health 70000
-			Health 30000
+			Health 45000
 			Item "The Crusader's Crossbow"
 			Item "The Quick-Fix"
 			Item "The Amputator"
@@ -672,8 +674,8 @@ WaveSchedule
 				ItemName "The Crusader's Crossbow"
 				"faster reload rate" 0.5
 				"projectile spread angle penalty" 3
-				"faster reload rate" 0.125
-				"clip size bonus" 4
+				"faster reload rate" 0.0625
+				"clip size bonus" 8
 				"fire rate bonus" 0.01
 			}
 			CharacterAttributes
@@ -711,7 +713,7 @@ WaveSchedule
 				"move speed bonus"	1.1
 				"damage bonus" 0.4
 				//Screw you vacuum
-				"damage force reduction" 0.1
+				"damage force reduction" 0.6
 				"rage giving scale" 0.5
 				"airblast vulnerability multiplier" 0.1
 			}
