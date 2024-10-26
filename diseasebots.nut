@@ -18,7 +18,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "hemorrhagic_fever_flamethrower"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "rd_robot_explosion"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "soldierbuff_blue_buffed"})
-PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeboss_tp_vortex"})
+PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarcoma_chargeparticle"})
 
 ::diseaseCallbacks <- {
 	pneumoniaBot = null
@@ -451,7 +451,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "eyeb
 			if(self.InCond(12) && !dyspneaDebuffed) {
 				dyspneaDebuffed = true
 				self.SetScriptOverlayMaterial("effects/forgotten_dyspnea_debuff")
-				diseaseCallbacks.playSound(pomsonSound, self)
+				diseaseCallbacks.playSound(::pomsonSound, self)
 			}
 			else if(!self.InCond(12) && dyspneaDebuffed) {
 				dyspneaDebuffed = false
