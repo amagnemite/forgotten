@@ -792,7 +792,7 @@ WaveSchedule
 	Mission
 	{
 		Objective Spy
-		Where spawnbot
+		Where spawnbot_roof
 		InitialCooldown 35
 		CooldownTime 20
 		BeginAtWave 7
@@ -808,7 +808,7 @@ WaveSchedule
 	Mission {
 		Objective Sniper
 		InitialCooldown 20
-		Where spawnbot_sniper
+		Where spawnbot_roof
 		BeginAtWave 7
 		RunForThisManyWaves 1
 		CooldownTime 30
@@ -2714,7 +2714,7 @@ WaveSchedule
 			WaitBeforeStarting 45
 			WaitBetweenSpawnsAfterDeath 10
 			Support 1
-			Where spawnbot
+			Where spawnbot_roof
 			TFBot
 			{
 				Class Scout
@@ -2732,7 +2732,7 @@ WaveSchedule
 			WaitBeforeStarting 60
 			WaitBetweenSpawnsAfterDeath 10
 			Support 1
-			Where spawnbot
+			Where spawnbot_roof
 			TFBot
 			{
 				Class Scout

@@ -133,10 +133,10 @@ tachycardiaAttrs <- {
 }
 
 buffSarcomaAttrs <- {
-	"damage bonus": 3,
-	"projectile spread angle penalty": 10,
-	"fire rate bonus": 0.6,
-	"faster reload rate": 0.8,
+	"damage bonus": 4,
+	"projectile spread angle penalty": 15,
+	"fire rate bonus": 0.5,
+	"faster reload rate": 0.01,
 	"clip size bonus": 4
 }
 
@@ -580,7 +580,7 @@ finaleThink <- function() {
 		}
 
 		if(phaseTimer == 200) {
-			sarcomaMimicParticle.AcceptInput("Start", null, null, null)
+			EntFireByHandle(sarcomaMimicParticle, "Start", null, -1, null, null)
 			EmitSoundEx({
 				sound_name = "ambient/levels/labs/teleport_mechanism_windup1.wav",
 				channel = 6,
