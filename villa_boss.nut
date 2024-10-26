@@ -133,7 +133,7 @@ tachycardiaAttrs <- {
 }
 
 buffSarcomaAttrs <- {
-	"damage bonus": 4,
+	"damage bonus": 5,
 	"projectile spread angle penalty": 15,
 	"fire rate bonus": 0.5,
 	"faster reload rate": 0.01,
