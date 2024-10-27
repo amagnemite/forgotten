@@ -176,6 +176,7 @@ finalAttackAttrs <- {
 //START OF PHASE 1 STUFF
 ::ukgr <- self
 NetProps.SetPropString(self, "m_iName", "ukgr") //needed for particle nonsense
+MAXSUPPORT <- 17
 MOVESPEEDBASE <- 0.5
 HEALTHBONUS <- 100
 playersEaten <- 0
@@ -210,7 +211,7 @@ startPhase1 <-  function() {
 
 offensiveThink <- function() {
 	//printl("dead support " + deadSupport)
-	if(deadSupport >= 5 && supportTimer.Expired()) {
+	if(deadSupport >= MAXSUPPORT && supportTimer.Expired()) {
 		local spawnbot = Entities.FindByName(null,  "spawnbot_arena2")
 		foreach(supporter in support) {
 			supporter.Teleport(true, spawnbot.GetOrigin(), false, QAngle(), false, Vector())
@@ -218,7 +219,7 @@ offensiveThink <- function() {
 		deadSupport = 0
 	}
 
-	if(self.GetHealth() < self.GetMaxHealth() && deadSupport < 5) {
+	if(self.GetHealth() < self.GetMaxHealth() && deadSupport < MAXSUPPORT) {
 		printl("entering defense")
 		EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1) //delay to let support walk out
 		delete thinkTable.offensiveThink
@@ -227,10 +228,10 @@ offensiveThink <- function() {
 }
 
 defensiveThink <- function() {
-	if(deadSupport >= 5) {
+	if(deadSupport >= MAXSUPPORT) {
 		printl("entering offense")
 		EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-		supportTimer.Start(2.5)
+		supportTimer.Start(25)
 		delete thinkTable.defensiveThink
 		thinkTable.offensiveThink <- offensiveThink
 		return

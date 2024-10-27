@@ -1390,6 +1390,7 @@ WaveSchedule
 			WaitBeforeStarting 25
 			WaitBetweenSpawns 1
 			WaitForAllSpawned w3aa
+			Support Limited
 			TFBot
 			{
 				Class Scout
@@ -2499,6 +2500,7 @@ WaveSchedule
 				}
 				TFBot {
 					Template T_TFBot_Medic
+					WeaponRestrictions SecondaryOnly
 					Tag ws9
 				}
 				TFBot {
@@ -2557,14 +2559,7 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Medic
 					Tag ws10
-					EventChangeAttributes {
-						Default {
-							ActionOverride Passive
-						}
-						SwitchToMobber {
-							ActionOverride Mobber
-						}
-					}
+					WeaponRestrictions SecondaryOnly
 				}
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
@@ -2649,7 +2644,7 @@ WaveSchedule
 			Action RunScriptCode
 			Param "
 				self.AcceptInput(`trigger`, null, null, null)
-				EntFire(`spawnbot`, `Disable`)
+				EntFire(`spawnbot_roof`, `Disable`)
 			"
 		}
 		StartWaveOutput {
@@ -2660,7 +2655,6 @@ WaveSchedule
 				self.AcceptInput(`Trigger`, null, null, null)
 				IncludeScript(`diseasebots.nut`, getroottable())
 				IncludeScript(`villa_boss_callbacks.nut`, getroottable())
-				//IncludeScript(`villa_boss.nut`, getroottable())
 				EntFire(`sniper_*`, `Disable`)
 				EntFire(`fog_heartbeater`, `TurnOff`)
 			"
@@ -2675,7 +2669,6 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			Where spawnbot_arena2
-			//Where Spawnbot
 			TFBot
 			{
 				Template T_TFBot_UKGR
@@ -2694,9 +2687,9 @@ WaveSchedule
 		}
 		
 		WaveSpawn {
-			TotalCount 5
-			MaxActive 5
-			SpawnCount 5
+			TotalCount 17
+			MaxActive 17
+			SpawnCount 17
 			Where spawnbot_altmode
 			
 			LastSpawnOutput {

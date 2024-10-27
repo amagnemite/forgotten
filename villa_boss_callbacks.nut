@@ -94,7 +94,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					}
 					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 					Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
-					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", 3)
 					EntFire("gamerules", "runscriptcode", "bossCallbacks.cleanupPhase1Support()",  5)
 					//self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
 					ukgr.RemoveWeaponRestriction(SECONDARY_ONLY)
@@ -108,8 +107,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					//local playerTeleportLocation = Vector(-2252, 2209, 579)
 
 					EntFire("teleport_relay", "CancelPending")
-					EntFire("teleport_player_to_arena" "Disable") //change this to roof for 2
-					EntFire("door_red_*", "Unlock", null, -1)
+					EntFire("teleport_player_to_arena" "AddOutput", "target roof_player_destination") //change this to roof for 2
+					//EntFire("door_red_*", "Unlock", null, -1)
 
 					ukgr.AddBotAttribute(SUPPRESS_FIRE)
 					ukgr.GenerateAndWearItem("TF_WEAPON_SYRINGE_GUN_MEDIC")
@@ -120,7 +119,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					ukgr.RemoveBotAttribute(SUPPRESS_FIRE)
 					//Disable altmode spawns to block tumors
 					EntFire("spawnbot_altmode", "Disable", null, 5)
-					EntFire("spawnbot", "Enable", null, 10)
+					EntFire("spawnbot_roof", "Enable", null, 10)
 					//delete bossCallbacks.OnScriptHook_OnTakeDamage
 
 					ScreenFade(null, 0, 0, 0, 255, 0.75, 1.5, 2) //fix timing
