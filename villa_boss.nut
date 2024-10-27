@@ -11,12 +11,13 @@ unusualParticle.AcceptInput("SetParent", "!activator", self, null)
 unusualParticle.AcceptInput("SetParentAttachment", "head", null, null)
 
 sarcomaMimicParticle <- SpawnEntityFromTable("info_particle_system", {
+	targetname = "boss_sarcoma_mimic_particle"
 	effect_name = "sarcoma_chargeparticle"
 	start_active = false
 })
 
 sarcomaMimicParticle.AcceptInput("SetParent", "!activator", self, self)
-sarcomaMimicParticle.AcceptInput("SetParentAttachment", "center_attachment", null, null)
+sarcomaMimicParticle.AcceptInput("SetParentAttachment", "flag", null, null)
 
 local objRes = Entities.FindByClassname(null, "tf_objective_resource")
 
@@ -38,6 +39,7 @@ TACHYCARDIA <- 4
 SARCOMA <- 5
 PNEUMONIA <- 6
 CARDIAC_ARREST <- 7
+FINAL_ATTACK <- 8
 
 WAVEBAR_SLOT_NO <- 0
 
@@ -98,12 +100,12 @@ selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
 selfPush.AcceptInput("SetParent", "!activator", self, self)
 
 hemorrhagicFeverAttrs <- {
-	"damage penalty": 4.5
+	"damage penalty": 5
 	// "bleed duration": 3
 }
 
 dyspneaAttrs <- { //json syntax because string literals get weird
-	"damage bonus": 0.4,
+	"damage bonus": 0.5,
 	"fire rate bonus": 0.1,
 	"projectile spread angle penalty": 60,
 	"faster reload rate": -1,
@@ -134,27 +136,36 @@ tachycardiaAttrs <- {
 
 buffSarcomaAttrs <- {
 	"damage bonus": 5,
-	"projectile spread angle penalty": 15,
-	"fire rate bonus": 0.5,
-	"faster reload rate": 0.01,
+	"projectile spread angle penalty": 35,
+	"fire rate bonus": 0.1,
+	"faster reload rate": -0.8,
 	"clip size bonus": 4
 }
 
 pneumoniaAttrs <- {
-	"damage bonus": 0.5,
+	"damage bonus": 1.5,
 	"move speed bonus": 1.1,
-	"projectile spread angle penalty": 60,
+	"projectile spread angle penalty": 45,
 	"fire rate bonus": 0.01,
 	"faster reload rate": 30,
-	"clip size upgrade atomic": -4
-	"stickybomb charge rate": 0.001
-	"projectile range increased": 0.8
+	"stickybomb charge rate": 0.001,
+	"projectile range increased": 2
 }
 
 cardiacAttrs <- {
-	"fire rate bonus": 0.12
+	"fire rate bonus": 0.12,
 	"faster reload rate": -0.8,
-	"damage bonus": 3
+	"damage bonus": 4
+}
+
+finalAttackAttrs <- {
+	"override projectile type" 2,
+	"fire rate bonus": 0.1,
+	"clip size bonus": 2.25,
+	"damage bonus": 8,
+	"faster reload rate": 0.2,
+	"mult projectile scale" 3,
+	"projectile speed increased" 0.6
 }
 
 //START OF PHASE 1 STUFF
@@ -450,6 +461,7 @@ changePhase <- function() {
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_cardiac", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_cardiac")
 			self.AddWeaponRestriction(PRIMARY_ONLY)
+			self.RemoveBotAttribute(SUPPRESS_FIRE)
 			self.AddCondEx(71, 6, null)
 
 			local caAudioEntity = null
@@ -479,6 +491,30 @@ changePhase <- function() {
 			//     player.AcceptInput("SetFogController", "fog_heartbeater", null, null)
 			// }
 			break
+		case FINAL_ATTACK:
+			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_base", WAVEBAR_SLOT_NO)
+			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_base")
+			//TODO: Remove all attributes here
+			foreach(attr, val in allAttrs) {
+				self.RemoveCustomAttribute(attr)
+			}
+			foreach(attr, val in finalAttackAttrs) {
+				self.AddCustomAttribute(attr, val, -1)
+			}
+			self.SetScaleOverride(1.9)
+			self.UpdateSkin(3)
+			//TODO: Activate antistuck here
+			//TODO: Also push players back anyways
+			self.RemoveBotAttribute(ALWAYS_FIRE_WEAPON)
+			self.AddBotAttribute(SUPPRESS_FIRE) //Removed after 2s to ensure Dyspnea rockets are all gone
+			self.AddBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
+			//This one is temporary, so it's separated
+			self.AddCustomAttribute("dmg taken increased", 0.1, 2.5)
+
+			// EntFire("ukgr_hf_particles", Kill)
+			::CustomWeapons.GiveItem("The Crusader's Crossbow", self)
+
+			break
 		default:
 			break;
 	}
@@ -488,9 +524,13 @@ changePhase <- function() {
 finaleThink <- function() {
 	phaseTimer++
 
-	if(readyToChangePhase) {
-		changePhase()
+	if(readyToChangePhase) changePhase()
+
+	if(self.GetHealth <= 5000 && currentFinalePhase != FINAL_ATTACK) {
+		readyToChangePhase = true
+		currentFinalePhase = FINAL_ATTACK
 	}
+
 	if(currentFinalePhase == HEMORRHAGIC_FEVER) {
 		local currentEyeAngles = self.EyeAngles()
 		spinAngle = spinAngle + 12
@@ -501,9 +541,9 @@ finaleThink <- function() {
 		}
 	}
 	else if(currentFinalePhase == DYSPNEA) {
-		//LOOK UP actually nvm he keeps missing for some reasons
-		// local currentEyeAngles = self.EyeAngles()
-		// self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
+		//LOOK UP
+		local currentEyeAngles = self.EyeAngles()
+		self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
 
 		if(phaseTimer > 275 && !pausePhaseTimerActions) {
 			self.AddBotAttribute(SUPPRESS_FIRE)
@@ -511,18 +551,18 @@ finaleThink <- function() {
 			pausePhaseTimerActions = true
 		}
 
-		else if (phaseTimer == 520) { //enables spawnbot_altmode for tumors
+		else if (phaseTimer == 460) { //enables spawnbot_altmode for tumors
 			local spawnbot = Entities.FindByName(null, "spawnbot_altmode")
 			spawnbot.AcceptInput("enable", null, null, null)
 			EntFireByHandle(spawnbot, "Disable", null, 0.5, null, null)
 		}
 
-		else if (phaseTimer == 599) {
+		else if (phaseTimer == 539) {
 			lastPosition = self.GetOrigin()
 			//ClientPrint(null, 3, "Last position set! " + lastPosition.x + " " + lastPosition.y + " " + lastPosition.z)
 		}
 
-		else if(phaseTimer > 600) {
+		else if(phaseTimer > 540) {
 			readyToChangePhase = true
 			currentFinalePhase = MALIGNANT_TUMOR
 		}
@@ -573,11 +613,11 @@ finaleThink <- function() {
 	}
 	else if(currentFinalePhase == SARCOMA) {
 		//unused
-		if(damageTakenThisPhase > 5000 && !pausePhaseTimerActions) {
-			self.AddCondEx(71, (14.8 - (phaseTimer / 66.6)), null)
-			self.SetScaleOverride(1.9)
-			pausePhaseTimerActions = true
-		}
+		// if(damageTakenThisPhase > 5000 && !pausePhaseTimerActions) {
+		// 	self.AddCondEx(71, (14.8 - (phaseTimer / 66.6)), null)
+		// 	self.SetScaleOverride(1.9)
+		// 	pausePhaseTimerActions = true
+		// }
 
 		if(phaseTimer == 200) {
 			EntFireByHandle(sarcomaMimicParticle, "Start", null, -1, null, null)
@@ -604,7 +644,7 @@ finaleThink <- function() {
 			EntFire("sarcoma_evolution_shake", "StartShake")
 			DispatchParticleEffect("sarcoma_explode", self.GetOrigin(), Vector())
 		}
-		else if(phaseTimer > 1000) {
+		else if(phaseTimer > 666) {
 			readyToChangePhase = true
 			//ClientPrint(null, 3, "Switching to Pneumonia!")
 			currentFinalePhase = PNEUMONIA
@@ -623,7 +663,7 @@ finaleThink <- function() {
 			}
 		}
 
-		if(phaseTimer == 100) { //1.5s
+		if(phaseTimer == 67) { //1s
 			foreach(sticky in stickyList) {
 				if(sticky.IsValid()) {
 					DispatchParticleEffect("pneumonia_stickybomb_aura", sticky.GetCenter(), Vector())
@@ -633,7 +673,7 @@ finaleThink <- function() {
 			pausePhaseTimerActions = true //stop collecting stickies
 		}
 
-		if(phaseTimer == 267) { //approx 4s
+		if(phaseTimer == 167) { //approx 2.5s
 			if(!pneumoniaSpawner.IsValid()) return //mostly for wave reset
 			foreach(sticky in stickyList) {
 				if(sticky.IsValid()) { //in case they get det
@@ -643,7 +683,7 @@ finaleThink <- function() {
 			self.PressAltFireButton(0.1)
 		}
 
-		if(phaseTimer > 530) {
+		if(phaseTimer > 367) {
 			readyToChangePhase = true
 			currentFinalePhase = CARDIAC_ARREST
 		}
@@ -660,7 +700,18 @@ finaleThink <- function() {
 			readyToChangePhase = true
 			currentFinalePhase = HEMORRHAGIC_FEVER
 		}
-
+	}
+	else if(currentFinalePhase == FINAL_ATTACK) {
+		if(phaseTimer == 165) self.RemoveBotAttribute(SUPPRESS_FIRE)
+		else if(phaseTimer > 165) {
+			local finalRocket = null;
+			while(finalRocket = Entities.FindByClassname(finalRocket, "tf_projectile_pipe_remote")) {
+				//TODO: Check for whether or not model is set and then add think
+				//TODO: Change to crossbow model
+				//TODO: Think creates a particle when explodes
+				finalRocket.SetModelSimple("models/villa/stickybomb_pneumonia.mdl")
+			}
+		}
 	}
 }
 

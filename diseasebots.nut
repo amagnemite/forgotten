@@ -144,8 +144,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		local center = player.GetCenter() + Vector(0, 0, 20)
 		uberFlaskShortSpawner.SpawnEntityAtLocation(center, Vector())
 		//EntFire("uber_flask_short_prop*", "AddOutput", "renderfx 10", 1)
-		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 2)", -1)
-		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 2)", -1)
+		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1.5)", -1)
+		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1.5)", -1)
 	}
 
 	OnGameEvent_player_spawn = function(params) {
@@ -186,7 +186,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 					handle.GetScriptScope().owner <- diseaseCallbacks.pneumoniaBot
 					handle.GetScriptScope().takePneumoniaDamage <- function() {
 						diseaseCallbacks.playSound("player/drown3.wav", activator)
-						activator.TakeDamage(25, DMG_POISON, owner)
+						activator.TakeDamage(40, DMG_POISON, owner)
 						activator.ViewPunch(QAngle(-6, 0, 0))
 					}
 				}
@@ -274,6 +274,13 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 
 		scope.chargeupParticle.AcceptInput("SetParent", "!activator", activator, activator)
 		scope.chargeupParticle.AcceptInput("SetParentAttachment", "center_attachment", null, null)
+
+		EmitSoundEx({
+			sound_name = "misc/halloween/spell_spawn_boss.wav",
+			channel = 6,
+			origin = activator.GetCenter(),
+			filter_type = RECIPIENT_FILTER_GLOBAL
+		})
 
 		EmitSoundEx({
 			sound_name = "misc/halloween/spell_spawn_boss.wav",
@@ -654,7 +661,7 @@ for (local i = 1; i <= MaxPlayers ; i++)
 		return
 	}
 
-	local uberBoost = (flaskLevel == 2) ? 0.2 : 0.75
+	local uberBoost = (flaskLevel == 2) ? 0.15 : 0.5
 	local rageBoost = uberBoost * 100
 
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")

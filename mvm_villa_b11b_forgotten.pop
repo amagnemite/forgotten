@@ -683,7 +683,7 @@ WaveSchedule
 			{
 				"move speed bonus"	1.1
 				"damage force reduction" 0.1
-				"rage giving scale" 0.1
+				//"rage giving scale" 0.1
 				"airblast vulnerability multiplier" 0.1
 				//"overheal decay bonus" 0.5 //inverted percent
 			}
@@ -715,7 +715,7 @@ WaveSchedule
 				"damage bonus" 0.4
 				//Screw you vacuum
 				"damage force reduction" 0.6
-				"rage giving scale" 0.5
+				//"rage giving scale" 0.5
 				"airblast vulnerability multiplier" 0.1
 			}
 		}
@@ -1105,7 +1105,7 @@ WaveSchedule
 					"damage force reduction" 0.0000000001
 					"airblast vulnerability multiplier" 0.0000000001
 					"override footstep sound set" 3
-					"rage giving scale" 0.1
+					"rage giving scale" 0.4
 				}
 			}
 		}

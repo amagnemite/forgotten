@@ -5,6 +5,14 @@
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "cardiac_arrest_buffed"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "cardiac_arrest_dh_warning"})
 PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
+PrecacheSound("ui/heartbeat1.mp3")
+PrecacheSound("ui/heartbeat2.mp3")
+PrecacheSound("ui/heartbeat3.mp3")
+PrecacheSound("ui/heartbeat4.mp3")
+PrecacheSound("ui/heartbeat5.mp3")
+// Unused
+// PrecacheSound("ui/heartbeat6.mp3")
+// PrecacheSound("ui/heartbeat7.mp3")
 
 ::heartbeaterCallbacks <- {
 	Cleanup = function() {
@@ -53,13 +61,13 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 		if(!activator.HasBotTag("heartbeater")) {
 			return
 		}
-		local sound1 = "mvm/heartbeat1.mp3"
-		local sound2 = "mvm/heartbeat2.mp3"
-		local sound3 = "mvm/heartbeat3.mp3"
-		local sound4 = "mvm/heartbeat4.mp3"
-		local sound5 = "mvm/heartbeat5.mp3"
-		local sound6 = "mvm/heartbeat6.mp3"
-		local sound7 = "mvm/heartbeat7.mp3"
+		// local sound1 = "mvm/heartbeat1.mp3"
+		// local sound2 = "mvm/heartbeat2.mp3"
+		// local sound3 = "mvm/heartbeat3.mp3"
+		// local sound4 = "mvm/heartbeat4.mp3"
+		// local sound5 = "mvm/heartbeat5.mp3"
+		// local sound6 = "mvm/heartbeat6.mp3"
+		// local sound7 = "mvm/heartbeat7.mp3"
 		
 		local stunDurationList = [40, 40, 40, 40, 60, 60, 60, 60, 60, 100, 100, 100, 100, 100, 100, 120, 120, 160, 160, 200]
 		// Raw sound names, new version calls ambient_generic entities instead
@@ -111,7 +119,7 @@ PrecacheSound("vo/mvm/mght/soldier_mvm_m_laughlong01.mp3")
 				//printl("Stun Duration: " + stunDurationList[stunDurationChoice])
 				
 				EmitSoundEx({
-					sound_name = stunDurationAudioList[stunDurationChoice],
+					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
 					channel = 6,
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
