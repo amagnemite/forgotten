@@ -146,7 +146,7 @@ PrecacheSound("ui/heartbeat5.mp3")
 
 				modeToUse = patternList[patternPreference * 5 + patternNumber]
 				patternNumber = (patternNumber + 1) > 4 ? 0 : (patternNumber + 1)
-				if(modeToUse == PRIMARYMODE && self.GetHealth() <= self.GetMaxHealth() * 0.5) {
+				if(modeToUse == PRIMARYMODE && self.GetHealth() <= self.GetMaxHealth() * 0.65) {
 					dhParticle.AcceptInput("StartTouch", "!activator", self, self)
                 }
 				else {
