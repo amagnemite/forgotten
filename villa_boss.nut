@@ -100,16 +100,18 @@ selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
 selfPush.AcceptInput("SetParent", "!activator", self, self)
 
 hemorrhagicFeverAttrs <- {
-	"damage penalty": 5
+	"damage penalty": 4.5,
+	"move speed bonus": 0.95
 	// "bleed duration": 3
 }
 
 dyspneaAttrs <- { //json syntax because string literals get weird
-	"damage bonus": 0.5,
+	"damage bonus": 0.3,
 	"fire rate bonus": 0.1,
 	"projectile spread angle penalty": 60,
 	"faster reload rate": -1,
 	"projectile speed increased": 0.6,
+	"move speed bonus": 1.1,
 
 	"mod projectile heat seek power": 360,
 	"mod projectile heat aim error": 360,
@@ -126,12 +128,14 @@ cardiomyopathyAttrs <- {
 	"fire rate bonus": 0.05,
 	"projectile spread angle penalty": 10,
 	"clip size upgrade atomic": 16,
+	"move speed bonus": 1,
 	"faster reload rate": 0.075
 }
 
 tachycardiaAttrs <- {
-	"damage bonus": 4,
-	"move speed bonus": 3
+	"damage bonus": 1,
+	"move speed bonus": 3,
+	"fire rate bonus": 3
 }
 
 buffSarcomaAttrs <- {
@@ -140,6 +144,7 @@ buffSarcomaAttrs <- {
 	"fire rate bonus": 0.1,
 	"faster reload rate": -0.8,
 	"clip size bonus": 4
+	"move speed bonus": 0.01
 }
 
 pneumoniaAttrs <- {
@@ -159,13 +164,13 @@ cardiacAttrs <- {
 }
 
 finalAttackAttrs <- {
-	"override projectile type" 2,
+	"override projectile type": 2,
 	"fire rate bonus": 0.1,
 	"clip size bonus": 2.25,
 	"damage bonus": 8,
 	"faster reload rate": 0.2,
-	"mult projectile scale" 3,
-	"projectile speed increased" 0.6
+	"mult projectile scale": 3,
+	"projectile speed increased": 0.6
 }
 
 //START OF PHASE 1 STUFF
@@ -526,10 +531,10 @@ finaleThink <- function() {
 
 	if(readyToChangePhase) changePhase()
 
-	if(self.GetHealth <= 5000 && currentFinalePhase != FINAL_ATTACK) {
-		readyToChangePhase = true
-		currentFinalePhase = FINAL_ATTACK
-	}
+	// if(self.GetHealth <= 5000 && currentFinalePhase != FINAL_ATTACK) {
+	// 	readyToChangePhase = true
+	// 	currentFinalePhase = FINAL_ATTACK
+	// }
 
 	if(currentFinalePhase == HEMORRHAGIC_FEVER) {
 		local currentEyeAngles = self.EyeAngles()
@@ -541,9 +546,9 @@ finaleThink <- function() {
 		}
 	}
 	else if(currentFinalePhase == DYSPNEA) {
-		//LOOK UP
-		local currentEyeAngles = self.EyeAngles()
-		self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
+		//LOOK UP nvm he always misses for some reasons
+		// local currentEyeAngles = self.EyeAngles()
+		// self.SnapEyeAngles(QAngle(-90, currentEyeAngles.y, currentEyeAngles.z))
 
 		if(phaseTimer > 275 && !pausePhaseTimerActions) {
 			self.AddBotAttribute(SUPPRESS_FIRE)
@@ -629,7 +634,7 @@ finaleThink <- function() {
 			})
 		}
 
-		if(phaseTimer > 333 && !pausePhaseTimerActions) {
+		if(phaseTimer > 400 && !pausePhaseTimerActions) {
 			EntFireByHandle(sarcomaMimicParticle, "Stop", null, -1, null, null)
 			self.RemoveWeaponRestriction(SECONDARY_ONLY)
 			self.AddWeaponRestriction(PRIMARY_ONLY)
@@ -644,7 +649,7 @@ finaleThink <- function() {
 			EntFire("sarcoma_evolution_shake", "StartShake")
 			DispatchParticleEffect("sarcoma_explode", self.GetOrigin(), Vector())
 		}
-		else if(phaseTimer > 666) {
+		else if(phaseTimer > 733) {
 			readyToChangePhase = true
 			//ClientPrint(null, 3, "Switching to Pneumonia!")
 			currentFinalePhase = PNEUMONIA
@@ -705,7 +710,7 @@ finaleThink <- function() {
 		if(phaseTimer == 165) self.RemoveBotAttribute(SUPPRESS_FIRE)
 		else if(phaseTimer > 165) {
 			local finalRocket = null;
-			while(finalRocket = Entities.FindByClassname(finalRocket, "tf_projectile_pipe_remote")) {
+			while(finalRocket = Entities.FindByClassname(finalRocket, "tf_projectile_rocket")) {
 				//TODO: Check for whether or not model is set and then add think
 				//TODO: Change to crossbow model
 				//TODO: Think creates a particle when explodes

@@ -113,7 +113,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 
 					ukgr.AddBotAttribute(SUPPRESS_FIRE)
 					ukgr.GenerateAndWearItem("TF_WEAPON_SYRINGE_GUN_MEDIC")
-					ukgr.AddCustomAttribute("max health additive bonus", 40000,  -1)
+					ukgr.AddCustomAttribute("max health additive bonus", 15000,  -1)
 					ukgr.SetHealth(ukgr.GetMaxHealth())
 					ukgr.Teleport(true, spawnbotOrigin, false, QAngle(), false, Vector())
 					scope.thinkTable.finaleThink <- scope.finaleThink
@@ -149,3 +149,10 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
     }
 }
 __CollectGameEventCallbacks(bossCallbacks)
+
+::reduceToOneHP <- function() {
+	if(self == null) return
+	if(IsPlayerABot(self)) return
+	if(self.GetHealth() <= 5) return
+	self.SetHealth(1)
+}

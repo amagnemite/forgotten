@@ -124,6 +124,13 @@ PrecacheSound("ui/heartbeat5.mp3")
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
 				})
+
+				EmitSoundEx({
+					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
+					channel = 6,
+					origin = self.GetCenter(),
+					filter_type = RECIPIENT_FILTER_GLOBAL
+				})
 				
 				//EntFire("tf_gamerules", "playvo", stunDurationAudioList[stunDurationChoice])
 				
