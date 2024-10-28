@@ -185,8 +185,6 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_8.wav`)", 3.2, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion5.wav`)", 3.6, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`)", 4.0, ukgr, ukgr)
-					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`)", 4.0, ukgr, ukgr)
-					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`)", 4.0, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`)", 4.0, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "ScreenFade(null, 230, 230, 230, 255, 1, 4.5, 2)", 4, ukgr, ukgr)
 					// EntFireByHandle(ukgr, "RunScriptCode", "bossSuicide()", 5.1, ukgr, ukgr)
