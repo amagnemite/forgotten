@@ -231,7 +231,7 @@ defensiveThink <- function() {
 	if(deadSupport >= MAXSUPPORT) {
 		printl("entering offense")
 		EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
-		supportTimer.Start(25)
+		supportTimer.Start(15)
 		delete thinkTable.defensiveThink
 		thinkTable.offensiveThink <- offensiveThink
 		return
@@ -240,7 +240,7 @@ defensiveThink <- function() {
 	local target = self.GetHealTarget()
 	if(target != null) {
 		target.TakeDamageCustom(self, self, null, Vector(0, 0, 1), target.GetCenter(),
-			3, DMG_BLAST, TF_DMG_CUSTOM_MERASMUS_ZAP); //kills in approx a second
+			6, DMG_BLAST, TF_DMG_CUSTOM_MERASMUS_ZAP); //kills in approx a second
 	}
 }
 

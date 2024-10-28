@@ -115,7 +115,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 					Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
 					EntFire("gamerules", "runscriptcode", "bossCallbacks.cleanupPhase1Support()",  5)
-					//self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
+					//self.AddCondEx(TF_COND_PREVENT_DEATH, -1, null)
 					ukgr.RemoveWeaponRestriction(SECONDARY_ONLY)
 					ukgr.RemoveCustomAttribute("damage bonus")
 					ukgr.RemoveCustomAttribute("move speed bonus")
