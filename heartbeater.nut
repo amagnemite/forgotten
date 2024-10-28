@@ -131,13 +131,27 @@ PrecacheSound("ui/heartbeat5.mp3")
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
 				})
+
+				EmitSoundEx({
+					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
+					channel = 6,
+					origin = self.GetCenter(),
+					filter_type = RECIPIENT_FILTER_GLOBAL
+				})
+
+				EmitSoundEx({
+					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
+					channel = 6,
+					origin = self.GetCenter(),
+					filter_type = RECIPIENT_FILTER_GLOBAL
+				})
 				
 				//EntFire("tf_gamerules", "playvo", stunDurationAudioList[stunDurationChoice])
 				
-				local audioEntity = null
-				while(audioEntity = Entities.FindByName(audioEntity, stunDurationAudioList[stunDurationChoice])) {
-					audioEntity.AcceptInput("PlaySound", null, null, null)
-				}
+				// local audioEntity = null
+				// while(audioEntity = Entities.FindByName(audioEntity, stunDurationAudioList[stunDurationChoice])) {
+				// 	audioEntity.AcceptInput("PlaySound", null, null, null)
+				// }
 				
 				self.AddCondEx(TF_COND_MVM_BOT_STUN_RADIOWAVE, stunDurationList[stunDurationChoice] / 10, null)
 				activeDuration = RandomInt(20,160)

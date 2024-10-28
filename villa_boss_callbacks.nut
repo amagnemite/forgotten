@@ -9,9 +9,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 	ukgr = null
 
 	Cleanup = function() {
-		EntFire("boss_halo_*","SetParent","")
-		EntFire("boss_halo_*","AddOutput","origin 0 0 0")
-		//EntFire("boss_halo_*", "kill")
 		delete ::bossCallbacks
     }
 
@@ -25,12 +22,23 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 		Cleanup()
 	}
 
-	/*
 	OnGameEvent_mvm_wave_failed = function(_) {
-		EntFire("boss_halo_*","SetParent","")
-		EntFire("boss_halo_*","AddOutput","origin 0 0 0")
+		for (local i = 1; i <= MaxPlayers ; i++)
+		{
+			local player = PlayerInstanceFromIndex(i)
+			if(player == null) continue
+			if(!IsPlayerABot(player)) continue
+			if(!player.HasBotTag("UKGR")) continue
+			player.Teleport(true, Vector(-2600, -871, 1493), false, QAngle(), false, Vector())
+			DispatchParticleEffect("ukgr_phase_change_flames", player.GetCenter(), Vector())
+			EmitSoundEx({
+				sound_name = "misc/halloween/spell_fireball_impact.wav",
+				channel = 6,
+				origin = player.GetCenter(),
+				filter_type = RECIPIENT_FILTER_GLOBAL
+			})
+		}
 	}
-	*/
 
     OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
@@ -112,7 +120,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 
 					ukgr.AddBotAttribute(SUPPRESS_FIRE)
 					ukgr.GenerateAndWearItem("TF_WEAPON_SYRINGE_GUN_MEDIC")
-					ukgr.AddCustomAttribute("max health additive bonus", 15000,  -1)
+					ukgr.AddCustomAttribute("max health additive bonus", 30000,  -1)
 					ukgr.SetHealth(ukgr.GetMaxHealth())
 					ukgr.Teleport(true, spawnbotOrigin, false, QAngle(), false, Vector())
 					scope.thinkTable.finaleThink <- scope.finaleThink

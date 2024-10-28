@@ -636,7 +636,7 @@ WaveSchedule
 			Skill Expert
 			//Health 55000 for phase 3
 			//Health 70000
-			Health 45000
+			Health 30000
 			Item "The Crusader's Crossbow"
 			Item "The Quick-Fix"
 			Item "The Amputator"
@@ -665,8 +665,8 @@ WaveSchedule
 				"attach particle effect" 16
 				"Paintkit_proto_def_index" 3.16693e-43n
 				"Set_item_texture_wear" 0
-				"fire input on hit" "!self^RunScriptCode^reduceToOneHP()"
-				"fire input on hit name restrict" "player"
+				// "fire input on hit" "!self^RunScriptCode^reduceToOneHP()"
+				// "fire input on hit name restrict" "player"
 			}
 			ItemAttributes {
 				Itemname "The Quick-Fix"
@@ -675,9 +675,9 @@ WaveSchedule
 			ItemAttributes {
 				ItemName "The Crusader's Crossbow"
 				"faster reload rate" 0.5
-				"projectile spread angle penalty" 10
+				"projectile spread angle penalty" 20
 				"faster reload rate" 0.0625
-				"dmg penalty vs players" 3
+				"dmg penalty vs players" 2
 				"clip size bonus" 8
 				"fire rate bonus" 0.01
 			}
@@ -713,7 +713,7 @@ WaveSchedule
 			}
 			CharacterAttributes
 			{
-				"move speed bonus"	1.1
+				"move speed bonus"	1.05
 				"damage bonus" 0.4
 				//Screw you vacuum
 				"damage force reduction" 0.6
@@ -937,6 +937,7 @@ WaveSchedule
 					"increased jump height" 2.3
 					"bot custom jump particle"	1
 					"damage bonus"	1.5
+					"fire rate bonus" 2
 					"cancel falling damage" 1
 					"damage force reduction" 0.5
 				}
@@ -2100,10 +2101,11 @@ WaveSchedule
 				CharacterAttributes
 				{
 					"charge time increased" 2
-					"charge recharge rate increased" 7
+					"charge recharge rate increased" 3.5
 					"increased jump height" 2.3
 					"bot custom jump particle"	1
 					"damage bonus"	1.5
+					"fire rate bonus" 2
 					"cancel falling damage" 1
 					"damage force reduction" 0.5
 				}

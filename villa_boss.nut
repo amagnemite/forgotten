@@ -100,7 +100,7 @@ selfPush.SetSize(Vector(-100, -100, -104), Vector(100, 100, 104))
 selfPush.AcceptInput("SetParent", "!activator", self, self)
 
 hemorrhagicFeverAttrs <- {
-	"damage penalty": 4.5,
+	"damage penalty": 5,
 	"move speed bonus": 0.95
 	// "bleed duration": 3
 }
@@ -133,14 +133,14 @@ cardiomyopathyAttrs <- {
 }
 
 tachycardiaAttrs <- {
-	"damage bonus": 1,
-	"move speed bonus": 3,
+	"damage bonus": 3.5,
+	"move speed bonus": 1.3,
 	"fire rate bonus": 3
 }
 
 buffSarcomaAttrs <- {
 	"damage bonus": 5,
-	"projectile spread angle penalty": 35,
+	"projectile spread angle penalty": 40,
 	"fire rate bonus": 0.1,
 	"faster reload rate": -0.8,
 	"clip size bonus": 4
@@ -313,6 +313,12 @@ changePhase <- function() {
 	damageTakenThisPhase = 0
 	//ClientPrint(null, 3, "Phase changed!")
 	DispatchParticleEffect("ukgr_phase_change_flames", self.GetCenter(), Vector())
+	EmitSoundEx({
+		sound_name = "misc/halloween/spell_fireball_impact.wav",
+		channel = 6,
+		origin = self.GetCenter(),
+		filter_type = RECIPIENT_FILTER_GLOBAL
+	})
 	EmitSoundEx({
 		sound_name = "misc/halloween/spell_fireball_impact.wav",
 		channel = 6,
