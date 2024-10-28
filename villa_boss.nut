@@ -55,6 +55,7 @@ damageTakenThisPhase <- 0
 // isUsingMeleeTachycardia <- false
 currentWeapon <- null
 stickyList <- []
+isExploding <- false
 
 //Prep cardiac arrest particles
 caParticle <- SpawnEntityFromTable("trigger_particle", {
@@ -534,7 +535,7 @@ changePhase <- function() {
 }
 
 finaleThink <- function() {
-	phaseTimer++
+	if(!isExploding) phaseTimer++
 
 	if(readyToChangePhase) changePhase()
 
