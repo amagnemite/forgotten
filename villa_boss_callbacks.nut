@@ -1,6 +1,18 @@
 IncludeScript("customweaponsvillaedit.nut", getroottable())
 
 PrecacheSound("misc/halloween/spell_fireball_impact.wav")
+PrecacheSound("ambient/explosions/explode_1.wav")
+PrecacheSound("ambient/explosions/explode_4.wav")
+PrecacheSound("ambient/explosions/explode_5.wav")
+PrecacheSound("ambient/explosions/explode_7.wav")
+PrecacheSound("ambient/explosions/explode_8.wav")
+PrecacheSound("ambient/levels/labs/electric_explosion1.wav")
+PrecacheSound("ambient/levels/labs/electric_explosion2.wav")
+PrecacheSound("ambient/levels/labs/electric_explosion3.wav")
+PrecacheSound("ambient/levels/labs/electric_explosion4.wav")
+PrecacheSound("ambient/levels/labs/electric_explosion5.wav")
+PrecacheSound("misc/doomsday_missile_explosion.wav")
+PrecacheSound("mvm/mvm_tank_explode.wav")
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_tachycardia_intro"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
@@ -119,6 +131,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 					//EntFire("door_red_*", "Unlock", null, -1)
 
 					ukgr.AddBotAttribute(SUPPRESS_FIRE)
+					self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
 					ukgr.GenerateAndWearItem("TF_WEAPON_SYRINGE_GUN_MEDIC")
 					ukgr.AddCustomAttribute("max health additive bonus", 30000,  -1)
 					ukgr.SetHealth(ukgr.GetMaxHealth())
@@ -141,19 +154,48 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss
 							1, null, null)
 					}
 					break
+				case 4:
+					DispatchParticleEffect("ukgr_death_explosion", self.GetCenter(), Vector())
+					self.AddCustomAttribute("dmg taken increased", -0.01, -1)
+					self.AddCustomAttribute("move speed bonus", 0.000001, -1)
+					//prevent phase from advancing or smth
+					for(local i = 1; i <= MaxPlayers ; i++) {
+						local player = PlayerInstanceFromIndex(i)
+						if(player == null) continue
+						if(IsPlayerABot(player)) continue
+
+						self.AddCustomAttribute("dmg taken increased", -0.01, -1)
+					}
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_1.wav`)", 0, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion1.wav`)", 0.4, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_4.wav`)", 0.8, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion2.wav`)", 1.2, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_5.wav`)", 1.6, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion3.wav`)", 2.0, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_7.wav`)", 2.4, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion4.wav`)", 2.8, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_8.wav`)", 3.2, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion5.wav`)", 3.6, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`)", 4.0, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`)", 4.0, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`)", 4.0, self, self)
+					EntFireByHandle(self, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`)", 4.0, self, self)
+					ScreenFade(null, 230, 230, 230, 255, 1, 1, 2)
+					EntFireByHandle(self, "RunScriptCode", "self.AddCustomAttribute(`health drain`, -9999, -1)", 5.1, self, self)
+					EntFireByHandle(self, "RunScriptCode", "self.AddCustomAttribute(`dmg taken increased`, 10, -1)", 5.1, self, self)
 			}
 			params.early_out = true
 		}
 	}
 
-	OnGameEvent_player_death = function(params) {
-		local player = GetPlayerFromUserID(params.userid)
-		if(player == null) return
-		if(!IsPlayerABot(player)) return
-        if(!player.HasBotTag("UKGR_Tumor")) return
-		ukgr.GetScriptScope().deadTumorCounter++
-		ukgr.TakeDamageEx(ukgr, ukgr, null, Vector(1, 0, 0), ukgr.GetCenter(), 150, DMG_BLAST)
-    }
+	// OnGameEvent_player_death = function(params) {
+	// 	local player = GetPlayerFromUserID(params.userid)
+	// 	if(player == null) return
+	// 	if(!IsPlayerABot(player)) return
+    //     if(!player.HasBotTag("UKGR_Tumor")) return
+	// 	ukgr.GetScriptScope().deadTumorCounter++
+	// 	ukgr.TakeDamageEx(ukgr, ukgr, null, Vector(1, 0, 0), ukgr.GetCenter(), 150, DMG_BLAST)
+    // }
 }
 __CollectGameEventCallbacks(bossCallbacks)
 
@@ -162,4 +204,13 @@ __CollectGameEventCallbacks(bossCallbacks)
 	if(IsPlayerABot(self)) return
 	if(self.GetHealth() <= 5) return
 	self.SetHealth(1)
+}
+
+::playEmitSoundEx <- function(soundName) {
+	EmitSoundEx({
+		sound_name = soundName,
+		channel = 6,
+		origin = self.GetCenter(),
+		filter_type = RECIPIENT_FILTER_GLOBAL
+	})
 }
