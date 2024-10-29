@@ -137,7 +137,7 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					ukgr.AddBotAttribute(SUPPRESS_FIRE)
 					ukgr.AddCondEx((TF_COND_PREVENT_DEATH), -1, null)
 					ukgr.GenerateAndWearItem("TF_WEAPON_SYRINGE_GUN_MEDIC")
-					ukgr.AddCustomAttribute("max health additive bonus", 30000,  -1)
+					ukgr.AddCustomAttribute("max health additive bonus", 40000,  -1)
 					ukgr.SetHealth(ukgr.GetMaxHealth())
 					ukgr.Teleport(true, spawnbotOrigin, false, QAngle(), false, Vector())
 					scope.thinkTable.finaleThink <- scope.finaleThink

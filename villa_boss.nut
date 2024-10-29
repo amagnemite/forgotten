@@ -102,7 +102,7 @@ selfPush.AcceptInput("SetParent", "!activator", self, self)
 
 hemorrhagicFeverAttrs <- {
 	"damage penalty": 5,
-	"move speed bonus": 0.95
+	"move speed bonus": 1.25
 	// "bleed duration": 3
 }
 
@@ -134,7 +134,7 @@ cardiomyopathyAttrs <- {
 }
 
 tachycardiaAttrs <- {
-	"damage bonus": 3.5,
+	"damage bonus": 4.5,
 	"move speed bonus": 1.3,
 	"fire rate bonus": 3
 }
@@ -548,7 +548,7 @@ finaleThink <- function() {
 		local currentEyeAngles = self.EyeAngles()
 		spinAngle = spinAngle + 12
 		self.SnapEyeAngles(QAngle(currentEyeAngles.x, spinAngle, currentEyeAngles.z))
-		if(phaseTimer > 1000) {
+		if(phaseTimer > 530) {
 			readyToChangePhase = true
 			currentFinalePhase = DYSPNEA
 		}
