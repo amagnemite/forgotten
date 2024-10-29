@@ -678,7 +678,7 @@ WaveSchedule
 				"projectile spread angle penalty" 20
 				"faster reload rate" 0.0625
 				"dmg penalty vs players" 2
-				"clip size bonus" 8
+				"clip size upgrade atomic" 8
 				"fire rate bonus" 0.01
 			}
 			CharacterAttributes
@@ -754,7 +754,6 @@ WaveSchedule
 			Name Engineer
 			Skill Expert
 			Health 500
-			//Attributes TeleportToHint
 			TeleportWhere spawnbot
 			TeleportWhere spawnbot_right
 			Tag mission_engineer
@@ -1776,7 +1775,7 @@ WaveSchedule
 			MaxActive 2
 			SpawnCount 2
 			//WaitBetweenSpawns 27
-			TotalCurrency 500
+			TotalCurrency 750
 			Squad
 			{
 				TFBot
@@ -1796,7 +1795,7 @@ WaveSchedule
 			TotalCount 1
 			WaitBeforeStarting 15
 			WaitForAllSpawned w5a
-			TotalCurrency 550
+			TotalCurrency 300
 			Where spawnbot
 			Tank
 			{

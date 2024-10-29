@@ -71,7 +71,6 @@ taParticle <- SpawnEntityFromTable("trigger_particle", {
 	spawnflags = 64
 })
 
-//don't forget to precache particle
 teleportParticle <- SpawnEntityFromTable("info_particle_system", {
 	effect_name = "ukgr_teleport_spellwheel"
 	start_active = false
@@ -195,8 +194,6 @@ for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
 }
 
 startPhase1 <-  function() {
-	//self.GenerateAndWearItem("The Crusader's Crossbow")
-	//self.GetActiveWeapon().AddAttribute("reload speed", 0.5, -1)
 	local arena2Origin = Entities.FindByName(null, "spawnbot_arena2").GetOrigin()
 	for(local i = 1; i <= MaxPlayers; i++) {
 		local player = PlayerInstanceFromIndex(i)
@@ -221,7 +218,6 @@ offensiveThink <- function() {
 	}
 
 	if(self.GetHealth() < self.GetMaxHealth() && deadSupport < MAXSUPPORT) {
-		printl("entering defense")
 		EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1) //delay to let support walk out
 		delete thinkTable.offensiveThink
 		thinkTable.defensiveThink <- defensiveThink
@@ -230,7 +226,6 @@ offensiveThink <- function() {
 
 defensiveThink <- function() {
 	if(deadSupport >= MAXSUPPORT) {
-		printl("entering offense")
 		EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 		supportTimer.Start(15)
 		delete thinkTable.defensiveThink
@@ -467,8 +462,6 @@ changePhase <- function() {
 			diseaseCallbacks.pneumoniaBot = self
 			stickyList = [] //wipe the old list
 			currentWeapon = ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
-
-			//Attach think to stickies and have them do the rest
 			break
 		case CARDIAC_ARREST:
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_cardiac", WAVEBAR_SLOT_NO)
@@ -759,6 +752,7 @@ mainThink <- function() { //this is mostly to make the customweapons think works
 	}
 
 	if(self.GetLocomotionInterface().IsStuck()) {
+		NetProps.SetPropVector(playerPush, "m_vecPushDir", Vector(0, self.EyeAngles().y, self.EyeAngles().z))
 		EntFireByHandle(playerPush, "Enable", null, -1, null, null)
 		EntFireByHandle(playerPush, "Disable", null, 0.5, null, null)
 	}
