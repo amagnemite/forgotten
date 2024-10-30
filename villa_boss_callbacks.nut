@@ -185,8 +185,8 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion4.wav`)", 2.8, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_8.wav`)", 3.2, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion5.wav`)", 3.6, ukgr, ukgr)
-					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`)", 4.0, ukgr, ukgr)
-					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`)", 4.0, ukgr, ukgr)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`, true)", 4.0, ukgr, ukgr)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`, true)", 4.0, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "ScreenFade(null, 230, 230, 230, 255, 1, 4.5, 2)", 4, ukgr, ukgr)
 					// EntFireByHandle(ukgr, "RunScriptCode", "bossSuicide()", 5.1, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.Teleport(true, Vector(-2600, -871, 1493), false, QAngle(), false, Vector())", 5.0, ukgr, ukgr)
@@ -217,13 +217,16 @@ __CollectGameEventCallbacks(bossCallbacks)
 	self.SetHealth(1)
 }
 
-::playEmitSoundEx <- function(soundName) {
+::playEmitSoundEx <- function(soundName, dontRepeat=false) {
 	EmitSoundEx({
 		sound_name = soundName,
 		channel = 6,
 		origin = self.GetCenter(),
 		filter_type = RECIPIENT_FILTER_GLOBAL
 	})
+
+	if(dontRepeat) return
+
 	EmitSoundEx({
 		sound_name = soundName,
 		channel = 6,
