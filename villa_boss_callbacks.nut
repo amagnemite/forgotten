@@ -115,6 +115,7 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					else {
 						delete scope.thinkTable.defensiveThink
 					}
+					if("phase1skinBuffThink" in scope.thinkTable) delete scope.thinkTable.phase1skinBuffThink
 					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 					Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
 					EntFire("gamerules", "runscriptcode", "bossCallbacks.cleanupPhase1Support()",  5)

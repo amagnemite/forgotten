@@ -713,8 +713,8 @@ WaveSchedule
 			}
 			CharacterAttributes
 			{
-				"move speed bonus"	1.05
-				"damage bonus" 0.4
+				"move speed bonus"	1.15
+				"damage bonus" 0.5
 				//Screw you vacuum
 				"damage force reduction" 0.6
 				//"rage giving scale" 0.5
@@ -1372,6 +1372,7 @@ WaveSchedule
 					Item "The Quick-Fix"
 					Attributes SpawnWithFullCharge
 					Attributes ProjectileShield
+					Attributes IgnoreEnemies
 					CharacterAttributes
 					{
 						"generate rage on heal" 2

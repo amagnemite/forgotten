@@ -142,6 +142,7 @@ buffSarcomaAttrs <- {
 	"damage bonus": 7,
 	"projectile spread angle penalty": 50,
 	"fire rate bonus": 0.06,
+	"mult projectile count": 2,
 	"faster reload rate": -0.8,
 	"clip size bonus": 4
 	"move speed bonus": 0.01
@@ -182,6 +183,7 @@ HEALTHBONUS <- 100
 playersEaten <- 0
 medigun <- null
 deadSupport <- 0
+isBuffedFromEating <- false
 support <- []
 supportTimer <- Timer()
 for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
@@ -204,6 +206,17 @@ startPhase1 <-  function() {
 
 		support.append(player)
 		player.Teleport(true, arena2Origin, false, QAngle(), false, Vector())
+	}
+}
+
+phase1skinBuffThink <- function() {
+	if(self.InCond(TF_COND_HALLOWEEN_SPEED_BOOST) && !isBuffedFromEating) {
+		isBuffedFromEating = true
+		self.UpdateSkin(3)
+	}
+	else if(!(self.InCond(TF_COND_HALLOWEEN_SPEED_BOOST)) && isBuffedFromEating) {
+		isBuffedFromEating = false
+		self.UpdateSkin(1)
 	}
 }
 
@@ -246,7 +259,7 @@ strengthen <- function() {
 	self.SetHealth(self.GetHealth() + HEALTHBONUS)
 	self.AddCustomAttribute("damage bonus", 1 + 0.25 * playersEaten, -1)
 	self.AddCustomAttribute("move speed bonus", MOVESPEEDBASE + 0.1 * playersEaten, -1)
-	self.AddCondEx(TF_COND_CRITBOOSTED_USER_BUFF, 1 * playersEaten, null)
+	self.AddCondEx(TF_COND_OFFENSEBUFF, 1 * playersEaten, null)
 	self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, 1 * playersEaten, null)
 	local particle = SpawnEntityFromTable("info_particle_system", {
 		origin = self.GetOrigin()
@@ -453,6 +466,7 @@ changePhase <- function() {
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "pneumonia_bp", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "pneumonia_bp")
 			self.SetScaleOverride(1.9)
+			self.RemoveCond(33)
 			self.RemoveWeaponRestriction(PRIMARY_ONLY)
 			self.AddWeaponRestriction(SECONDARY_ONLY)
 			self.AddBotAttribute(ALWAYS_FIRE_WEAPON)
@@ -640,7 +654,7 @@ finaleThink <- function() {
 			self.RemoveWeaponRestriction(SECONDARY_ONLY)
 			self.AddWeaponRestriction(PRIMARY_ONLY)
 			::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_SYRINGEGUN_MEDIC", self)
-			self.AddCondEx(33, 10, null)
+			self.AddCondEx(33, 5, null)
 			foreach(attr, val in buffSarcomaAttrs) {
 				self.AddCustomAttribute(attr, val, -1)
 			}
@@ -745,6 +759,7 @@ cleanup <- function() {
 self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic_ukgr.mdl")
 self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
 thinkTable.offensiveThink <- offensiveThink
+thinkTable.phase1skinBuffThink <- phase1skinBuffThink
 mainThink <- function() { //this is mostly to make the customweapons think works
 	if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 		cleanup()
