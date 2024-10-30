@@ -213,11 +213,13 @@ startPhase1 <-  function() {
 phase1skinBuffThink <- function() {
 	if(self.InCond(TF_COND_HALLOWEEN_SPEED_BOOST) && !isBuffedFromEating) {
 		isBuffedFromEating = true
-		self.UpdateSkin(3)
+		// self.SetSkin(0)
+		self.UpdateSkin(4)
 	}
 	else if(!(self.InCond(TF_COND_HALLOWEEN_SPEED_BOOST)) && isBuffedFromEating) {
 		isBuffedFromEating = false
-		self.UpdateSkin(1)
+		// self.SetSkin(1)
+		self.UpdateSkin(3)
 	}
 }
 
@@ -702,6 +704,7 @@ finaleThink <- function() {
 					pneumoniaSpawner.SpawnEntityAtLocation(sticky.GetOrigin() + Vector(0, 0, 0), Vector())
 				}
 			}
+			self.RemoveBotAttribute(SUPPRESS_FIRE)
 			self.PressAltFireButton(0.1)
 		}
 
