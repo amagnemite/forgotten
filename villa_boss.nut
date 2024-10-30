@@ -128,7 +128,7 @@ cardiomyopathyAttrs <- {
 	"fire rate bonus": 0.05,
 	"projectile spread angle penalty": 10,
 	"clip size upgrade atomic": 16,
-	"move speed bonus": 1,
+	"move speed bonus": 1.1,
 	"faster reload rate": 0.075
 }
 
@@ -139,9 +139,9 @@ tachycardiaAttrs <- {
 }
 
 buffSarcomaAttrs <- {
-	"damage bonus": 5,
-	"projectile spread angle penalty": 40,
-	"fire rate bonus": 0.1,
+	"damage bonus": 7,
+	"projectile spread angle penalty": 50,
+	"fire rate bonus": 0.06,
 	"faster reload rate": -0.8,
 	"clip size bonus": 4
 	"move speed bonus": 0.01

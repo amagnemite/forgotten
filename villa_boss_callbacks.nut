@@ -94,7 +94,7 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 		local scope = ukgr.GetScriptScope()
 		//ClientPrint(null,3,"mainPhase: " + scope.mainPhase)
 		if(scope.mainPhase == 3) return
-		if(ukgr.GetHealth() <= params.damage * 3.1) {
+		if(ukgr.GetHealth() <= params.damage) {
 			scope.mainPhase++
 
 			switch(scope.mainPhase) {

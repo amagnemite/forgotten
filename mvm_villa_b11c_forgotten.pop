@@ -796,7 +796,7 @@ WaveSchedule
 		Objective Spy
 		Where spawnbot_roof
 		InitialCooldown 35
-		CooldownTime 25
+		CooldownTime 20
 		BeginAtWave 7
 		RunForThisManyWaves 1
 		DesiredCount 2
@@ -813,7 +813,7 @@ WaveSchedule
 		Where spawnbot_roof
 		BeginAtWave 7
 		RunForThisManyWaves 1
-		CooldownTime 35
+		CooldownTime 25
 		DesiredCount 2
 		
 		TFBot
@@ -2712,7 +2712,7 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			WaitBeforeStarting 45
-			WaitBetweenSpawnsAfterDeath 18
+			WaitBetweenSpawnsAfterDeath 15
 			Support 1
 			Where spawnbot_roof
 			TFBot
@@ -2730,7 +2730,7 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			WaitBeforeStarting 60
-			WaitBetweenSpawnsAfterDeath 15
+			WaitBetweenSpawnsAfterDeath 11
 			Support 1
 			Where spawnbot_roof
 			TFBot
