@@ -155,7 +155,8 @@ pneumoniaAttrs <- {
 	"fire rate bonus": 0.01,
 	"faster reload rate": 30,
 	"stickybomb charge rate": 0.001,
-	"projectile range increased": 2
+	"projectile range increased": 2,
+	"sticky arm time penalty": 0.7
 }
 
 cardiacAttrs <- {
@@ -690,6 +691,7 @@ finaleThink <- function() {
 				}
 			}
 			self.RemoveBotAttribute(ALWAYS_FIRE_WEAPON)
+			self.AddBotAttribute(SUPPRESS_FIRE)
 			pausePhaseTimerActions = true //stop collecting stickies
 		}
 
