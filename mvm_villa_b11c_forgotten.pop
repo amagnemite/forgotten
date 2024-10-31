@@ -833,6 +833,8 @@ WaveSchedule
 			Param "
 				EntFire(`medonly_relay`, `trigger`)
 				EntFire(`bombpath_choose_relay`, `trigger`)
+				EntFire(`sniper_*`, `Enable`)
+				EntFire(`roof_sniper_*`, `Disable`)
 			"
 		}
 		StartWaveOutput
@@ -2658,6 +2660,7 @@ WaveSchedule
 				IncludeScript(`diseasebots.nut`, getroottable())
 				IncludeScript(`villa_boss_callbacks.nut`, getroottable())
 				EntFire(`sniper_*`, `Disable`)
+				EntFire(`roof_sniper_*`, `Enable`)
 				EntFire(`fog_heartbeater`, `TurnOff`)
 			"
 		}

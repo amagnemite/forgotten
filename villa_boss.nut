@@ -215,10 +215,12 @@ phase1skinBuffThink <- function() {
 		isBuffedFromEating = true
 		// self.SetSkin(0)
 		self.UpdateSkin(4)
+		playEmitSoundEx("vo/mvm/norm/medic_mvm_laughevil03.mp3", true)
 	}
 	else if(!(self.InCond(TF_COND_HALLOWEEN_SPEED_BOOST)) && isBuffedFromEating) {
 		isBuffedFromEating = false
 		// self.SetSkin(1)
+		playEmitSoundEx("vo/mvm/norm/medic_mvm_negativevocalization05.mp3", true)
 		self.UpdateSkin(3)
 	}
 }
@@ -235,6 +237,7 @@ offensiveThink <- function() {
 
 	if(self.GetHealth() < self.GetMaxHealth() && deadSupport < MAXSUPPORT) {
 		EntFire("pop_interface", "ChangeBotAttributes", "EatBots", -1) //delay to let support walk out
+		playEmitSoundEx("vo/mvm/norm/medic_mvm_negativevocalization06.mp3", true)
 		delete thinkTable.offensiveThink
 		thinkTable.defensiveThink <- defensiveThink
 	}
@@ -244,6 +247,7 @@ defensiveThink <- function() {
 	if(deadSupport >= MAXSUPPORT) {
 		EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 		supportTimer.Start(15)
+		playEmitSoundEx("vo/mvm/norm/medic_mvm_battlecry01.mp3", true)
 		delete thinkTable.defensiveThink
 		thinkTable.offensiveThink <- offensiveThink
 		return
@@ -325,20 +329,10 @@ changePhase <- function() {
 	damageTakenThisPhase = 0
 	//ClientPrint(null, 3, "Phase changed!")
 	DispatchParticleEffect("ukgr_phase_change_flames", self.GetCenter(), Vector())
-	EmitSoundEx({
-		sound_name = "misc/halloween/spell_fireball_impact.wav",
-		channel = 6,
-		origin = self.GetCenter(),
-		filter_type = RECIPIENT_FILTER_GLOBAL
-	})
-	EmitSoundEx({
-		sound_name = "misc/halloween/spell_fireball_impact.wav",
-		channel = 6,
-		origin = self.GetCenter(),
-		filter_type = RECIPIENT_FILTER_GLOBAL
-	})
+	playEmitSoundEx("misc/halloween/spell_fireball_impact.wav")
 	switch(currentFinalePhase) {
 		case HEMORRHAGIC_FEVER:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_laughevil05.mp3", true)
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_fever", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_fever")
 			self.AddWeaponRestriction(PRIMARY_ONLY)
@@ -369,6 +363,7 @@ changePhase <- function() {
 			// EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
 			break
 		case DYSPNEA:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_negativevocalization01.mp3", true)
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_dyspnea", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_dyspnea")
 			foreach(attr, val in hemorrhagicFeverAttrs) {
@@ -381,6 +376,7 @@ changePhase <- function() {
 			::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_ROCKETLAUNCHER", self)
 			break
 		case MALIGNANT_TUMOR:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_specialcompleted05.mp3", true)
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_tumor", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_tumor")
 			::CustomWeapons.GiveItem("The Crusader's Crossbow", self)
@@ -406,6 +402,7 @@ changePhase <- function() {
 			//Remember to make tumors explode on death and deal 125 dmg to boss
 			break
 		case CARDIOMYOPATHY:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_specialcompleted07.mp3", true)
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_burstdemo", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_burstdemo")
 			::CustomWeapons.GiveItem("The Iron Bomber", self)
@@ -415,6 +412,7 @@ changePhase <- function() {
 			}
 			break
 		case TACHYCARDIA:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_laughhappy02.mp3", true)
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_tachycardia", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_tachycardia")
 			foreach(attr, val in cardiomyopathyAttrs) {
@@ -440,6 +438,7 @@ changePhase <- function() {
 			self.Taunt(TAUNT_BASE_WEAPON, 11) //may want to delay this so it doesn't use demo voiceline?
 			break
 		case SARCOMA:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_negativevocalization04.mp3", true)
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_sarcoma", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_sarcoma")
 			foreach(attr, val in tachycardiaAttrs) {
@@ -463,6 +462,7 @@ changePhase <- function() {
 			self.AddCustomAttribute("move speed bonus", 2, -1)
 			break
 		case PNEUMONIA:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_battlecry03.mp3", true)
 			foreach(attr, val in buffSarcomaAttrs) {
 				self.RemoveCustomAttribute(attr)
 			}
@@ -481,6 +481,7 @@ changePhase <- function() {
 			currentWeapon = ::CustomWeapons.GiveItem("Upgradeable TF_WEAPON_PIPEBOMBLAUNCHER", self)
 			break
 		case CARDIAC_ARREST:
+			playEmitSoundEx("vo/mvm/norm/medic_mvm_jeers06.mp3", true)
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "ukgr_cardiac", WAVEBAR_SLOT_NO)
 			NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", "ukgr_cardiac")
 			self.AddWeaponRestriction(PRIMARY_ONLY)

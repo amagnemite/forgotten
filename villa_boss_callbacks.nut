@@ -13,6 +13,23 @@ PrecacheSound("ambient/levels/labs/electric_explosion4.wav")
 PrecacheSound("ambient/levels/labs/electric_explosion5.wav")
 PrecacheSound("misc/doomsday_missile_explosion.wav")
 PrecacheSound("mvm/mvm_tank_explode.wav")
+PrecacheSound("vo/mvm/norm/medic_mvm_laughevil03.mp3") //Whenever eating bots
+PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization05.mp3") //When losing bot eat buff
+PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization06.mp3") //Whenever going to defensive mode
+PrecacheSound("vo/mvm/norm/medic_mvm_battlecry01.mp3") //Whenever going to offensive mode
+PrecacheSound("vo/mvm/norm/medic_mvm_laughevil05.mp3") //Transitioning to phase 2 /  HF mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_laughevil01.mp3") //Whenever killing player
+PrecacheSound("vo/mvm/norm/medic_mvm_laughshort01.mp3") //Whenever killing player
+PrecacheSound("vo/mvm/norm/medic_mvm_laughshort02.mp3") //Whenever killing player
+PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization01.mp3") //Transitioning to Dyspnea mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_specialcompleted05.mp3") //Transitioning to Tumor mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_specialcompleted07.mp3") //Transitioning to Cardiomyopathy mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization04.mp3") //Transitioning to Sarcoma mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_laughhappy02.mp3") //Transitioning to Tachycardia mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_battlecry03.mp3") //Transitioning to Pneumonia mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_jeers06.mp3") //Transitioning to Cardiac Arrest mimic
+PrecacheSound("vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3") //Death
+
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_tachycardia_intro"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
@@ -175,6 +192,7 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					}
 					scope.isExploding = true
 					ukgr.RemoveCond(TF_COND_PREVENT_DEATH)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3`, true)", 0, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_1.wav`)", 0, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion1.wav`)", 0.4, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_4.wav`)", 0.8, ukgr, ukgr)
@@ -202,7 +220,23 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
-		if(!IsPlayerABot(player)) return
+		if(!IsPlayerABot(player)) {
+			local randomVoice = RandomInt(0,2)
+			switch(randomVoice) {
+				case 0:
+					playEmitSoundEx("vo/mvm/norm/medic_mvm_laughevil01.mp3", true)
+					break
+				case 1:
+					playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort01.mp3", true)
+					break
+				case 2:
+					playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort02.mp3", true)
+					break
+				default:
+					break
+			}
+			return
+		}
         if(!player.HasBotTag("UKGR_Tumor")) return
 		ukgr.GetScriptScope().deadTumorCounter++
 		if(ukgr.GetHealth() >= 500) ukgr.TakeDamageEx(ukgr, ukgr, null, Vector(1, 0, 0), ukgr.GetCenter(), 150, DMG_BLAST)
