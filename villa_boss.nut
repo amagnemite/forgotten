@@ -1,5 +1,6 @@
-//todo: figure out how to clean this scope up
 thinkTable <- {}
+
+randomNames <- ["Unrecalled King of Ghost Robots", "Saturday", "King of Robot Ghosts", "Total Organ Failure", "R.E.G.R.E.T.", "Day 49"]
 
 unusualParticle <- SpawnEntityFromTable("info_particle_system", {
 	targetname = "boss_halo_particle"
@@ -197,7 +198,10 @@ for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
 }
 
 startPhase1 <-  function() {
-	local arena2Origin = Entities.FindByName(null, "spawnbot_arena2").GetOrigin()
+	local arena2Origin1 = Entities.FindByName(null, "spawnbot_arena2").GetOrigin()
+	local arena2Origin2 = Entities.FindByName(arena2Origin1, "spawnbot_arena2").GetOrigin()
+	local origins = [arena2Origin1, arena2Origin2]
+	
 	for(local i = 1; i <= MaxPlayers; i++) {
 		local player = PlayerInstanceFromIndex(i)
 		if(player == null) continue
@@ -206,7 +210,7 @@ startPhase1 <-  function() {
 		if(!player.HasBotTag("gmedsupport")) continue
 
 		support.append(player)
-		player.Teleport(true, arena2Origin, false, QAngle(), false, Vector())
+		player.Teleport(true, origins[RandomInt(0, 1)], false, QAngle(), false, Vector())
 	}
 }
 
@@ -762,6 +766,8 @@ cleanup <- function() {
 	}
 }
 
+local randName = randomNames[RandomInt(0, randomNames.len() - 1)]
+SetFakeClientConVarValue(self, "name", randName)
 self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic_ukgr.mdl")
 self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
 thinkTable.offensiveThink <- offensiveThink

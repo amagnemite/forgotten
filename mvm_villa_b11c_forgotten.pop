@@ -2689,7 +2689,6 @@ WaveSchedule
 				}
 			}
 		}
-		
 		WaveSpawn {
 			TotalCount 17
 			MaxActive 17
@@ -2708,7 +2707,7 @@ WaveSchedule
 				tag gmedsupport
 			}
 		}
-
+		
 		WaveSpawn {
 			Name boss_support
 			TotalCount 1
