@@ -993,7 +993,7 @@ WaveSchedule
 		{
 			Name w1c
 			Where spawnbot_invasion
-			TotalCount 18
+			TotalCount 15
 			MaxActive 6
 			SpawnCount 3
 			WaitBeforeStarting 13
@@ -1862,7 +1862,7 @@ WaveSchedule
 			MaxActive 3
 			SpawnCount 1
 			WaitBeforeStarting 15
-			WaitBetweenSpawns 19
+			WaitBetweenSpawns 24
 			WaitForAllSpawned w5b
 			TFBot
 			{
@@ -2651,7 +2651,6 @@ WaveSchedule
 		}
 		StartWaveOutput {
 			Target altmode_arena2_wave_start_reviveonly_relay
-			//Target altmode_chaos_wave_start_reviveonly_relay
 			Action runscriptcode
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
