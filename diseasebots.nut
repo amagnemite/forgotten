@@ -351,7 +351,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 				local angles = self.EyeAngles()
 				local newYaw = (ceil(angles.y) + 180) % 360
 
-				NetProps.SetPropVector(selfPush, "m_vecPushDir", Vector(angles.x, newYaw, 0))
+				NetProps.SetPropVector(selfPush, "m_vecPushDir", Vector(0, newYaw, angles.z))
 				EntFireByHandle(selfPush, "Enable", null, -1, null, null)
 				EntFireByHandle(selfPush, "Disable", null, 0.5, null, null)
 			}
