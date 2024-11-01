@@ -192,7 +192,7 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					}
 					scope.isExploding = true
 					ukgr.RemoveCond(TF_COND_PREVENT_DEATH)
-					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3`, true)", 0, ukgr, ukgr)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3`)", 0, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_1.wav`)", 0, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion1.wav`)", 0.4, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_4.wav`)", 0.8, ukgr, ukgr)
@@ -224,13 +224,46 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 			local randomVoice = RandomInt(0,2)
 			switch(randomVoice) {
 				case 0:
-					playEmitSoundEx("vo/mvm/norm/medic_mvm_laughevil01.mp3", true)
+					EmitSoundEx({
+						sound_name = "vo/mvm/norm/medic_mvm_laughevil01.mp3",
+						channel = 6,
+						origin = player.GetCenter(),
+						filter_type = RECIPIENT_FILTER_GLOBAL
+					})
+					EmitSoundEx({
+						sound_name = "vo/mvm/norm/medic_mvm_laughevil01.mp3",
+						channel = 6,
+						origin = player.GetCenter(),
+						filter_type = RECIPIENT_FILTER_GLOBAL
+					})
 					break
 				case 1:
-					playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort01.mp3", true)
+					EmitSoundEx({
+						sound_name = "vo/mvm/norm/medic_mvm_laughshort01.mp3",
+						channel = 6,
+						origin = player.GetCenter(),
+						filter_type = RECIPIENT_FILTER_GLOBAL
+					})
+					EmitSoundEx({
+						sound_name = "vo/mvm/norm/medic_mvm_laughshort01.mp3",
+						channel = 6,
+						origin = player.GetCenter(),
+						filter_type = RECIPIENT_FILTER_GLOBAL
+					})
 					break
 				case 2:
-					playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort02.mp3", true)
+					EmitSoundEx({
+						sound_name = "vo/mvm/norm/medic_mvm_laughshort02.mp3",
+						channel = 6,
+						origin = player.GetCenter(),
+						filter_type = RECIPIENT_FILTER_GLOBAL
+					})
+					EmitSoundEx({
+						sound_name = "vo/mvm/norm/medic_mvm_laughshort02.mp3",
+						channel = 6,
+						origin = player.GetCenter(),
+						filter_type = RECIPIENT_FILTER_GLOBAL
+					})
 					break
 				default:
 					break
