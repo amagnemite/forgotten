@@ -198,9 +198,9 @@ for(local i = 0; i < NetProps.GetPropArraySize(self, "m_hMyWeapons"); i++) {
 }
 
 startPhase1 <-  function() {
-	local arena2Origin1 = Entities.FindByName(null, "spawnbot_arena2").GetOrigin()
-	local arena2Origin2 = Entities.FindByName(arena2Origin1, "spawnbot_arena2").GetOrigin()
-	local origins = [arena2Origin1, arena2Origin2]
+	local arena2Origin1 = Entities.FindByName(null, "spawnbot_arena2")
+	local arena2Origin2 = Entities.FindByName(arena2Origin1, "spawnbot_arena2")
+	local origins = [arena2Origin1.GetOrigin(), arena2Origin2.GetOrigin()]
 	
 	for(local i = 1; i <= MaxPlayers; i++) {
 		local player = PlayerInstanceFromIndex(i)
