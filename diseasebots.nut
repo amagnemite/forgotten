@@ -132,7 +132,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 					//printl("damage " + damage)
 
 					victim.TakeDamageEx(player, player, null, Vector(1, 0, 0), player.GetCenter(), damage, DMG_BLAST)
-					//diseaseCallbacks.playSound("mvm/dragons_fury_impact_bonus_damage_hit.wav", victim)
 					diseaseCallbacks.playSound("Weapon_DragonsFury.BonusDamageHit", victim)
 				}
 			}
@@ -203,7 +202,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 			switch(tag) {
 				case "Pneumonia":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic.mdl")
-					activator.AcceptInput("RunScriptCode", "diseaseCallbacks.addPneumoniaThink()", activator, null)
+					diseaseCallbacks.addPneumoniaThink(activator)
 					break
 				case "Sarcoma_w6":
 					activator.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_heavy_boss.mdl")
@@ -236,9 +235,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		}
 	}
 
-	addPneumoniaThink = function() {
-		pneumoniaBot = activator
-		activator.GetScriptScope().pneumoniaThink <- function() {
+	addPneumoniaThink = function(bot) {
+		pneumoniaBot = bot
+		bot.GetScriptScope().pneumoniaThink <- function() {
 			if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 				AddThinkToEnt(self, null)
 				NetProps.SetPropString(self, "m_iszScriptThinkFunction", "")
@@ -249,7 +248,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 
 			return 1
 		}
-		AddThinkToEnt(activator, "pneumoniaThink")
+		AddThinkToEnt(bot, "pneumoniaThink")
 	}
 
 	addSarcomaThink = function() {
