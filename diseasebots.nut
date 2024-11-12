@@ -1,7 +1,6 @@
 ::pneumoniaSpawner <- Entities.FindByName(null, "pneumonia_spawn_maker")
 ::uberFlaskNormalSpawner <- Entities.FindByName(null, "uber_flask_normal_maker")
 ::uberFlaskShortSpawner <- Entities.FindByName(null, "uber_flask_short_maker")
-::containmentBreachActive <- false
 
 PrecacheSound("vo/halloween_haunted1.mp3")
 PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav")
@@ -38,6 +37,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 			player.RemoveCustomAttribute("move speed penalty")
 			player.RemoveCustomAttribute("halloween increased jump height")
 			player.RemoveCustomAttribute("damage force increase")
+			player.RemoveCondEx(TF_COND_SPEED_BOOST, true)
 			if("playerDebuffThink" in player.GetScriptScope().thinkTable) {
 				delete player.GetScriptScope().thinkTable.playerDebuffThink
 			}
@@ -159,7 +159,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		else {
 			player.ValidateScriptScope()
 			player.GetScriptScope().onContainmentBreach <- function() {
-				printl("test")
 				self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
 			}
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.specialDiseaseCheck()", -1, player, null)
@@ -185,8 +184,8 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 					handle.GetScriptScope().owner <- diseaseCallbacks.pneumoniaBot
 					handle.GetScriptScope().takePneumoniaDamage <- function() {
 						diseaseCallbacks.playSound("player/drown3.wav", activator)
-						activator.TakeDamage(40, DMG_POISON, owner)
 						activator.ViewPunch(QAngle(-6, 0, 0))
+						activator.TakeDamage(40, DMG_POISON, owner)
 					}
 				}
 				EntFireByHandle(handle, "Kill", null, 2, null, null)
@@ -477,20 +476,23 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 			}
 
 			//Check for tachycardia's debuff cond, apply screen overlay and attributes
-			if(self.InCond(32) && !tachycardiaDebuffed) {
+			//65 because recall cans apply 32
+			if(self.InCond(65) && !tachycardiaDebuffed) {
 				tachycardiaDebuffed = true
 				self.SetScriptOverlayMaterial("effects/forgotten_tachycardia_debuff")
 				diseaseCallbacks.playSound("Halloween.spell_lightning_cast", self)
 				self.AddCustomAttribute("move speed penalty", 2, -1)
 				self.AddCustomAttribute("halloween increased jump height", 15, -1)
 				self.AddCustomAttribute("damage force increase", 1.5, -1)
+				self.AddCondEx(TF_COND_SPEED_BOOST, -1, null)
 			}
-			else if(!self.InCond(32) && tachycardiaDebuffed) {
+			else if(!self.InCond(65) && tachycardiaDebuffed) {
 				tachycardiaDebuffed = false
 				self.SetScriptOverlayMaterial(null)
 				self.RemoveCustomAttribute("move speed penalty")
 				self.RemoveCustomAttribute("halloween increased jump height")
 				self.RemoveCustomAttribute("damage force increase")
+				self.RemoveCondEx(TF_COND_SPEED_BOOST, true)
 			}
 		}
 		scope.thinkTable.playerDebuffThink <- scope.playerDebuffThink
@@ -572,14 +574,15 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
 		hemorrhagicFeverTrigger.ValidateScriptScope()
 		hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
-		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) { //defined in map
+		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) { //ticksToAdd defined in map
 			if(!("feverTicks" in activator.GetScriptScope())) {
 				activator.GetScriptScope().feverTicks <- 0
 				return
 			}
 			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-			//ClientPrint(null, 3, "New ticks at " + newTicks)
-			if(ticksToAdd > 0) diseaseCallbacks.playSound("player/pl_burnpain3.wav", activator)
+			if(ticksToAdd > 0) {
+				diseaseCallbacks.playSound("player/pl_burnpain3.wav", activator)
+			}
 			else {
 				diseaseCallbacks.playSound("player/flame_out.wav", activator)
 				if(newTicks >= 7) {
@@ -664,13 +667,13 @@ for (local i = 1; i <= MaxPlayers ; i++)
 	local rageBoost = uberBoost * 100
 
 	local uberMeter = NetProps.GetPropFloat(medigun, "m_flChargeLevel")
-	//printl("uber meter " + uberMeter)
 	local newUberMeter = uberMeter + uberBoost < 1 ? uberMeter + uberBoost : 1
 	NetProps.SetPropFloat(medigun, "m_flChargeLevel", newUberMeter)
 
-	local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")
-	local newRageMeter = rageMeter + rageBoost < 100 ? rageMeter + rageBoost : 100
-	NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
-
+	if(medigun.GetAttribute("generate rage on heal", 0) > 0) {
+		local rageMeter = NetProps.GetPropFloat(self, "m_Shared.m_flRageMeter")
+		local newRageMeter = rageMeter + rageBoost < 100 ? rageMeter + rageBoost : 100
+		NetProps.SetPropFloat(self, "m_Shared.m_flRageMeter", newRageMeter)
+	}
 	diseaseCallbacks.playSound("Halloween.spell_overheal", self)
 }

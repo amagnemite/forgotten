@@ -129,8 +129,8 @@ WaveSchedule
 		}
 		VacuumMedibeam {
 			Name "Vacuum attachment"
-			//Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
-			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated."
+			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
+			//Description "Medibeam can now target bots and damage them. Disconnects if shield is activated."
 			Attribute "mod see enemy health"
 			Cap 1
 			Increment 1
@@ -163,8 +163,8 @@ WaveSchedule
 		}
 		VacuumMedibeamKritz {
 			Name "Vacuum attachment"
-			//Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
-			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated."
+			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
+			//Description "Medibeam can now target bots and damage them. Disconnects if shield is activated."
 			Attribute "mod see enemy health"
 			Cap 1
 			Increment 1
@@ -193,13 +193,12 @@ WaveSchedule
 		}
 		VacuumMedibeamQF {
 			Name "Vacuum attachment"
-			//Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
-			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated."
+			Description "Medibeam can now target bots and damage them. Disconnects if shield is activated. Healing Mastery increases damage."
+			//Description "Medibeam can now target bots and damage them. Disconnects if shield is activated."
 			Attribute "mod see enemy health"
 			Cap 1
 			Increment 1
-			Cost 800
-			//was 600
+			Cost 800 //was 600
 			
 			AllowedWeapons {
 				ItemName "The Quick-Fix"
@@ -445,7 +444,7 @@ WaveSchedule
 			ItemAttributes {
 				ItemName "The Holy Mackerel"
 				"damage bonus" 1.5
-				"add cond on hit" 32
+				"add cond on hit" 65
 				"add cond on hit duration" 20
 				"damage causes airblast" 1
 				"attach particle effect" 16
@@ -680,6 +679,7 @@ WaveSchedule
 				"dmg penalty vs players" 2
 				"clip size upgrade atomic" 8
 				"fire rate bonus" 0.01
+				"projectile penetration" 1
 			}
 			CharacterAttributes
 			{
@@ -1143,83 +1143,14 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			WaitBeforeStarting 90
+			WaitBeforeStarting 88
 			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
 				Action RunScriptCode
 				Param
 				"
-					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
-					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
-					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
-				"
-			}
-		}
-		WaveSpawn {
-			WaitBeforeStarting 95
-			Support Limited
-			FirstSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param
-				"
-					ClientPrint(null, 3, `\x07FF0000TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING TIME WARNING`)
-				"
-			}
-		}
-		WaveSpawn [$DISABLED] {
-			WaitBeforeStarting 115
-			FirstSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param
-				"
-					ClientPrint(null, 3, `\x07FF00005`)
-				"
-			}
-		}
-		WaveSpawn [$DISABLED] {
-			WaitBeforeStarting 116
-			FirstSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param
-				"
-					ClientPrint(null, 3, `\x07FF00004`)
-				"
-			}
-		}
-		WaveSpawn [$DISABLED] {
-			WaitBeforeStarting 117
-			FirstSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param
-				"
-					ClientPrint(null, 3, `\x07FF00003`)
-				"
-			}
-		}
-		WaveSpawn [$DISABLED] {
-			WaitBeforeStarting 118
-			FirstSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param
-				"
-					ClientPrint(null, 3, `\x07FF00002`)
-				"
-			}
-		}
-		WaveSpawn [$DISABLED] {
-			WaitBeforeStarting 119
-			FirstSpawnOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param
-				"
-					ClientPrint(null, 3, `\x07FF00001`)
+					ClientPrint(null, 3, `\x07FF0000TIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNING`)
 				"
 			}
 		}
@@ -1235,7 +1166,8 @@ WaveSchedule
 				TFBot {
 						Class Medic
 						Name "free money"
-						Action Idle  
+						Attributes IgnoreFlag
+						Attributes IgnoreEnemies
 					}
 				}
 			}

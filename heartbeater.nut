@@ -53,7 +53,7 @@ PrecacheSound("ui/heartbeat5.mp3")
 			return
 		}
 
-		if(player.GetTeam() != 3) return
+		if(player.GetTeam() != TF_TEAM_BLUE) return
 		EntFireByHandle(player, "RunScriptCode", "heartbeaterCallbacks.addHeartbeaterThink()", -1, player, null)
 	}
 	
@@ -118,29 +118,30 @@ PrecacheSound("ui/heartbeat5.mp3")
 				//printl("Stun Audio: " + stunDurationAudioList[stunDurationChoice])
 				//printl("Stun Duration: " + stunDurationList[stunDurationChoice])
 				
+				local soundname = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3"
 				EmitSoundEx({
-					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
+					sound_name = soundname,
 					channel = 6,
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
 				})
 
 				EmitSoundEx({
-					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
+					sound_name = soundname,
 					channel = 6,
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
 				})
 
 				EmitSoundEx({
-					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
+					sound_name = soundname,
 					channel = 6,
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
 				})
 
 				EmitSoundEx({
-					sound_name = "ui/" + stunDurationAudioList[stunDurationChoice] + ".mp3",
+					sound_name = soundname,
 					channel = 6,
 					origin = self.GetCenter(),
 					filter_type = RECIPIENT_FILTER_GLOBAL
@@ -179,7 +180,6 @@ PrecacheSound("ui/heartbeat5.mp3")
 			if(bossIsBuffed) {
 				rageParticle.AcceptInput("StartTouch", "!activator", self, self)
 			}				
-			//dhParticle.AcceptInput("EndTouch", "!activator", self, self)
 
 			EntFire("wakeup_sound*", "PlaySound")
 			EntFire("wakeup_shake*", "StartShake")

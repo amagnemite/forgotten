@@ -13,22 +13,8 @@ PrecacheSound("ambient/levels/labs/electric_explosion4.wav")
 PrecacheSound("ambient/levels/labs/electric_explosion5.wav")
 PrecacheSound("misc/doomsday_missile_explosion.wav")
 PrecacheSound("mvm/mvm_tank_explode.wav")
-//PrecacheSound("vo/mvm/norm/medic_mvm_laughevil03.mp3") //Whenever eating bots
-//PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization05.mp3") //When losing bot eat buff
-//PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization06.mp3") //Whenever going to defensive mode
-//PrecacheSound("vo/mvm/norm/medic_mvm_battlecry01.mp3") //Whenever going to offensive mode
-//PrecacheSound("vo/mvm/norm/medic_mvm_laughevil05.mp3") //Transitioning to phase 2 /  HF mimic
-//PrecacheSound("vo/mvm/norm/medic_mvm_laughevil01.mp3") //Whenever killing player
-//PrecacheSound("vo/mvm/norm/medic_mvm_laughshort01.mp3") //Whenever killing player
-//PrecacheSound("vo/mvm/norm/medic_mvm_laughshort02.mp3") //Whenever killing player
-//PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization01.mp3") //Transitioning to Dyspnea mimic
 PrecacheSound("vo/mvm/norm/medic_mvm_specialcompleted05.mp3") //Transitioning to Tumor mimic
 PrecacheSound("vo/mvm/norm/medic_mvm_specialcompleted07.mp3") //Transitioning to Cardiomyopathy mimic
-//PrecacheSound("vo/mvm/norm/medic_mvm_negativevocalization04.mp3") //Transitioning to Sarcoma mimic
-//PrecacheSound("vo/mvm/norm/medic_mvm_laughhappy02.mp3") //Transitioning to Tachycardia mimic
-//PrecacheSound("vo/mvm/norm/medic_mvm_battlecry03.mp3") //Transitioning to Pneumonia mimic
-//PrecacheSound("vo/mvm/norm/medic_mvm_jeers06.mp3") //Transitioning to Cardiac Arrest mimic
-//PrecacheSound("vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3") //Death
 
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_tachycardia_intro"})
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
@@ -52,25 +38,6 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 		Cleanup()
 	}
 
-	// OnGameEvent_mvm_wave_failed = function(_) {
-	// 	for (local i = 1; i <= MaxPlayers ; i++)
-	// 	{
-	// 		local player = PlayerInstanceFromIndex(i)
-	// 		if(player == null) continue
-	// 		if(!IsPlayerABot(player)) continue
-	// 		if(!player.HasBotTag("UKGR")) continue
-	// 		ClientPrint(null,3,"Uh Oh Stinky")
-	// 		player.Teleport(true, Vector(-2600, -871, 1493), false, QAngle(), false, Vector())
-	// 		DispatchParticleEffect("ukgr_phase_change_flames", player.GetCenter(), Vector())
-	// 		EmitSoundEx({
-	// 			sound_name = "misc/halloween/spell_fireball_impact.wav",
-	// 			channel = 6,
-	// 			origin = player.GetCenter(),
-	// 			filter_type = RECIPIENT_FILTER_GLOBAL
-	// 		})
-	// 	}
-	// }
-
     OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
@@ -85,16 +52,6 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 		activator.ValidateScriptScope()
 		IncludeScript("villa_boss.nut", activator.GetScriptScope())
 	}
-
-	/*
-	OnGameEvent_player_hurt = function(params) {
-		local player = GetPlayerFromUserID(params.userid)
-		if(player == null) return
-		if(!IsPlayerABot(player)) return
-        if(!player.HasBotTag("UKGR")) return
-        player.GetScriptScope().damageTakenThisPhase = player.GetScriptScope().damageTakenThisPhase + params.damageamount
-    }
-	*/
 
 	cleanupPhase1Support = function() { //if some of the phase 1 soldiers are still floating around
 		local support = ukgr.GetScriptScope().support
@@ -191,21 +148,20 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					}
 					scope.isExploding = true
 					ukgr.RemoveCond(TF_COND_PREVENT_DEATH)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3`)", 0, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/explosions/explode_1.wav`)", 0, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/levels/labs/electric_explosion1.wav`)", 0.4, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/explosions/explode_4.wav`)", 0.8, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/levels/labs/electric_explosion2.wav`)", 1.2, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/explosions/explode_5.wav`)", 1.6, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/levels/labs/electric_explosion3.wav`)", 2.0, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/explosions/explode_7.wav`)", 2.4, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/levels/labs/electric_explosion4.wav`)", 2.8, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/explosions/explode_8.wav`)", 3.2, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`ambient/levels/labs/electric_explosion5.wav`)", 3.6, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`misc/doomsday_missile_explosion.wav`, true)", 4.0, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "bossCallbacks.playEmitSoundEx(`mvm/mvm_tank_explode.wav`, true)", 4.0, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3`)", 0, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_1.wav`)", 0, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion1.wav`)", 0.4, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_4.wav`)", 0.8, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion2.wav`)", 1.2, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_5.wav`)", 1.6, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion3.wav`)", 2.0, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_7.wav`)", 2.4, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion4.wav`)", 2.8, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/explosions/explode_8.wav`)", 3.2, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion5.wav`)", 3.6, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`, true)", 4.0, ukgr, null)
+					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`, true)", 4.0, ukgr, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "ScreenFade(null, 230, 230, 230, 255, 1, 4.5, 2)", 4, null, null)
-					// EntFireByHandle(ukgr, "RunScriptCode", "bossSuicide()", 5.1, ukgr, ukgr)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.SetAbsOrigin(Vector(-2600, -871, 1493))", 5.0, null, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.AddCustomAttribute(`health drain`, -9999, -1)", 5.1, null, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.AddCustomAttribute(`dmg taken increased`, 10, -1)", 5.1, null, null)
@@ -222,16 +178,13 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 			local randomVoice = RandomInt(0,2)
 			switch(randomVoice) {
 				case 0:
-					bossCallbacks.playEmitSoundEx("vo/mvm/norm/medic_mvm_laughevil01.mp3", true)
-					bossCallbacks.playEmitSoundEx("vo/mvm/norm/medic_mvm_laughevil01.mp3", true)
+					ukgr.AcceptInput("RunScriptCode", "playEmitSoundEx(\"vo/mvm/norm/medic_mvm_laughevil01.mp3\", true)", null, null)
 					break
 				case 1:
-					bossCallbacks.playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort01.mp3", true)
-					bossCallbacks.playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort01.mp3", true)
+					ukgr.AcceptInput("RunScriptCode", "playEmitSoundEx(\"vo/mvm/norm/medic_mvm_laughshort01.mp3\", true)", null, null)
 					break
 				case 2:
-					bossCallbacks.playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort02.mp3", true)
-					bossCallbacks.playEmitSoundEx("vo/mvm/norm/medic_mvm_laughshort02.mp3", true)
+					ukgr.AcceptInput("RunScriptCode", "playEmitSoundEx(\"vo/mvm/norm/medic_mvm_laughshort02.mp3\", true)", null, null)
 					break
 				default:
 					break
@@ -242,24 +195,6 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 		ukgr.GetScriptScope().deadTumorCounter++
 		if(ukgr.GetHealth() >= 500) ukgr.TakeDamage(150, DMG_BLAST, ukgr)
     }
-	
-	playEmitSoundEx = function(soundName, dontRepeat=false) {
-		EmitSoundEx({
-			sound_name = soundName,
-			channel = 6,
-			origin = activator.GetCenter(),
-			filter_type = RECIPIENT_FILTER_GLOBAL
-		})
-
-		if(dontRepeat) return
-
-		EmitSoundEx({
-			sound_name = soundName,
-			channel = 6,
-			origin = activator.GetCenter(),
-			filter_type = RECIPIENT_FILTER_GLOBAL
-		})
-	}
 }
 __CollectGameEventCallbacks(bossCallbacks)
 
@@ -268,35 +203,4 @@ __CollectGameEventCallbacks(bossCallbacks)
 	if(IsPlayerABot(self)) return
 	if(self.GetHealth() <= 5) return
 	self.SetHealth(1)
-}
-
-// ::bossSuicide <- function() {
-// 	for(local i = 1; i <= MaxPlayers ; i++) {
-// 		local player = PlayerInstanceFromIndex(i)
-// 		if(player == null) continue
-// 		if(!IsPlayerABot(player)) continue
-// 		if(!player.HasBotTag("UKGR")) continue
-
-// 		player.AddCustomAttribute("health drain", -9999, -1)
-// 		player.AddCustomAttribute("dmg taken increased", 10, -1)
-// 		player.TakeDamage(990000000, 0, player)
-// 	}
-// }
-
-::bossDisappear <- function() {
-	for (local i = 1; i <= MaxPlayers ; i++)
-	{
-		local player = PlayerInstanceFromIndex(i)
-		if(player == null) continue
-		if(!IsPlayerABot(player)) continue
-		if(!player.HasBotTag("UKGR")) continue
-		player.Teleport(true, Vector(-2600, -871, 1493), false, QAngle(), false, Vector())
-		DispatchParticleEffect("ukgr_phase_change_flames", player.GetCenter(), Vector())
-		EmitSoundEx({
-			sound_name = "misc/halloween/spell_fireball_impact.wav",
-			channel = 6,
-			origin = player.GetCenter(),
-			filter_type = RECIPIENT_FILTER_GLOBAL
-		})
-	}
 }
