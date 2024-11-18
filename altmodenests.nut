@@ -1,5 +1,6 @@
 EntFire("bot_hint_sentrygun", "Disable")
 EntFire("bot_hint_engineer_nest", "Disable")
+//several of these nests are intentionally doubled from regular to prevent races
 //nests 1
 SpawnEntityFromTable("bot_hint_sentrygun", {
 	targetname = "nest_alt_1"
@@ -11,7 +12,7 @@ SpawnEntityFromTable("bot_hint_sentrygun", {
 SpawnEntityFromTable("bot_hint_sentrygun", {
 	targetname = "nest_alt_1"
 	startdisabled = true
-	origin = Vector(-830, 3760, 704)
+	origin = Vector(-1152, 3162, 704)
 	angles = QAngle(0, 195, 0)
 	teamnum = TF_TEAM_BLUE
 })
@@ -25,7 +26,7 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 SpawnEntityFromTable("bot_hint_engineer_nest", {
 	targetname = "nest_alt_1"
 	startdisabled = true
-	origin = Vector(-830, 3760, 704)
+	origin = Vector(-1152, 3162, 704)
 	angles = QAngle(0, 195, 0)
 	teamnum = TF_TEAM_BLUE
 })
@@ -41,7 +42,7 @@ SpawnEntityFromTable("bot_hint_sentrygun", {
 SpawnEntityFromTable("bot_hint_sentrygun", {
 	targetname = "nest_alt_2"
 	startdisabled = true
-	origin = Vector(-2607, 2791, 640)
+	origin = Vector(-2087, 3056, 640)
 	angles = QAngle(0, 90, 0)
 	teamnum = TF_TEAM_BLUE
 })
@@ -55,7 +56,7 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 SpawnEntityFromTable("bot_hint_engineer_nest", {
 	targetname = "nest_alt_2"
 	startdisabled = true
-	origin = Vector(-2607, 2791, 640)
+	origin = Vector(-2087, 3056, 640)
 	angles = QAngle(0, 90, 0)
 	teamnum = TF_TEAM_BLUE
 })
@@ -75,6 +76,20 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 	angles = QAngle(0, 195, 0)
 	teamnum = TF_TEAM_BLUE
 })
+SpawnEntityFromTable("bot_hint_sentrygun", {
+	targetname = "nest_alt_3"
+	startdisabled = true
+	origin = Vector(-3040, 1632, 448)
+	angles = QAngle(0, 195, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_engineer_nest", {
+	targetname = "nest_alt_3"
+	startdisabled = true
+	origin = Vector(-3040, 1632, 448)
+	angles = QAngle(0, 195, 0)
+	teamnum = TF_TEAM_BLUE
+})
 
 //nests 4
 SpawnEntityFromTable("bot_hint_sentrygun", {
@@ -88,6 +103,20 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 	targetname = "nest_alt_4"
 	startdisabled = true
 	origin = Vector(-1040, 2192, 576)
+	angles = QAngle(0, 240, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_sentrygun", {
+	targetname = "nest_alt_4"
+	startdisabled = true
+	origin = Vector(-779, 2776, 704)
+	angles = QAngle(0, 240, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_engineer_nest", {
+	targetname = "nest_alt_4"
+	startdisabled = true
+	origin = Vector(-779, 2776, 704)
 	angles = QAngle(0, 240, 0)
 	teamnum = TF_TEAM_BLUE
 })
@@ -107,13 +136,6 @@ SpawnEntityFromTable("bot_hint_sentrygun", {
 	angles = QAngle(0, 120, 0)
 	teamnum = TF_TEAM_BLUE
 })
-SpawnEntityFromTable("bot_hint_sentrygun", {
-	targetname = "nest_alt_5"
-	startdisabled = true
-	origin = Vector(-1872, 1680, 1344)
-	angles = QAngle(0, 120, 0)
-	teamnum = TF_TEAM_BLUE
-})
 SpawnEntityFromTable("bot_hint_engineer_nest", {
 	targetname = "nest_alt_5"
 	startdisabled = true
@@ -128,11 +150,62 @@ SpawnEntityFromTable("bot_hint_engineer_nest", {
 	angles = QAngle(0, 120, 0)
 	teamnum = TF_TEAM_BLUE
 })
-SpawnEntityFromTable("bot_hint_engineer_nest", {
-	targetname = "nest_alt_5"
+
+SpawnEntityFromTable("bot_hint_sentrygun", {
+	targetname = "nest_alt_6"
 	startdisabled = true
-	origin = Vector(-1872, 1680, 1344)
+	origin = Vector(-1616, 3136, 1152)
 	angles = QAngle(0, 120, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_engineer_nest", {
+	targetname = "nest_alt_6"
+	startdisabled = true
+	origin = Vector(-1616, 3136, 1152)
+	angles = QAngle(0, 15, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_sentrygun", {
+	targetname = "nest_alt_6"
+	startdisabled = true
+	origin = Vector(-2592, 3200, 1280)
+	angles = QAngle(0, 120, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_engineer_nest", {
+	targetname = "nest_alt_6"
+	startdisabled = true
+	origin = Vector(-2592, 3200, 1280)
+	angles = QAngle(0, 15, 0)
+	teamnum = TF_TEAM_BLUE
+})
+
+SpawnEntityFromTable("bot_hint_sentrygun", {
+	targetname = "nest_alt_7"
+	startdisabled = true
+	origin = Vector(-1080, 3060, 1218)
+	angles = QAngle(0, 120, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_engineer_nest", {
+	targetname = "nest_alt_7"
+	startdisabled = true
+	origin = Vector(-1080, 3060, 1218)
+	angles = QAngle(0, 15, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_sentrygun", {
+	targetname = "nest_alt_7"
+	startdisabled = true
+	origin = Vector(-746, 4512, 1216)
+	angles = QAngle(0, 120, 0)
+	teamnum = TF_TEAM_BLUE
+})
+SpawnEntityFromTable("bot_hint_engineer_nest", {
+	targetname = "nest_alt_7"
+	startdisabled = true
+	origin = Vector(-746, 4512, 1216)
+	angles = QAngle(0, 15, 0)
 	teamnum = TF_TEAM_BLUE
 })
 
@@ -149,25 +222,13 @@ local trigger = SpawnEntityFromTable("trigger_multiple", {
 trigger.SetSolid(2)
 trigger.SetSize(Vector(-256, -256, -16), Vector(256, 256, 16))
 trigger.ValidateScriptScope()
-local scope = trigger.GetScriptScope()
-scope.nests1 <- ["nest_leftfirst_3", "nest_alt_1"]
-scope.nests2 <- ["nest_leftfirst_5", "nest_alt_2"]
-scope.nests3 <- ["nest_left_1", "nest_right_1", "nest_alt_3"]
-scope.nests4 <- ["nest_leftfirst_1", "nest_alt_4"]
-scope.nests5 <- ["nest_alt_5"]
-scope.nests6 <- ["nest_rightsecond_3", "nest_rightsecond_9"]
-scope.nests7 <- ["nest_leftsecond_5", "nest_leftsecond_6"]
-
-scope.activateNests <- function() {
+trigger.GetScriptScope().activateNests <- function() {
 	local altmodeScope = Entities.FindByName(null, "altmode_chaos_script").GetScriptScope()
 	if(altmodeScope.getContainmentBreakerState()) { //let them loose if containment breaker
-		EntFire("bot_hint*", "Enable")
+		EntFire("nest_alt_*", "Enable")
 	}
 	else {
 		local room = altmodeScope.getRoom("ws11")
-		local list = "nests" + room
-		foreach(name in self.GetScriptScope()[list]) {
-			EntFire(name, "Enable")
-		}
+		EntFire("nest_alt_" + room, "Enable")
 	}
 }

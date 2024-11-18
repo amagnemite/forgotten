@@ -10,9 +10,6 @@ PrecacheSound("ui/heartbeat2.mp3")
 PrecacheSound("ui/heartbeat3.mp3")
 PrecacheSound("ui/heartbeat4.mp3")
 PrecacheSound("ui/heartbeat5.mp3")
-// Unused
-// PrecacheSound("ui/heartbeat6.mp3")
-// PrecacheSound("ui/heartbeat7.mp3")
 
 ::heartbeaterCallbacks <- {
 	Cleanup = function() {
@@ -49,6 +46,7 @@ PrecacheSound("ui/heartbeat5.mp3")
 		if(player == null) return
 		
 		if(!IsPlayerABot(player) && player.GetTeam() == TF_TEAM_RED) {
+			player.AcceptInput("SetFogController", "heartbeater_fog", null, null)
 			EntFireByHandle(player, "RunScriptCode", "heartbeaterCallbacks.NerfPlayerUberShield()", -1, player, null)
 			return
 		}
@@ -61,17 +59,9 @@ PrecacheSound("ui/heartbeat5.mp3")
 		if(!activator.HasBotTag("heartbeater")) {
 			return
 		}
-		// local sound1 = "mvm/heartbeat1.mp3"
-		// local sound2 = "mvm/heartbeat2.mp3"
-		// local sound3 = "mvm/heartbeat3.mp3"
-		// local sound4 = "mvm/heartbeat4.mp3"
-		// local sound5 = "mvm/heartbeat5.mp3"
-		// local sound6 = "mvm/heartbeat6.mp3"
-		// local sound7 = "mvm/heartbeat7.mp3"
 		
 		local stunDurationList = [40, 40, 40, 40, 60, 60, 60, 60, 60, 100, 100, 100, 100, 100, 100, 120, 120, 160, 160, 200]
 		// Raw sound names, new version calls ambient_generic entities instead
-		//local stunDurationAudioList = [sound1, sound2, sound3, sound3, sound3, sound4, sound5, sound6, sound7]
 		local stunDurationAudioList = ["heartbeat1", "heartbeat1", "heartbeat1", "heartbeat1", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat2", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat3", "heartbeat4", "heartbeat4", "heartbeat5", "heartbeat6", "heartbeat7"]
 		local stunDurationChoice = 2
 		local activeDuration = 0
@@ -147,13 +137,6 @@ PrecacheSound("ui/heartbeat5.mp3")
 					filter_type = RECIPIENT_FILTER_GLOBAL
 				})
 				
-				//EntFire("tf_gamerules", "playvo", stunDurationAudioList[stunDurationChoice])
-				
-				// local audioEntity = null
-				// while(audioEntity = Entities.FindByName(audioEntity, stunDurationAudioList[stunDurationChoice])) {
-				// 	audioEntity.AcceptInput("PlaySound", null, null, null)
-				// }
-				
 				self.AddCondEx(TF_COND_MVM_BOT_STUN_RADIOWAVE, stunDurationList[stunDurationChoice] / 10, null)
 				activeDuration = RandomInt(20,160)
 				eligibleForStatChange = true
@@ -209,21 +192,6 @@ PrecacheSound("ui/heartbeat5.mp3")
 
 		}
 		AddThinkToEnt(activator, "heartbeaterThink")
-	}
-	
-	updateMaxSpeed = function() {
-		for (local i = 1; i <= MaxPlayers ; i++)
-		{
-			local player = PlayerInstanceFromIndex(i)
-			if(player == null) continue
-			if(IsPlayerABot(player)) continue
-			if(player.GetTeam() != TF_TEAM_RED) continue
-			
-			local maxMoveSpeed = player.GetCustomAttribute("move speed bonus", 1)
-			if(maxMoveSpeed > playerMaxMoveSpeed) playerMaxMoveSpeed = maxMoveSpeed
-			//printl("Player max move speed: " + playerMaxMoveSpeed)
-			player.AcceptInput("RunScriptCode", "heartbeaterCallbacks.NerfPlayerUberShield()", player, null)
-		}
 	}
 	
 	NerfPlayerUberShield = function() {
@@ -291,4 +259,14 @@ PrecacheSound("ui/heartbeat5.mp3")
 	}
 }
 __CollectGameEventCallbacks(heartbeaterCallbacks)
-heartbeaterCallbacks.updateMaxSpeed()
+for (local i = 1; i <= MaxPlayers ; i++) {
+	local player = PlayerInstanceFromIndex(i)
+	if(player == null) continue
+	if(IsPlayerABot(player)) continue
+	if(player.GetTeam() != TF_TEAM_RED) continue
+	
+	local maxMoveSpeed = player.GetCustomAttribute("move speed bonus", 1)
+	if(maxMoveSpeed > playerMaxMoveSpeed) playerMaxMoveSpeed = maxMoveSpeed
+	player.AcceptInput("RunScriptCode", "heartbeaterCallbacks.NerfPlayerUberShield()", player, null)
+	player.AcceptInput("SetFogController", "heartbeater_fog", null, null)
+}

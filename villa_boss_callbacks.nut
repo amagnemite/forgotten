@@ -65,7 +65,6 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 	OnScriptHook_OnTakeDamage = function(params) { //may just put this in a separate namespace to throw out early
 		if(params.const_entity != ukgr) return
 		local scope = ukgr.GetScriptScope()
-		//ClientPrint(null,3,"mainPhase: " + scope.mainPhase)
 		if(scope.mainPhase == 3) return
 		if(ukgr.GetHealth() <= params.damage) {
 			scope.mainPhase++
@@ -80,6 +79,7 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 								datatable.reanimCount++;
 							}
 						}
+						player.AcceptInput("SetFogController", "outside_fog", null, null)
 					}
 					delete ::phase1Callbacks
 					if("offensiveThink" in scope.thinkTable) {
@@ -89,10 +89,8 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 						delete scope.thinkTable.defensiveThink
 					}
 					if("phase1skinBuffThink" in scope.thinkTable) delete scope.thinkTable.phase1skinBuffThink
-					//EntFire("pop_interface", "ChangeBotAttributes", "ShootPlayers", -1)
 					Entities.FindByName(null, "pop_interface").AcceptInput("ChangeBotAttributes", "ShootPlayers", null, null)
-					EntFire("gamerules", "runscriptcode", "bossCallbacks.cleanupPhase1Support()",  5)
-					//self.AddCondEx(TF_COND_PREVENT_DEATH, -1, null)
+					EntFire("gamerules", "runscriptcode", "bossCallbacks.cleanupPhase1Support()",  2)
 					ukgr.RemoveWeaponRestriction(SECONDARY_ONLY)
 					ukgr.RemoveCustomAttribute("damage bonus")
 					ukgr.RemoveCustomAttribute("move speed bonus")
@@ -100,13 +98,11 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					ukgr.RemoveCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, true)
 					ukgr.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
 				// case 3:
-				// 	ClientPrint(null,3,"AWWW")
 					local spawnbotOrigin = Entities.FindByName(null, "spawnbot_boss").GetOrigin()
 					//local playerTeleportLocation = Vector(-2252, 2209, 579)
 
 					EntFire("teleport_relay", "CancelPending")
-					EntFire("teleport_player_to_arena" "AddOutput", "target roof_player_destination") //change this to roof for 2
-					//EntFire("door_red_*", "Unlock", null, -1)
+					EntFire("teleport_player_to_arena" "AddOutput", "target roof_player_destination")
 
 					ukgr.AddBotAttribute(SUPPRESS_FIRE)
 					ukgr.AddCondEx((TF_COND_PREVENT_DEATH), -1, null)
@@ -119,7 +115,6 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					//Disable altmode spawns to block tumors
 					EntFire("spawnbot_altmode", "Disable", null, 5)
 					EntFire("spawnbot_roof", "Enable", null, 10)
-					//delete bossCallbacks.OnScriptHook_OnTakeDamage
 
 					ScreenFade(null, 0, 0, 0, 255, 0.75, 1.5, 2) //fix timing
 					for(local i = 1; i <= MaxPlayers ; i++) {
@@ -127,7 +122,6 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 						if(player == null) continue
 						if(IsPlayerABot(player)) continue
 
-						//player.Teleport(true, playerTeleportLocation, true, QAngle(0, -115, 0), false, Vector())
 						EntFireByHandle(player, "runscriptcode", "self.Teleport(true, Vector(-2909, 3766, 2251), true, QAngle(2, -42.31, 0), false, Vector())",
 							1, null, null)
 					}

@@ -159,7 +159,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		else {
 			player.ValidateScriptScope()
 			player.GetScriptScope().onContainmentBreach <- function() {
-				self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
+				self.AddCondEx(TF_COND_SPEED_BOOST, -1, null)
 			}
 			EntFireByHandle(player, "RunScriptCode", "diseaseCallbacks.specialDiseaseCheck()", -1, player, null)
 		}
@@ -317,7 +317,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		scope.selfPush.AcceptInput("SetParent", "!activator", activator, activator)
 
 		scope.onContainmentBreach <- function() {
-			self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
+			self.AddCondEx(TF_COND_SPEED_BOOST, -1, null)
 			if(sarcomaStage == 5) {
 				self.AddCustomAttribute("move speed bonus", 0.6, -1)
 			}
@@ -611,7 +611,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		scope.onContainmentBreach <- function() {
 			self.ClearAllWeaponRestrictions()
 			self.AddWeaponRestriction(PRIMARY_ONLY)
-			self.AddCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, -1, null)
+			self.AddCondEx(TF_COND_SPEED_BOOST, -1, null)
 			self.AddCustomAttribute("move speed bonus", 0.6, -1)
 			self.AddCustomAttribute("damage bonus", 1.5, -1)
 			self.AddCustomAttribute("bleeding duration", 5, -1)
