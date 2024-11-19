@@ -26,20 +26,30 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		{
 			local player = PlayerInstanceFromIndex(i)
 			if(player == null) continue
-			if("onContainmentBreach" in player.GetScriptScope()) {
-				delete player.GetScriptScope().onContainmentBreach
+			local scope = player.GetScriptScope()
+			
+			if("onContainmentBreach" in scope) {
+				delete scope.onContainmentBreach
 			}
 
 			if(IsPlayerABot(player)) continue
 			if(player.GetTeam() != TF_TEAM_RED) continue
-
 			player.SetScriptOverlayMaterial(null)
 			player.RemoveCustomAttribute("move speed penalty")
 			player.RemoveCustomAttribute("halloween increased jump height")
 			player.RemoveCustomAttribute("damage force increase")
 			player.RemoveCondEx(TF_COND_SPEED_BOOST, true)
-			if("playerDebuffThink" in player.GetScriptScope().thinkTable) {
-				delete player.GetScriptScope().thinkTable.playerDebuffThink
+			if("playerDebuffThink" in scope.thinkTable) {
+				delete scope.thinkTable.playerDebuffThink
+			}
+			if("feverThink" in scope.thinkTable) {
+				delete scope.thinkTable.feverThink
+			}
+			if("feverTicks" in scope) {
+				delete scope.feverTicks
+			}
+			if("feverThink" in scope) {
+				delete scope.feverThink
 			}
 		}
 		EntFire("uber_flask_normal_prop*", "Kill", -1)
@@ -72,26 +82,37 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 
 	OnGameEvent_player_death = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
-		if (player == null) return
-		if(!IsPlayerABot(player)) return
+		if(player == null) return
+		
+		if(!IsPlayerABot(player)) {
+			if("feverThink" in thinkTable) {
+				delete thinkTable.feverThink
+			}
+			return
+		}
 
 		if(player.HasBotTag("special_disease") && !player.HasBotTag("Malignant_Tumor") && !player.HasBotTag("UKGR_Tumor")) {
 			local center = player.GetCenter() //spawnentityatlocation is dumb
 			uberFlaskNormalSpawner.SpawnEntityAtLocation(center, Vector())
-			//EntFire("uber_flask_normal_prop*", "AddOutput", "renderfx 10", 12)
 			EntFire("uber_flask_normal_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 3, 12)", -1)
 			EntFire("uber_flask_normal_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 3, 12)", -1)
 			return
 		}
 
 		if(player.HasBotTag("Hemorrhagic_Fever")) {
+			local scope = player.GetScriptScope()
 			EntFire("hemorrhagic_fever_trigger", "Disable")
 			EntFire("hemorrhagic_fever_fire_particles", "Stop")
 			EntFire("hemorrhagic_fever_weapon_particles", "Stop")
-			if(player.GetScriptScope().rageParticle.IsValid()) {
-				player.GetScriptScope().rageParticle.Kill()
+			if(scope.rageParticle.IsValid()) {
+				scope.rageParticle.Kill()
 			}
-			delete player.GetScriptScope().rageParticle
+			if("ornament" in scope && scope.ornament.IsValid()) {
+				scope.ornament.Kill()
+				delete scope.ornament
+			}
+			
+			delete scope.rageParticle
 		}
 		if(!player.HasBotTag("Malignant_Tumor") && !player.HasBotTag("UKGR_Tumor")) return
 
@@ -142,7 +163,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 
 		local center = player.GetCenter() + Vector(0, 0, 20)
 		uberFlaskShortSpawner.SpawnEntityAtLocation(center, Vector())
-		//EntFire("uber_flask_short_prop*", "AddOutput", "renderfx 10", 1)
 		EntFire("uber_flask_short_prop*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1.5)", -1)
 		EntFire("uber_flask_short_trigger*", "RunScriptCode", "diseaseCallbacks.killInTime(self, 2, 1.5)", -1)
 	}
@@ -379,20 +399,17 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 					self.ClearAllWeaponRestrictions()
 					self.AddWeaponRestriction(1)
 					self.GenerateAndWearItem("The Killing Gloves of Boxing")
-					// self.AddCustomAttribute("damage bonus", 1, -1)
 					self.AddCustomAttribute("move speed bonus", 1, -1)
 					self.SetScaleOverride(1.25)
 					break
 				case 2:
 					self.ClearAllWeaponRestrictions()
 					self.AddWeaponRestriction(4)
-					// self.AddCustomAttribute("damage bonus", 18, -1)
 					self.AddCustomAttribute("move speed bonus", 0.75, -1)
 					self.SetScaleOverride(1.5)
 					break
 				case 3:
 					self.AddCond(TF_COND_OFFENSEBUFF)
-					// self.AddCustomAttribute("damage bonus", 18, -1)
 					self.AddCustomAttribute("move speed bonus", 0.66, -1)
 					self.SetScaleOverride(1.75)
 					break
@@ -400,7 +417,6 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 					self.ClearAllWeaponRestrictions()
 					self.AddWeaponRestriction(2)
 					self.RemoveCond(TF_COND_OFFENSEBUFF)
-					// self.AddCustomAttribute("damage bonus", 1, -1)
 					self.AddCustomAttribute("move speed bonus", containmentBreachActive ? 0.6 : 0.5, -1)
 					self.AddCustomAttribute("dmg taken increased", 1.5, -1)
 					self.SetScaleOverride(2.15)
@@ -537,33 +553,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
                 break;
             }
         }
-
-		scope.feverFireParticles <- SpawnEntityFromTable("info_particle_system", {
-			targetname = "hemorrhagic_fever_weapon_particles"
-			effect_name = "hemorrhagic_fever_flamethrower"
-			//effect_name = "teleporter_mvm_bot_persist"
-			//effect_name = "flamethrower_halloween"
-			start_active = 0
-			origin = activator.GetOrigin()
-		})
-
-		/*
-		scope.feverFireParticles <- SpawnEntityFromTable("trigger_particle", {
+		
+		scope.flamethrowerParticle <- SpawnEntityFromTable("trigger_particle", {
 			particle_name = "hemorrhagic_fever_flamethrower"
 			attachment_type = 4
 			attachment_name = "muzzle"
 			spawnflags = 64
 		})
-		*/
-		//printl(scope.flamethrower)
-		EntFireByHandle(scope.feverFireParticles, "StartTouch", "!activator", -1, scope.flamethrower, scope.flamethrower)
-
-		EntFireByHandle(scope.feverFireParticles, "SetParent", "!activator", -1, scope.flamethrower, scope.flamethrower)
-		EntFireByHandle(scope.feverFireParticles, "AddOutput", "angles " + activator.EyeAngles().x + " " + activator.EyeAngles().y + " " + activator.EyeAngles().z, 0.02, null, null)
-		EntFireByHandle(scope.feverFireParticles, "RunScriptCode", "self.SetAbsOrigin(self.GetMoveParent().GetAttachmentOrigin(0) + Vector())", 0.02, null, null)
-		EntFireByHandle(scope.feverFireParticles, "SetParentAttachmentMaintainOffset", "muzzle", 0.02, null, null)
-		EntFireByHandle(scope.feverFireParticles, "runscriptcode", "printl(self.GetMoveParent())", 0.2, null, null)
-
+		
 		scope.rageParticle <- SpawnEntityFromTable("trigger_particle", {
 			particle_name = "cardiac_arrest_buffed"
 			attachment_type = 1
@@ -574,36 +571,44 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		hemorrhagicFeverTrigger.AcceptInput("Enable", null, null, null)
 		hemorrhagicFeverTrigger.ValidateScriptScope()
 		hemorrhagicFeverTrigger.GetScriptScope().owner <- activator
-		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function(ticksToAdd) { //ticksToAdd defined in map
-			if(!("feverTicks" in activator.GetScriptScope())) {
-				activator.GetScriptScope().feverTicks <- 0
-				return
+		hemorrhagicFeverTrigger.GetScriptScope().tickHemorrhagicFever <- function() {
+			local scope = activator.GetScriptScope()
+			if(!("feverTicks" in scope)) {
+				scope.feverTicks <- 0
 			}
-			local newTicks = activator.GetScriptScope().feverTicks + ticksToAdd
-			if(ticksToAdd > 0) {
-				diseaseCallbacks.playSound("player/pl_burnpain3.wav", activator)
-			}
-			else {
-				diseaseCallbacks.playSound("player/flame_out.wav", activator)
-				if(newTicks >= 7) {
-					newTicks = 7
-					// ClientPrint(null, 3, "New ticks above 10, setting to 9...")
+			
+			scope.feverThink <- function() {
+				if(timeCounter < DEFAULTTIME) {
+					return
 				}
-				activator.ExtinguishPlayerBurning()
+				
+				diseaseCallbacks.playSound("player/pl_burnpain3.wav", self)
+				feverTicks = feverTicks + 1 > 40 ? 40 : feverTicks + 1
+				
+				if(feverTicks >= 10) {
+					//ClientPrint(null, 3, "Ouch! Doing " + (5 + (feverTicks * 0.5)) + " damage")
+					self.ViewPunch(QAngle(-5, 0, 0))
+					self.IgnitePlayer() //Doesn't burn player but plays on fire voicelines pog
+					self.TakeDamage(5 + (feverTicks * 0.5), DMG_BURN, null)
+					diseaseCallbacks.playSound("Fire.Engulf", self)
+				}
 			}
+			scope.thinkTable.feverThink <- scope.feverThink
+		}
 
-			newTicks = newTicks > 40 ? 40 : ((newTicks < 0) ? 0 : newTicks)
-
-			activator.GetScriptScope().feverTicks = newTicks
-
-			if(newTicks >= 10) {
-				//ClientPrint(null, 3, "Ouch! Doing " + (5 + (newTicks * 0.5)) + " damage")
-				activator.TakeDamage(5 + (newTicks * 0.5), DMG_BURN, owner)
-				//Doesn't burn player but plays on fire voicelines pog
-				activator.IgnitePlayer()
-				activator.ViewPunch(QAngle(-5, 0, 0))
-				diseaseCallbacks.playSound("Fire.Engulf", activator)
+		hemorrhagicFeverTrigger.GetScriptScope().stopHemorrhagicFever <- function() {
+			local scope = activator.GetScriptScope()
+			local newTicks = scope.feverTicks
+			newTicks = newTicks - 3 < 0 ? 0 : newTicks - 3
+			
+			diseaseCallbacks.playSound("player/flame_out.wav", activator)
+			if(newTicks >= 7) {
+				newTicks = 7
+				// ClientPrint(null, 3, "New ticks above 10, setting to 9...")
 			}
+			activator.ExtinguishPlayerBurning()
+			scope.feverTicks = newTicks
+			delete scope.thinkTable.feverThink
 		}
 
 		EntFire("hemorrhagic_fever_fire_particles", "Start")
@@ -616,11 +621,21 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 			self.AddCustomAttribute("damage bonus", 1.5, -1)
 			self.AddCustomAttribute("bleeding duration", 5, -1)
 			self.AddCustomAttribute("dmg taken increased", 2, -1)
-
-			feverFireParticles.AcceptInput("Start", null, null, null)
+			
 			EntFire("hemorrhagic_fever_trigger", "Disable", null, -1)
-			self.GetScriptScope().rageParticle.AcceptInput("StartTouch", "!activator", self, self)
 			EntFire("hemorrhagic_fever_fire_particles", "Stop")
+			
+			NetProps.SetPropString(self, "m_iName", "fever")
+			scope.ornament <- SpawnEntityFromTable("prop_dynamic_ornament", {
+				InitialOwner = "fever"
+				updatechildren = true
+				DisableBoneFollowers = true
+				model = "models/weapons/c_models/c_flamethrower/c_flamethrower.mdl"
+			})
+			NetProps.SetPropString(self, "m_iName", null)
+			
+			flamethrowerParticle.AcceptInput("StartTouch", "!activator", ornament, ornament)
+			rageParticle.AcceptInput("StartTouch", "!activator", self, self)
 		}
 	}
 }

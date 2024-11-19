@@ -5,11 +5,11 @@ randomNames <- ["Unrecalled King of Ghost Robots", "Saturday", "King of Robot Gh
 unusualParticle <- SpawnEntityFromTable("info_particle_system", {
 	targetname = "boss_halo_particle"
 	effect_name = "boss_halo"
-	start_active = true
 })
 
 unusualParticle.AcceptInput("SetParent", "!activator", self, null)
 unusualParticle.AcceptInput("SetParentAttachment", "head", null, null)
+EntFireByHandle(unusualParticle, "Start", null, 1, null, null)
 
 sarcomaMimicParticle <- SpawnEntityFromTable("info_particle_system", {
 	targetname = "boss_sarcoma_mimic_particle"

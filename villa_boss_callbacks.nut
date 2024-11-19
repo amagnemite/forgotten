@@ -59,6 +59,7 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 			if(NetProps.GetPropInt(bot, "m_lifeState") == 0) {
 				bot.TakeDamage(1000, 0, bot)
 			}
+			EntFireByHandle(bot, "runscriptcode", "self.ForceChangeTeam(TEAM_SPECTATOR, true)", -1, null, null)
 		}
 	}
 

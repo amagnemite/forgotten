@@ -570,8 +570,8 @@ WaveSchedule
 			Action Mobber  
 			Item "The Triclops"
 			ItemAttributes {
-				ItemName "Upgradeable TF_WEAPON_FLAMETHROWER"
-			// 	"mod flaregun fires pellets with knockback" 2 //set weapon mode to set flamethrower particle
+				ItemName "TF_WEAPON_FLAMETHROWER"
+			 	"mod flaregun fires pellets with knockback" 2 //set weapon mode to set flamethrower particle
 				"airblast disabled" 1
 			}
 			ItemAttributes
@@ -604,12 +604,10 @@ WaveSchedule
 			Scale 1.9
 			Skill Expert
 			//Health 55000 for phase 3
-			//Health 70000
 			Health 30000
 			Item "The Crusader's Crossbow"
 			Item "The Quick-Fix"
 			Item "The Amputator"
-			//WeaponRestrictions MeleeOnly
 			WeaponRestrictions PrimaryOnly
 			Attributes UseBossHealthBar
 			Attributes MiniBoss
