@@ -933,12 +933,18 @@ WaveSchedule
 				EntFire(`bombpath_choose_relay`, `trigger`)
 				EntFire(`sniper_*`, `Enable`)
 				EntFire(`roof_sniper_*`, `Disable`)
+				EntFire(`pentagram_open`, `Trigger`)
+				IncludeScript(`pentagram.nut`, getroottable())
 			"
 		}
 		StartWaveOutput
 		{
 			Target wave_start_relay
-			Action Trigger
+			Action RunScriptCode
+			Param "
+				EntFire(`pentagram_defuse`, `Trigger`)
+				EntFire(`wave_start_relay`, `Trigger`)
+			"
 		}
 		DoneOutput
 		{
