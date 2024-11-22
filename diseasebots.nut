@@ -85,8 +85,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 		if(player == null) return
 		
 		if(!IsPlayerABot(player)) {
-			if("feverThink" in thinkTable) {
-				delete thinkTable.feverThink
+			local scope = player.GetScriptScope()
+			if("feverThink" in scope.thinkTable) {
+				delete scope.thinkTable.feverThink
 			}
 			return
 		}
@@ -608,7 +609,9 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 			}
 			activator.ExtinguishPlayerBurning()
 			scope.feverTicks = newTicks
-			delete scope.thinkTable.feverThink
+			if("feverThink" in scope.thinkTable) { //dying can delete it first
+				delete scope.thinkTable.feverThink
+			}
 		}
 
 		EntFire("hemorrhagic_fever_fire_particles", "Start")

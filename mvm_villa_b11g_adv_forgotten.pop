@@ -204,32 +204,6 @@ WaveSchedule
 				Output "!activator,CallScriptFunction,RefundMain,0"
 			}
 		}
-		Syringe {
-			Name "Magic Syringe"
-			Description "Shots have a will of their own. Every 7th shot conspires against you, such that you may not come back."
-			//or goes against you
-			Attribute "mod see enemy health"
-			Cap 1
-			Increment 1
-			Cost 400
-			
-			AllowedWeapons {
-				ClassName "TF_WEAPON_CROSSBOW"
-			}
-			
-			SecondaryAttributes {
-				"special item description" "Shots have a will of their own. Every 7th shot conspires against you,"
-				"special item description 2" "such that you may not come back."
-			}
-			
-			OnApply {
-				Output "!activator,RunScriptFile,crossbow.nut,0"
-				Output "!activator,CallScriptFunction,purchaseCrossbow,0"
-			}
-			OnDowngrade {
-				Output "!activator,CallScriptFunction,refundCrossbow,0"
-			}
-		}
 	}  
 	
 	Templates 
@@ -697,11 +671,159 @@ WaveSchedule
 				}
 			}
 		}
-	}
-	
-	OverrideParticles {
-		"flamethrower_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
-		"flamethrower_crit_giant_mvm_new_flame" "hemorrhagic_fever_flamethrower"
+		
+		feverFinale { //match stats with containment breaker ver
+			Class Pyro
+			Name "Hemorrhagic Fever"
+			ClassIcon hemorrhagic_fever_bp
+			Tag Hemorrhagic_Fever
+			Health 3000
+			Skill Expert
+			WeaponRestrictions PrimaryOnly
+			Attributes MiniBoss
+			Attributes AlwaysFireWeapon
+			Attributes AlwaysCrit
+			Item "The Triclops"
+			ItemAttributes {
+				ItemName "TF_WEAPON_FLAMETHROWER"
+				"airblast disabled" 1
+			}
+			ItemAttributes
+			{
+				ItemName "The Triclops"
+				"set item tint RGB" 13328029
+			}
+			CharacterAttributes
+			{
+				"move speed bonus"	0.1
+				"damage force reduction" 0.5
+				"airblast vulnerability multiplier" 0.5
+				"override footstep sound set" 4
+			}
+		}
+		
+		cardioFinale {
+			Class Demoman
+			Name "Cardiomyopathy"
+			ClassIcon demo_burst
+			Tag Cardiomyopathy
+			Health 3300
+			Skill Expert
+			WeaponRestrictions PrimaryOnly
+			Attributes HoldFireUntilFullReload
+			Attributes MiniBoss
+			ItemAttributes
+			{
+				ItemName "TF_WEAPON_GRENADELAUNCHER"
+				"clip size upgrade atomic" 16.0
+				"faster reload rate" 0.23
+				"fire rate bonus" 0.05
+				"projectile spread angle penalty" 7
+				"damage bonus" 0.4
+			}
+
+			CharacterAttributes
+			{
+				"move speed bonus"	0.5
+				"damage force reduction" 0.5
+				"airblast vulnerability multiplier" 0.5
+				"override footstep sound set" 4
+			}
+		}
+		
+		tachyFinale {
+			Class Scout
+			Name "Tachycardia"
+			ClassIcon tachycardia_bp
+			Tag Tachycardia
+			Skill Expert
+			Health 1200
+			WeaponRestrictions MeleeOnly
+			Attributes MiniBoss
+			Item "The Holy Mackerel"
+			Item "Bonk Leadwear"
+			ItemAttributes
+			{
+				ItemName "Bonk Leadwear"
+				"set item tint RGB" 13328029
+			}
+			ItemAttributes {
+				ItemName "The Holy Mackerel"
+				"damage bonus" 1.5
+				//"add cond on hit" 65
+				//"add cond on hit duration" 20
+				"damage causes airblast" 1 //may remove this
+				"attach particle effect" 16
+				"Paintkit_proto_def_index" 3.16693e-43n
+				"Set_item_texture_wear" 0
+			}
+
+			CharacterAttributes
+			{
+				"move speed bonus"	2
+				"damage force reduction" 0.7
+				"airblast vulnerability multiplier" 0.7
+				"override footstep sound set" 5
+			}
+		}
+		
+		gpair {
+			Squad {
+				TFBot {
+					Class Heavyweapons
+					Name "Sarcoma"
+					ClassIcon sarcoma_bp
+					Skill Expert
+					Health 5000
+					Attributes MiniBoss
+					Item "The Brass Beast"
+					Item "Cold War Luchador"
+					ItemAttributes
+					{
+						ItemName "Cold War Luchador"
+						"set item tint RGB" 13328029
+					}
+					ItemAttributes
+					{
+						ItemName "The Brass Beast"
+						"damage bonus"	1.8
+						"spunup_damage_resistance" 1
+					}
+					CharacterAttributes
+					{
+						"move speed bonus"	0.5
+						"damage force reduction" 0.3
+						"airblast vulnerability multiplier" 0.3
+						"override footstep sound set" 2
+					}
+				}
+				TFBot {
+					Class Medic
+					Name "Pneumonia"
+					ClassIcon pneumonia_bp
+					Tag Pneumonia
+					Skill Expert
+					Health 4500
+					Item "The Quick-Fix"
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					Attributes SpawnWithFullCharge
+					Item "The Byte'd Beak"
+					ItemAttributes
+					{
+						ItemName "The Byte'd Beak"
+						"set item tint RGB" 13328029
+					}
+					CharacterAttributes
+					{
+						"move speed bonus"	0.5
+						"damage force reduction" 0.5
+						"airblast vulnerability multiplier" 0.6
+						"heal rate bonus" 200
+					}
+				}
+			}
+		}
 	}
 	
 	Mission
@@ -769,13 +891,23 @@ WaveSchedule
 		{
 			Class Spy
 			Name Spy
-			Skill Expert
+			EventChangeAttributes {
+				Default {
+					Skill Expert
+				}
+				HardMode {
+					Skill Expert
+					Item "Conniver's Kunai"
+					Tag ignoredeath
+				}
+			}
 		}
 	}
 	Mission {
 		Objective Sniper
 		InitialCooldown 20
 		Where spawnbot_roof
+		Where spawnbot_right
 		BeginAtWave 7
 		RunForThisManyWaves 1
 		CooldownTime 25
@@ -786,6 +918,7 @@ WaveSchedule
 			Template T_TFBot_Sniper_Sydney_Sleeper
 			Skill Hard
 			MaxVisionRange 3000
+			Tag ignoredeath
 		}
 	}
 	
@@ -878,8 +1011,45 @@ WaveSchedule
 			TotalCurrency 300
 			TFBot
 			{
-				Template T_TFBot_Giant_Soldier
-				Item "The Cow Mangler 5000"
+				Class Soldier
+				Name "Giant Soldier"
+				ClassIcon soldier_giant
+				
+				EventChangeAttributes {
+					Default {
+						Item "The Cow Mangler 5000"
+						Skill Expert
+						WeaponRestrictions PrimaryOnly
+						Attributes MiniBoss
+						Attributes HoldFireUntilFullReload
+						CharacterAttributes {
+							"move speed bonus"	0.5
+							"damage force reduction" 0.4
+							"airblast vulnerability multiplier" 0.4
+							"override footstep sound set" 3
+						}
+					}
+					HardMode { //rapid fire
+						Skill Expert
+						WeaponRestrictions PrimaryOnly
+						Attributes MiniBoss
+						Tag icon_soldier_spammer
+						Tag name_giant_rapid_fire_soldier
+						ItemAttributes {
+							ItemName "TF_WEAPON_ROCKETLAUNCHER"
+							"faster reload rate" -0.8
+							"fire rate bonus" 0.5
+
+						}
+						CharacterAttributes {
+							"move speed bonus"	0.5
+							"damage force reduction" 0.4
+							"airblast vulnerability multiplier" 0.4
+							"override footstep sound set" 3
+							"Projectile speed increased" 0.65
+						}
+					}
+				}
 			}
 		}
 		
@@ -941,17 +1111,37 @@ WaveSchedule
 				Class Scout
 				ClassIcon scout_cane_lite
 				Name "Giant Candy Cane Scout"
-				Skill Expert
-				WeaponRestrictions MeleeOnly
-				Item "The Candy Cane"
-				Attributes MiniBoss
 				Health 1600
-				CharacterAttributes
-				{
-					"move speed bonus" .75
-					"damage force reduction" 0.7
-					"airblast vulnerability multiplier" 0.7
-					"override footstep sound set" 5
+				
+				EventChangeAttributes {
+					Default {
+						Skill Expert
+						WeaponRestrictions MeleeOnly
+						Item "The Candy Cane"
+						Attributes MiniBoss
+						CharacterAttributes {
+							"move speed bonus" .75
+							"damage force reduction" 0.7
+							"airblast vulnerability multiplier" 0.7
+							"override footstep sound set" 5
+						}
+					}
+					HardMode { //super scout
+						Skill Easy
+						WeaponRestrictions MeleeOnly
+						Item "The Bolt Boy"
+						Item "The Candy Cane"
+						Attributes MiniBoss
+						Tag icon_scout_giant_fast
+						Tag name_super_scout
+						CharacterAttributes {
+							"move speed bonus"	2
+							"damage force reduction" 0.7
+							"airblast vulnerability multiplier" 0.7
+							"override footstep sound set" 5
+							"max health additive bonus" -400
+						}
+					}
 				}
 			}
 		}
@@ -1037,7 +1227,6 @@ WaveSchedule
 				Attributes DisableDodge
 				Scale 2.5
 				Action Mobber
-				//FastUpdate 1
 				NoIdleSound 1  
 				Item "The Direct Hit"
 				Item "Steel Shako"
@@ -1315,20 +1504,46 @@ WaveSchedule
 				Class Sniper
 				ClassIcon sniper_huntsman_bleed_giant
 				Name "Giant Bleed Huntsman"
-				Skill Expert
-				WeaponRestrictions PrimaryOnly
-				Item "The Huntsman"
-				Attributes MiniBoss
 				Health 2400
-				CharacterAttributes {
-					"move speed bonus" 0.5
-					"damage force reduction" 0.5
-					"airblast vulnerability multiplier" 0.6
-					"override footstep sound set" 5
-				}
-				ItemAttributes {
-					ItemName "The Huntsman"
-					"bleeding duration" 4
+				
+				EventChangeAttributes {
+					Default {
+						Skill Expert
+						WeaponRestrictions PrimaryOnly
+						Item "The Huntsman"
+						Attributes MiniBoss
+						
+						CharacterAttributes {
+							"move speed bonus" 0.5
+							"damage force reduction" 0.5
+							"airblast vulnerability multiplier" 0.6
+							"override footstep sound set" 5
+						}
+						ItemAttributes {
+							ItemName "The Huntsman"
+							"bleeding duration" 4
+						}
+					}
+					HardMode {
+						Skill Expert
+						WeaponRestrictions PrimaryOnly
+						Item "The Huntsman"
+						Attributes MiniBoss
+						//Tag icon
+						Tag name_giant_rapid_fire_bleed_huntsman
+						
+						CharacterAttributes {
+							"move speed bonus" 0.5
+							"damage force reduction" 0.5
+							"airblast vulnerability multiplier" 0.6
+							"override footstep sound set" 5
+						}
+						ItemAttributes {
+							ItemName "The Huntsman"
+							"bleeding duration" 4
+							"fire rate bonus" 0.6
+						}
+					}
 				}
 			}
 		}
@@ -1674,7 +1889,6 @@ WaveSchedule
 			TotalCount 4
 			MaxActive 2
 			SpawnCount 2
-			//WaitBetweenSpawns 27
 			TotalCurrency 750
 			Squad
 			{
@@ -2557,7 +2771,6 @@ WaveSchedule
 				IncludeScript(`villa_boss_callbacks.nut`, getroottable())
 				EntFire(`sniper_*`, `Disable`)
 				EntFire(`roof_sniper_*`, `Enable`)
-				EntFire(`fog_heartbeater`, `TurnOff`)
 			"
 		}
 		DoneOutput {
