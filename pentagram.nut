@@ -77,15 +77,15 @@ if("pentagramCallbacks" in getroottable()) {
 
     OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
-
 		if(player == null) return
+		
 		if(IsPlayerABot(player)) {
 			EntFireByHandle(player, "RunScriptCode", "pentagramCallbacks.checkForPentagramBuff()", -1, player, null)
 		}
 	}
 
     checkForPentagramBuff = function() {
-        if(!(activator.HasBotTag("pentagram_buffable"))) return
+        if(!activator.HasBotTag("pentagram_buffable")) return
         pentagramBuffedParticles.AcceptInput("StartTouch", "!activator", activator, activator)
     }
 }

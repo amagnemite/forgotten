@@ -1151,7 +1151,7 @@ WaveSchedule
 							"damage force reduction" 0.7
 							"airblast vulnerability multiplier" 0.7
 							"override footstep sound set" 5
-							"max health additive bonus" -400
+							"max health additive bonus" -400 //make sure this works correctly
 						}
 					}
 				}
@@ -1191,9 +1191,9 @@ WaveSchedule
 			Action RunScriptCode
 			Param
 			"
+				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`roof_sound`, `Disable`, `0`, 1)
 				EntFire(`heartbeater_sound`, `Enable`, `0`, 1)
-				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`fog_heartbeater`, `TurnOn`)
 			"
 		}
@@ -1401,7 +1401,7 @@ WaveSchedule
 		{
 			Name w3aa
 			Where spawnbot
-			TotalCount 24
+			TotalCount 48
 			MaxActive 8
 			SpawnCount 4
 			WaitBeforeStarting 2
@@ -1428,20 +1428,44 @@ WaveSchedule
 				ClassIcon engineer_ranger_nys_penetrate_giant
 				Name "Giant Piercing Ranger Engineer"
 				Health 2400
-				Item "The Rescue Ranger"
-				Skill Hard
-				WeaponRestrictions PrimaryOnly
-				Attributes MiniBoss
-				Action FetchFlag  
-				ItemAttributes {
-					ItemName "The Rescue Ranger"
-					"projectile penetration" 1
-				}
-				CharacterAttributes {
-					"move speed bonus" 0.5
-					"damage force reduction" 0.5
-					"airblast vulnerability multiplier" 0.6
-					"override footstep sound set" 5
+				
+				EventChangeAttributes {
+					Default {
+						Item "The Rescue Ranger"
+						Skill Hard
+						WeaponRestrictions PrimaryOnly
+						Attributes MiniBoss
+						Action FetchFlag  
+						ItemAttributes {
+							ItemName "The Rescue Ranger"
+							"projectile penetration" 1
+						}
+						CharacterAttributes {
+							"move speed bonus" 0.5
+							"damage force reduction" 0.5
+							"airblast vulnerability multiplier" 0.6
+							"override footstep sound set" 5
+						}
+					}
+					HardMode {
+						Item "The Rescue Ranger"
+						Skill Hard
+						WeaponRestrictions PrimaryOnly
+						Attributes MiniBoss
+						Action FetchFlag  
+						Tag pentagram_buffable
+						ItemAttributes {
+							ItemName "The Rescue Ranger"
+							"projectile penetration" 1
+							"damage bonus" 1.5
+						}
+						CharacterAttributes {
+							"move speed bonus" 0.5
+							"damage force reduction" 0.5
+							"airblast vulnerability multiplier" 0.6
+							"override footstep sound set" 5
+						}
+					}
 				}
 			}
 		}
@@ -1449,12 +1473,12 @@ WaveSchedule
 		{
 			Name w3b
 			Where spawnbot
-			TotalCount 6
+			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 7
 			WaitBetweenSpawns 18
-			TotalCurrency 200
+			TotalCurrency 100
 			WaitForAllSpawned w3aa
 			Squad
 			{
@@ -1467,25 +1491,128 @@ WaveSchedule
 					Class Medic
 					ClassIcon medic_shield_lite
 					Name "Shield Medic"
-					Skill Expert
-					WeaponRestrictions SecondaryOnly
-					Item "The Quick-Fix"
-					Attributes SpawnWithFullCharge
-					Attributes ProjectileShield
-					Attributes IgnoreEnemies
-					CharacterAttributes
-					{
-						"generate rage on heal" 2
-						"increase buff duration" 19.0
-						"bot medic uber deploy delay duration" 900
+					EventChangeAttributes {
+						Default {
+							Skill Expert
+							WeaponRestrictions SecondaryOnly
+							Item "The Quick-Fix"
+							Attributes SpawnWithFullCharge
+							Attributes ProjectileShield
+							Attributes IgnoreEnemies
+							CharacterAttributes
+							{
+								"generate rage on heal" 2
+								"increase buff duration" 19.0
+								"bot medic uber deploy delay duration" 900
+							}
+						}
+						HardMode {
+							Skill Normal
+							Attributes SpawnWithFullCharge
+							Tag name_quick_uber_medic
+							Tag icon_medic_uber
+							Tag pentagram_buffable
+							ItemAttributes
+							{
+								ItemName "TF_WEAPON_MEDIGUN"
+								"ubercharge rate bonus" 5
+								"uber duration bonus" 4
+							}
+							CharacterAttributes
+							{
+								"heal rate bonus" 0.1
+							}
+						}
 					}
 				}
 			}
 		}
 		WaveSpawn
 		{
+			Name w3c
+			Where spawnbot
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 18
+			WaitBetweenSpawns 18
+			TotalCurrency 100
+			WaitForAllSpawned w3b
+			Squad
+			{
+				TFBot
+				{
+					Template T_TFBot_Giant_Soldier_Spammer
+				}
+				TFBot
+				{
+					Class Medic
+					ClassIcon medic_shield_lite
+					Name "Shield Medic"
+					EventChangeAttributes {
+						Default {
+							Skill Expert
+							WeaponRestrictions SecondaryOnly
+							Item "The Quick-Fix"
+							Attributes SpawnWithFullCharge
+							Attributes ProjectileShield
+							Attributes IgnoreEnemies
+							CharacterAttributes
+							{
+								"generate rage on heal" 2
+								"increase buff duration" 19.0
+								"bot medic uber deploy delay duration" 900
+							}
+						}
+						HardMode {
+							Skill Normal
+							Attributes SpawnWithFullCharge
+							Tag name_quick_uber_medic
+							Tag icon_medic_uber
+							Tag pentagram_buffable
+							ItemAttributes
+							{
+								ItemName "TF_WEAPON_MEDIGUN"
+								"ubercharge rate bonus" 5
+								"uber duration bonus" 4
+							}
+							CharacterAttributes
+							{
+								"heal rate bonus" 0.1
+							}
+						}
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Where spawnbot
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 10
+			WaitBetweenSpawns 5
+			WaitForAllSpawned w3aa
+			Support true
+			TFBot
+			{
+				Class Sniper
+				ClassIcon sniper_jarate
+				Name "Jarate Sniper"
+				Skill Expert
+				Item Jarate
+				Attributes SpawnWithFullCharge
+				WeaponRestrictions SecondaryOnly
+				ItemAttributes {
+					ItemName "Jarate"
+					"effect bar recharge rate increased" 0.1
+				}
+			}
+		}
+		WaveSpawn
+		{
 			Where spawnbot_invasion
-			TotalCount 27
+			TotalCount 33
 			MaxActive 6
 			SpawnCount 3
 			WaitBeforeStarting 25
@@ -1507,10 +1634,10 @@ WaveSchedule
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 1
-			WaitBeforeStarting 28
+			WaitBeforeStarting 10
 			WaitBetweenSpawns 13
 			TotalCurrency 400
-			WaitForAllSpawned w3aa
+			WaitForAllSpawned w3b
 			TFBot
 			{
 				Class Sniper
@@ -1540,11 +1667,10 @@ WaveSchedule
 						Skill Expert
 						WeaponRestrictions PrimaryOnly
 						Item "The Huntsman"
-						Tag pentagram_buffable
 						Attributes MiniBoss
-						//Tag icon
+						Tag icon_sniper_bow_multi_bleed
 						Tag name_giant_rapid_fire_bleed_huntsman
-						
+						Tag pentagram_buffable
 						CharacterAttributes {
 							"move speed bonus" 0.5
 							"damage force reduction" 0.5
@@ -1557,30 +1683,6 @@ WaveSchedule
 							"fire rate bonus" 0.6
 						}
 					}
-				}
-			}
-		}
-		WaveSpawn
-		{
-			Where spawnbot
-			MaxActive 1
-			SpawnCount 1
-			WaitBeforeStarting 10
-			WaitBetweenSpawns 5
-			WaitForAllSpawned w3aa
-			Support true
-			TFBot
-			{
-				Class Sniper
-				ClassIcon sniper_jarate
-				Name "Jarate Sniper"
-				Skill Expert
-				Item Jarate
-				Attributes SpawnWithFullCharge
-				WeaponRestrictions SecondaryOnly
-				ItemAttributes {
-					ItemName "Jarate"
-					"effect bar recharge rate increased" 0.1
 				}
 			}
 		}
@@ -1947,11 +2049,12 @@ WaveSchedule
 			WaitBetweenSpawns 13
 			TotalCurrency 550
 			WaitForAllSpawned w5a
-			TFBot //make sure this parses as intended
+			TFBot
 			{
-				Template T_TFBot_Giant_Pyro
-				ClassIcon pyro_dragon_fury_swordstone
+				Class Pyro
 				Name "Giant Dragon's Fury Pyro"
+				ClassIcon pyro_dragon_fury_swordstone
+				Health 3000
 				EventChangeAttributes {
 					Default {
 						Skill Expert
@@ -1959,6 +2062,13 @@ WaveSchedule
 						Attributes MiniBoss
 						MaxVisionRange 800
 						Item "The Dragon's Fury"
+						CharacterAttributes
+						{
+							"move speed bonus"	0.5
+							"damage force reduction" 0.6
+							"airblast vulnerability multiplier" 0.6
+							"override footstep sound set" 6
+						}
 					}
 					HardMode {
 						Skill Expert
@@ -1967,7 +2077,14 @@ WaveSchedule
 						Attributes AlwaysCrit
 						MaxVisionRange 800
 						Item "The Dragon's Fury"
-						Tag icon_alwayscrit
+						Tag pentagram_buffable
+						CharacterAttributes
+						{
+							"move speed bonus"	0.5
+							"damage force reduction" 0.6
+							"airblast vulnerability multiplier" 0.6
+							"override footstep sound set" 6
+						}
 					}
 				}
 			}
@@ -2005,13 +2122,46 @@ WaveSchedule
 			WaitForAllSpawned w5b
 			TFBot
 			{
-				Template T_TFBot_Giant_Heavyweapons
+				Class Heavyweapons
+				Name "Giant Heavy"
+				ClassIcon heavy_giant
+				Health 5000
 				EventChangeAttributes {
-					Default {	
+					Default {
+						WeaponRestrictions PrimaryOnly
+						MaxVisionRange 1200
+						Attributes MiniBoss
+						ItemAttributes
+						{
+							ItemName "TF_WEAPON_MINIGUN"
+							"damage bonus"	1.5
+						}
+						CharacterAttributes
+						{
+							"move speed bonus"	0.5
+							"damage force reduction" 0.3
+							"airblast vulnerability multiplier" 0.3
+							"override footstep sound set" 2
+						}
 					}
 					HardMode {
+						WeaponRestrictions PrimaryOnly
+						MaxVisionRange 1200
+						Attributes MiniBoss
 						Attributes AlwaysCrit
-						Tag icon_alwayscrit
+						Tag pentagram_buffable
+						ItemAttributes
+						{
+							ItemName "TF_WEAPON_MINIGUN"
+							"damage bonus"	1.5
+						}
+						CharacterAttributes
+						{
+							"move speed bonus"	0.5
+							"damage force reduction" 0.3
+							"airblast vulnerability multiplier" 0.3
+							"override footstep sound set" 2
+						}
 					}
 				}
 			}
@@ -2056,7 +2206,6 @@ WaveSchedule
 			Param "
 				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
-				//EntFire(`altmode_chaos_script`, `runscriptcode`, `preassignRoom(\`ws8\`, 2)`, -1)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
 			"
 		}
@@ -2089,13 +2238,16 @@ WaveSchedule
 				Delay 0.1
 				Param "
 					findTimerBot(1, true, null, false)
+					if(isHardmode) {
+						timer.AddCustomAttribute(`max health additive bonus`, -30, -1)
+					}
 				"
 			}
 			
 			TFBot {
 				Template timerbot
 				ClassIcon timer_pink
-				Health 60
+				Health 45
 			}
 		}
 		WaveSpawn {
@@ -2889,9 +3041,13 @@ WaveSchedule
 				Delay 0.1
 			}
 			
-			TFBot {
-				Template T_TFBot_Pathogen_Soldier
-				tag gmedsupport
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Template T_TFBot_Pathogen_Soldier
+						tag gmedsupport
+					}
+				}
 			}
 		}
 		
@@ -2905,12 +3061,17 @@ WaveSchedule
 			WaitBetweenSpawnsAfterDeath 15
 			Support 1
 			Where spawnbot_roof
-			TFBot
-			{
-				Class Scout
-				Attributes AlwaysCrit
-				Action Mobber
-				Skill Expert
+			
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Class Scout
+						Attributes AlwaysCrit
+						Action Mobber
+						Skill Expert
+					}
+				}
 			}
 		}
 
@@ -2924,12 +3085,16 @@ WaveSchedule
 			WaitBetweenSpawnsAfterDeath 11
 			Support 1
 			Where spawnbot_roof
-			TFBot
-			{
-				Class Scout
-				Attributes AlwaysCrit
-				Action Mobber
-				Skill Expert
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Class Scout
+						Attributes AlwaysCrit
+						Action Mobber
+						Skill Expert
+					}
+				}
 			}
 		}
 
@@ -2955,34 +3120,63 @@ WaveSchedule
 		}
 		
 		WaveSpawn {
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 60
+			WaitBetweenSpawns 45
+			WaitForAllDead "normalkill"
+			Support 1
+			Where spawnbot
+			
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Class Engineer
+						Name Engineer
+						Skill Expert
+						TeleportWhere spawnbot
+						TeleportWhere spawnbot_invasion
+						TeleportWhere spawnbot_right
+						Health 500
+						Attributes TeleportToHint
+					}
+				}
+			}
+		}
+		
+		WaveSpawn {
 			MaxActive 4
 			SpawnCount 1
 			WaitBetweenSpawns 1
 			WaitForAllDead "normalkill"
 			Support 1
 			Where spawnbot_invasion
-		
-			TFBot
-			{
-				Class Heavy
-				Name "Malignant Tumor"
-				ClassIcon malignant_tumor_bp
-				Tag Malignant_Tumor
-				Tag ignoredeath
-				Skill Hard
-				Scale 0.6
-				Health 65
-				WeaponRestrictions MeleeOnly 
-				Item "The Bunsen Brave"
-				ItemAttributes
-				{
-					ItemName "The Bunsen Brave"
-					"set item tint RGB" 13328029
-				}
-				CharacterAttributes
-				{
-					"damage bonus" 0.2
-					"move speed bonus"	1.5
+			
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Class Heavy
+						Name "Malignant Tumor"
+						ClassIcon malignant_tumor_bp
+						Tag Malignant_Tumor
+						Tag ignoredeath
+						Skill Hard
+						Scale 0.6
+						Health 65
+						WeaponRestrictions MeleeOnly 
+						Item "The Bunsen Brave"
+						ItemAttributes
+						{
+							ItemName "The Bunsen Brave"
+							"set item tint RGB" 13328029
+						}
+						CharacterAttributes
+						{
+							"damage bonus" 0.2
+							"move speed bonus"	1.5
+						}
+					}
 				}
 			}
 		}
@@ -2999,48 +3193,53 @@ WaveSchedule
 			RandomSpawn 1
 			Support Limited
 			
-			TFBot {
-				Class Soldier
-				Name "Dyspnea"
-				ClassIcon dyspnea_bp
-				Health 4200
-				Tag Dyspnea
-				Skill Expert
-				WeaponRestrictions PrimaryOnly
-				Attributes MiniBoss
-				Attributes HoldFireUntilFullReload
-				Attributes AlwaysCrit
-				Item "Shortness Of Breath"
-				ItemAttributes
-				{
-					ItemName "Shortness Of Breath"
-					"set item tint RGB" 13328029
-				}
-				ItemAttributes
-				{
-					ItemName "TF_WEAPON_ROCKETLAUNCHER"
-					"clip size upgrade atomic" 16.0
-					"add cond on hit" 12
-					"add cond on hit duration" 3.5
-					"faster reload rate" 0.2
-					"fire rate bonus" 0.2
-					"projectile spread angle penalty" 7
-					"damage bonus" 0.75 //changed from .125
-					"projectile speed increased" 0.6
-					"projectile trail particle" dyspnea_rockettrail
-				}
-				CharacterAttributes
-				{
-					"health regen"	40
-					"move speed bonus"	0.5
-					"damage force reduction" 0.4
-					"airblast vulnerability multiplier" 0.4
-					"override footstep sound set" 3
-					"airblast vertical vulnerability multiplier" 0.1			
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Class Soldier
+						Name "Dyspnea"
+						ClassIcon dyspnea_bp
+						Health 4200
+						Tag Dyspnea
+						Skill Expert
+						WeaponRestrictions PrimaryOnly
+						Attributes MiniBoss
+						Attributes HoldFireUntilFullReload
+						Attributes AlwaysCrit
+						Item "Shortness Of Breath"
+						ItemAttributes
+						{
+							ItemName "Shortness Of Breath"
+							"set item tint RGB" 13328029
+						}
+						ItemAttributes
+						{
+							ItemName "TF_WEAPON_ROCKETLAUNCHER"
+							"clip size upgrade atomic" 16.0
+							"add cond on hit" 12
+							"add cond on hit duration" 3.5
+							"faster reload rate" 0.2
+							"fire rate bonus" 0.2
+							"projectile spread angle penalty" 7
+							"damage bonus" 0.75 //changed from .125
+							"projectile speed increased" 0.6
+							"projectile trail particle" dyspnea_rockettrail
+						}
+						CharacterAttributes
+						{
+							"health regen"	40
+							"move speed bonus"	0.5
+							"damage force reduction" 0.4
+							"airblast vulnerability multiplier" 0.4
+							"override footstep sound set" 3
+							"airblast vertical vulnerability multiplier" 0.1			
+						}
+					}
 				}
 			}
+
 		}
-		WaveSpawn { //take stats from buffed ver
+		WaveSpawn {
 			Name "w7b"
 			TotalCount 6
 			MaxActive 6
@@ -3051,9 +3250,13 @@ WaveSchedule
 			Where spawnbot
 			Support Limited
 			
-			TFBot
-			{
-				Template feverFinale
+			RandomChoice {
+				RandomChoice {
+				TFBot
+					{
+						Template feverFinale
+					}
+				}
 			}
 		}
 		WaveSpawn { //make sure this doesn't do odd things on normal
@@ -3063,18 +3266,22 @@ WaveSchedule
 			TotalCurrency 0
 			Support Limited
 			
-			Tank {
-				Name tankboss
-				Health 15000
-				StartingPathTrackNode path_0
-				Skin 1
-				OnBombDroppedOutput
-				{
-					Target bomb_deploy_relay
-					Action Trigger
-				}
-				OnKilledOutput {
-					//decrement tank icon here
+			RandomChoice {
+				RandomChoice {
+					Tank {
+						Name tankboss
+						Health 15000
+						StartingPathTrackNode path_0
+						Skin 1
+						OnBombDroppedOutput
+						{
+							Target bomb_deploy_relay
+							Action Trigger
+						}
+						OnKilledOutput {
+							//decrement tank icon here
+						}
+					}
 				}
 			}
 		}
@@ -3088,9 +3295,13 @@ WaveSchedule
 			Where spawnbot
 			Support Limited
 			
-			TFBot
-			{
-				Template feverFinale
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template feverFinale
+					}
+				}
 			}
 		}
 		WaveSpawn {
@@ -3098,15 +3309,19 @@ WaveSchedule
 			TotalCount 6
 			MaxActive 6
 			SpawnCount 2
+			WaitBeforeStarting 13
 			WaitBetweenSpawns 12
 			WaitForAllSpawned "w7b"
-			WaitBeforeStarting 13
 			Where spawnbot_invasion
 			Support Limited
 			
-			TFBot //based on nukesalot
-			{
-				Template cardioFinale
+			RandomChoice {
+				RandomChoice {
+					TFBot //based on nukesalot
+					{
+						Template cardioFinale
+					}
+				}
 			}
 		}
 		WaveSpawn { 
@@ -3131,7 +3346,7 @@ WaveSchedule
 			MaxActive 3
 			SpawnCount 3
 			WaitForAllSpawned "w7c"
-			WaitBeforeStarting 10
+			WaitBeforeStarting 12
 			Where spawnbot
 			Support Limited
 			

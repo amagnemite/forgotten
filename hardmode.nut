@@ -19,6 +19,40 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		}
 	}
 	
+	OnGameEvent_player_spawn = function(params) {
+		local player = GetPlayerFromUserID(params.userid)
+		if(player == null) return
+		if(!IsPlayerABot(player)) return
+		
+		EntFireByHandle(player, "hardWaveCallbacks.checkTags()", null, -1, player, null)
+	}
+	
+	checkTags = function() {
+		local tags = {}
+		activator.GetAllBotTags(tags)
+		
+		foreach(k, tag in tags) {
+			tag = tag.tolower()
+			
+			if(startswith(tag, "name_")) {
+				local chunks = split(tag.slice(5), "_")
+				local final = ""
+				for(local i = 0; i < chunks.len(); i++) {
+					local chunk = chunks[i]
+					local titlecase = chunk.splice(0, 1).toupper() + chunk.splice(1)
+					final = final + titlecase
+					if(i + 1 < chunks.len()) {
+						final = final + " "
+					}
+				}
+				SetFakeClientConVarValue(activator, "name", final)
+			}
+			else if(startswith(tag, "icon_")) {
+				local icon = tag.slice(5)
+				NetProps.SetPropString(activator, "m_PlayerClass.m_iszClassIcon", icon)
+			}
+		}
+	}
 	
 	//do icon stuff here
 }
@@ -26,7 +60,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 ::finaleCallbacks <- {
 	normalKill = null
 	hardKill = null
-	TOTALCOUNT = 37
+	//TOTALCOUNT = 37
 	botCount = 37
 
 	Cleanup = function() {
