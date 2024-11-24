@@ -1077,16 +1077,36 @@ WaveSchedule
 			{
 				Template T_TFBot_Demoman_Samurai
 				Skill Hard
-				CharacterAttributes
-				{
-					"charge time increased" 2
-					"charge recharge rate increased" 7
-					"increased jump height" 2.3
-					"bot custom jump particle"	1
-					"damage bonus"	1.5
-					"fire rate bonus" 2
-					"cancel falling damage" 1
-					"damage force reduction" 0.5
+				
+				EventChangeAttributes {
+					Default {
+						CharacterAttributes
+						{
+							"charge time increased" 2
+							"charge recharge rate increased" 7
+							"increased jump height" 2.3
+							"bot custom jump particle"	1
+							"damage bonus"	1.5
+							"fire rate bonus" 2
+							"cancel falling damage" 1
+							"damage force reduction" 0.5
+						}
+					}
+					HardMode { //crits
+						Attributes AlwaysCrit
+						Tag pentagram_buffable
+						CharacterAttributes
+						{
+							"charge time increased" 2
+							"charge recharge rate increased" 7
+							"increased jump height" 2.3
+							"bot custom jump particle"	1
+							"damage bonus"	1.5
+							"fire rate bonus" 2
+							"cancel falling damage" 1
+							"damage force reduction" 0.5
+						}
+					}
 				}
 			}
 		}
@@ -1412,7 +1432,17 @@ WaveSchedule
 			TFBot
 			{
 				Template T_TFBot_Demo_Burst
-				Skill Hard
+				EventChangeAttributes {
+					Default {
+						Skill Hard
+					}
+					HardMode {
+						Tag pentagram_buffable
+						Skill Expert
+						Attributes AlwaysCrit
+					}
+				}
+				
 			}
 		}
 		WaveSpawn
@@ -1510,10 +1540,12 @@ WaveSchedule
 							}
 						}
 						HardMode {
-							Skill Normal
+							Skill Expert
 							Attributes SpawnWithFullCharge
-							Tag name_quick_uber_medic
-							Tag icon_medic_uber
+							Attributes ProjectileShield
+							Attributes IgnoreEnemies
+							Tag name_long_uber_medic
+							Tag icon_medic_uber_shield_lite
 							Tag pentagram_buffable
 							ItemAttributes
 							{
@@ -1523,7 +1555,9 @@ WaveSchedule
 							}
 							CharacterAttributes
 							{
-								"heal rate bonus" 0.1
+								"generate rage on heal" 2
+								"increase buff duration" 19.0
+								"bot medic uber deploy delay duration" 900
 							}
 						}
 					}
@@ -1568,10 +1602,12 @@ WaveSchedule
 							}
 						}
 						HardMode {
-							Skill Normal
+							Skill Expert
 							Attributes SpawnWithFullCharge
-							Tag name_quick_uber_medic
-							Tag icon_medic_uber
+							Attributes ProjectileShield
+							Attributes IgnoreEnemies
+							Tag name_long_uber_medic
+							Tag icon_medic_uber_shield_lite
 							Tag pentagram_buffable
 							ItemAttributes
 							{
@@ -1581,7 +1617,9 @@ WaveSchedule
 							}
 							CharacterAttributes
 							{
-								"heal rate bonus" 0.1
+								"generate rage on heal" 2
+								"increase buff duration" 19.0
+								"bot medic uber deploy delay duration" 900
 							}
 						}
 					}
@@ -2581,19 +2619,59 @@ WaveSchedule
 					Class Medic
 					ClassIcon medic_syringe
 					Name "Syringe Medic"
-					Skill Expert
 					WeaponRestrictions PrimaryOnly
 					Action Mobber  
+					EventChangeAttributes
+					{
+						Default {
+							Skill Expert
+							CharacterAttributes
+							{
+								"damage bonus" 1
+								"move speed bonus" 1
+							}
+						}
+						HardMode {
+							Skill Expert
+							Attributes AlwaysCrit
+							Tag pentagram_buffable
+							CharacterAttributes
+							{
+								"damage bonus" 2
+								"move speed bonus" 2
+							}
+						}
+					}
 				}
 				TFBot
 				{
 					Class Medic
 					ClassIcon medic_crossbow
 					Name "Crossbow Medic"
-					Skill Expert
 					WeaponRestrictions PrimaryOnly
 					Action Mobber  
 					Item "The Crusader's Crossbow"
+					EventChangeAttributes
+					{
+						Default {
+							Skill Expert
+							CharacterAttributes
+							{
+								"damage bonus" 1
+								"move speed bonus" 1
+							}
+						}
+						HardMode {
+							Skill Expert
+							Attributes AlwaysCrit
+							Tag pentagram_buffable
+							CharacterAttributes
+							{
+								"damage bonus" 2
+								"move speed bonus" 2
+							}
+						}
+					}
 				}
 			}
 		}
