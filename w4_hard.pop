@@ -80,6 +80,7 @@ Wave
 			TotalCount	1
 			MaxActive	1
 			SpawnCount	1
+            WaitBeforeStarting 3
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2
 			LastSpawnOutput
@@ -88,7 +89,7 @@ Wave
 				Action RunScriptCode
 				Param
 				"
-					EntFire(`spawnbot_arena2_disposable`, `Enable`, null, 40)
+					EntFire(`spawnbot_arena2_disposable`, `Enable`, null, 25)
 				"
 			}
 			DoneOutput
@@ -109,13 +110,14 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4c
-			WaitForAllDead	4a
+			Name	h_4c
+            WaitForAllSpawned	h_4a
 			//TotalCurrency	200
 			TotalCount	5
 			MaxActive	5
 			SpawnCount	1
-			WaitBetweenSpawns	6
+            WaitBeforeStarting 5
+			WaitBetweenSpawns	4
 			Where spawnbot_arena2_disposable
 			TFBot
 			{
@@ -124,9 +126,9 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4d
-			WaitForAllDead	4c
-			TotalCount	40
+			Name	h_4d
+			WaitForAllSpawned	h_4c
+			TotalCount	20
 			MaxActive	20
 			SpawnCount	1
 			WaitBetweenSpawns	0.1
@@ -138,8 +140,8 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4e
-			WaitForAllDead	4d
+			Name	h_4e
+			WaitForAllSpawned	h_4d
 			//TotalCurrency	100
 			TotalCount	1
 			MaxActive	1
@@ -154,13 +156,13 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4f
-			WaitForAllSpawned	4e
+			Name	h_4f
+			WaitForAllSpawned	h_4e
 			TotalCount	2
 			MaxActive	2
 			SpawnCount	1
-			WaitBeforeStarting	10
-			WaitBetweenSpawns	7
+			WaitBeforeStarting	0
+			WaitBetweenSpawns	4
 			Where spawnbot_arena2
 			TFBot
 			{
@@ -169,12 +171,12 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4g
-			WaitForAllSpawned	4f
+			Name	h_4g
+			WaitForAllSpawned	h_4f
 			TotalCount	2
 			MaxActive	2
 			SpawnCount	2
-			WaitBeforeStarting	7
+			WaitBeforeStarting	3
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2
 			Squad
@@ -191,12 +193,13 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4h
-			WaitForAllDead	4f
+			Name	h_4h
+			WaitForAllSpawned	h_4f
 			//TotalCurrency	100
 			TotalCount	3
 			MaxActive	3
 			SpawnCount	1
+            WaitBeforeStarting 10
 			WaitBetweenSpawns	12.5
 			Where spawnbot_arena2
 			FirstSpawnOutput
@@ -215,7 +218,7 @@ Wave
 		}
 		WaveSpawn
 		{
-			WaitForAllDead	4f
+			WaitForAllDead	h_4f
 			TotalCount	1
 			MaxActive	1
 			SpawnCount	1
@@ -240,12 +243,12 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4i
-			WaitForAllDead	4h
+			Name	h_4i
+			WaitForAllSpawned	h_4h
 			TotalCount	12
 			MaxActive	12
 			SpawnCount	4
-			WaitBeforeStarting	2
+			WaitBeforeStarting	12
 			WaitBetweenSpawns	6
 			Where spawnbot_arena2
 			TFBot
@@ -255,20 +258,21 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4j
-			WaitForAllDead	4h
+			Name	h_4j
+			WaitForAllSpawned	h_4h
 			TotalCount	2
 			MaxActive	2
 			SpawnCount	2
+            WaitBeforeStarting 11
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2
-			DoneOutput
+			LastSpawnOutput
 			{
 				Target wave_start_relay
 				Action RunScriptCode
 				Param
 				"
-					EntFire(`spawnbot_arena2_disposable`, `Enable`)
+					EntFire(`spawnbot_arena2_disposable`, `Enable`, null, 16)
 				"
 			}
 			TFBot
@@ -278,8 +282,8 @@ Wave
 		}
 		WaveSpawn
 		{
-			Name	4k
-			WaitForAllDead	4h
+			Name	h_4k
+			WaitForAllDead	h_4h
 			TotalCount	3
 			MaxActive	3
 			SpawnCount	3

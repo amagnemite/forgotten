@@ -1713,7 +1713,7 @@ WaveSchedule
 		{
 			Name	4d
 			WaitForAllDead	4c
-			TotalCount	40
+			TotalCount	30
 			MaxActive	20
 			SpawnCount	1
 			WaitBetweenSpawns	0.1
