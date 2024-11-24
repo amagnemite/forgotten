@@ -936,7 +936,7 @@ WaveSchedule
 				IncludeScript(`pentagram.nut`, getroottable())
 				local script = SpawnEntityFromTable(`logic_script`, {
 					name = `hardmode_script`
-				}})
+				})
 				script.ValidateScriptScope()
 				IncludeScript(`hardmode.nut`, script.GetScriptScope())
 			"
@@ -3132,7 +3132,7 @@ WaveSchedule
 			SpawnCount 3
 			WaitForAllSpawned "w7c"
 			WaitBeforeStarting 10
-			Where spawnbo
+			Where spawnbot
 			Support Limited
 			
 			TFBot

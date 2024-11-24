@@ -1,9 +1,11 @@
 ::playersInPentagram <- 0
-::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
-    particle_name = "pentagram_enemy"
-    attachment_type = 1
-    spawnflags = 64
-})
+if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.IsValid()) {
+	::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
+		particle_name = "pentagram_enemy"
+		attachment_type = 1
+		spawnflags = 64
+	})
+}
 
 ::isHardmode <- false //this will be overwritten every time script is loaded, which will clear state
 printl("hardmode is false")
@@ -18,6 +20,10 @@ printl("hardmode is false")
             break
         case 2:
             EntFire("pentagram_particle_2", "start")
+			EntFire("pentagram_boom", "trigger")
+			isHardmode = true
+			EntFire("logic_script", "FireUser1")
+			__CollectGameEventCallbacks(pentagramCallbacks)
             break
         case 3:
             EntFire("pentagram_particle_3", "start")
@@ -26,9 +32,9 @@ printl("hardmode is false")
             EntFire("pentagram_particle_4", "start")
             break
         case 5:
-            EntFire("pentagram_boom", "trigger")
-			isHardmode = true
-			EntFire("logic_script", "FireUser1")
+            //EntFire("pentagram_boom", "trigger")
+			//isHardmode = true
+			//EntFire("logic_script", "FireUser1")
             break
         default:
 			break
@@ -55,28 +61,25 @@ printl("hardmode is false")
     }
 }
 
+if("pentagramCallbacks" in getroottable()) {
+	pentagramCallbacks.Cleanup()
+}
 ::pentagramCallbacks <- {
 	Cleanup = function() {
 		delete ::pentagramCallbacks
     }
 
 	OnGameEvent_recalculate_holidays = function(_) {
-		if(GetRoundState() == 3) {
+		if(GetRoundState() == 3 && !isHardmode) {
 			Cleanup()
 		}
-	}
-
-	OnGameEvent_mvm_wave_complete = function(_) {
-		Cleanup()
 	}
 
     OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 
 		if(player == null) return
-		if(player.GetTeam() != TF_TEAM_RED && player.GetTeam() != TF_TEAM_BLUE) return
-
-		if(!IsPlayerABot(player)) {
+		if(IsPlayerABot(player)) {
 			EntFireByHandle(player, "RunScriptCode", "pentagramCallbacks.checkForPentagramBuff()", -1, player, null)
 		}
 	}
@@ -86,5 +89,3 @@ printl("hardmode is false")
         pentagramBuffedParticles.AcceptInput("StartTouch", "!activator", activator, activator)
     }
 }
-
-__CollectGameEventCallbacks(pentagramCallbacks)
