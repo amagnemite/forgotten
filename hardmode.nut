@@ -1,8 +1,15 @@
-::iconCallbacks <- {
+InputFireUser1 <- function() { //this essentially only fires once, then the callbacks should do everything else
+	__CollectGameEventCallbacks(hardWaveCallbacks)
+	EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
+	//update w1 icons here
+	return true
+}
+
+::hardWaveCallbacks <- {
 	Cleanup = function() {
 		printl("icon callbacks checking hardmode " + isHardmode)
 		if(!isHardmode) {
-			delete ::iconCallbacks
+			delete ::hardWaveCallbacks
 		}
 	}
 	
@@ -11,13 +18,16 @@
 			Cleanup()
 		}
 	}
+	
+	
+	//do icon stuff here
 }
 
 ::finaleCallbacks <- {
 	normalKill = null
 	hardKill = null
 	TOTALCOUNT = 37
-	botCount = TOTALCOUNT
+	botCount = 37
 
 	Cleanup = function() {
 		delete ::finaleCallbacks
@@ -62,7 +72,7 @@
 		if(!IsPlayerABot(player)) return
 		if(player.HasBotTag("ignoredeath")) return
 		
-		if(player.HasBotTag("ukgr) && !hardmode) {
+		if(player.HasBotTag("ukgr") && !hardmode) {
 			normalKill.TakeDamage(1000, 0, null)
 			return //the end
 		}
