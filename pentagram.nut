@@ -1,4 +1,6 @@
 ::playersInPentagram <- 0
+::isHardmode <- false //this will be overwritten every time script is loaded, which will clear state
+printl("hardmode is false")
 
 ::IncrementPentagram <- function() {
     playersInPentagram++
@@ -19,9 +21,11 @@
             break
         case 5:
             EntFire("pentagram_boom", "trigger")
+			isHardmode = true
+			EntFire("logic_script", "FireUser1")
             break
         default:
-        break
+			break
     }
 }
 
@@ -41,6 +45,6 @@
             EntFire("pentagram_particle_4", "stop")
             break
         default:
-        break
+			break
     }
 }
