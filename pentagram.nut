@@ -86,3 +86,5 @@ printl("hardmode is false")
         pentagramBuffedParticles.AcceptInput("StartTouch", "!activator", activator, activator)
     }
 }
+
+__CollectGameEventCallbacks(pentagramCallbacks)
