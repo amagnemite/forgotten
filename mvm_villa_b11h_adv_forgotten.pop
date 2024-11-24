@@ -1352,6 +1352,9 @@ WaveSchedule
 				Delay 0.1
 				Param "
 					findTimerBot(null, false, heartbeaterCallbacks.buffBoss)
+					if(isHardmode) {
+						timer.AddCustomAttribute(`max health additive bonus`, -60, -1)
+					}
 				"
 			}
 			
@@ -1718,6 +1721,45 @@ WaveSchedule
 				EntFire(`door_red_*`, `Unlock`, null, -1)
 			"
 		}
+		
+		WaveSpawn {
+			Name "hardkill"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Where spawnbot_altmode
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Class Medic
+						Name "in hell we live"
+						Tag theendhard
+						Attributes IgnoreEnemies
+						Attributes IgnoreFlag
+					}
+				}
+			}
+		}
+		WaveSpawn {
+			Name "normalkill"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Where spawnbot_altmode
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Class Medic
+						Name "lament"
+						Tag theendnormal
+						Attributes IgnoreEnemies
+						Attributes IgnoreFlag
+					}
+				}
+			}
+		}
+		
+		
 		WaveSpawn
 		{
 			Name	support
@@ -1725,25 +1767,28 @@ WaveSchedule
 			MaxActive	8
 			SpawnCount	4
 			WaitBetweenSpawns	6
-			Support	1
+			WaitForAllDead "hardkill"
 			Where spawnbot_arena2
+			Support	1
 			RandomChoice
 			{
-				TFBot
-				{
-					Template	T_TFBot_Pathogen_Medic
-				}
-				TFBot
-				{
-					Template	T_TFBot_Pathogen_Scout
-				}
-				TFBot
-				{
-					Template	T_TFBot_Pathogen_Soldier
-				}
-				TFBot
-				{
-					Template	T_TFBot_Pathogen_Pyro
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Medic
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Scout
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Soldier
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Pyro
+					}
 				}
 			}
 		}
@@ -1755,10 +1800,16 @@ WaveSchedule
 			SpawnCount	1
 			WaitBeforeStarting	7
 			WaitBetweenSpawns	10
+			WaitForAllDead "hardkill"
 			Where spawnbot_arena2
-			TFBot
-			{
-				Template	T_TFBot_Dyspnea
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Dyspnea
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1771,6 +1822,7 @@ WaveSchedule
 			SpawnCount	1
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2
+			Support Limited
 			LastSpawnOutput
 			{
 				Target	wave_start_relay
@@ -1789,26 +1841,33 @@ WaveSchedule
 					EntFire(`spawnbot_arena2_disposable`, `Enable`)
 				"
 			}
-			TFBot
-			{
-				Template	T_TFBot_Sarcoma
-				Tag Sarcoma
-				//Attributes UseBossHealthBar
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Sarcoma
+						Tag Sarcoma
+					}
+				}
 			}
 		}
 		WaveSpawn
 		{
 			Name	4c
 			WaitForAllDead	4a
-			//TotalCurrency	200
 			TotalCount	5
 			MaxActive	5
 			SpawnCount	1
 			WaitBetweenSpawns	6
 			Where spawnbot_arena2_disposable
-			TFBot
-			{
-				Template	T_TFBot_Tachycardia
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Tachycardia
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1820,25 +1879,34 @@ WaveSchedule
 			SpawnCount	1
 			WaitBetweenSpawns	0.1
 			Where spawnbot_arena2
-			TFBot
-			{
-				Template	T_TFBot_Malignant_Tumor
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Malignant_Tumor
+					}
+				}
 			}
 		}
 		WaveSpawn
 		{
 			Name	4e
 			WaitForAllDead	4d
-			//TotalCurrency	100
 			TotalCount	1
 			MaxActive	1
 			SpawnCount	1
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2
-			TFBot
-			{
-				Template	T_TFBot_Pneumonia
-				Action Mobber
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Pneumonia
+						Action Mobber
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1851,9 +1919,14 @@ WaveSchedule
 			WaitBeforeStarting	10
 			WaitBetweenSpawns	7
 			Where spawnbot_arena2
-			TFBot
-			{
-				Template	T_TFBot_Cardiomyopathy
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Cardiomyopathy
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1866,15 +1939,18 @@ WaveSchedule
 			WaitBeforeStarting	7
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2
-			Squad
-			{
-				TFBot
+			Support Limited
+			RandomChoice {
+				Squad
 				{
-					Template	T_TFBot_Cardiomyopathy
-				}
-				TFBot
-				{
-					Template	T_TFBot_Pneumonia
+					TFBot
+					{
+						Template	T_TFBot_Cardiomyopathy
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pneumonia
+					}
 				}
 			}
 		}
@@ -1882,24 +1958,25 @@ WaveSchedule
 		{
 			Name	4h
 			WaitForAllDead	4f
-			//TotalCurrency	100
 			TotalCount	3
 			MaxActive	3
 			SpawnCount	1
 			WaitBetweenSpawns	12.5
 			Where spawnbot_arena2
+			Support Limited
 			FirstSpawnOutput
 			{
 				Target wave_start_relay
 				Action RunScriptCode
-				Param
-				"
-					EntFire(`spawnbot_arena2_disposable`, `Disable`)
-				"
+				Param "EntFire(`spawnbot_arena2_disposable`, `Disable`)"
 			}
-			TFBot
-			{
-				Template	T_TFBot_Dyspnea
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Dyspnea
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1909,22 +1986,22 @@ WaveSchedule
 			MaxActive	1
 			SpawnCount	1
 			WaitBeforeStarting	32
-			//WaitBetweenSpawns	10
 			Where spawnbot_arena2
+			Support Limited
 			DoneOutput
 			{
 				Target wave_start_relay
 				Action RunScriptCode
-				Param
-				"
-					EntFire(`spawnbot_arena2_disposable`, `Enable`)
-				"
+				Param "EntFire(`spawnbot_arena2_disposable`, `Enable`)"
 			}
-			TFBot
-			{
-				Template	T_TFBot_Sarcoma
-				Tag Sarcoma
-				//Attributes UseBossHealthBar
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Sarcoma
+						Tag Sarcoma
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1937,9 +2014,14 @@ WaveSchedule
 			WaitBeforeStarting	2
 			WaitBetweenSpawns	6
 			Where spawnbot_arena2
-			TFBot
-			{
-				Template	T_TFBot_Malignant_Tumor
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Malignant_Tumor
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1951,18 +2033,20 @@ WaveSchedule
 			SpawnCount	2
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2
+			Support Limited
 			DoneOutput
 			{
 				Target wave_start_relay
 				Action RunScriptCode
-				Param
-				"
-					EntFire(`spawnbot_arena2_disposable`, `Enable`)
-				"
+				Param "EntFire(`spawnbot_arena2_disposable`, `Enable`)"
 			}
-			TFBot
-			{
-				Template	T_TFBot_Cardiomyopathy
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Cardiomyopathy
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1974,9 +2058,324 @@ WaveSchedule
 			SpawnCount	3
 			WaitBetweenSpawns	10
 			Where spawnbot_arena2_disposable
-			TFBot
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Tachycardia
+					}
+				}
+			}
+		}
+		
+		
+		WaveSpawn
+		{
+			Name	support_hard
+			TotalCount 999
+			MaxActive	6
+			SpawnCount	3
+			WaitBetweenSpawns	6
+			WaitForAllDead "normalkill"
+			Where spawnbot_arena2
+			Support	1
+			RandomChoice
 			{
-				Template	T_TFBot_Tachycardia
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Medic
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Scout
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Soldier
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pathogen_Pyro
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4a
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	1
+			WaitBeforeStarting	7
+			WaitBetweenSpawns	7
+			WaitForAllDead "normalkill"
+			Where spawnbot_arena2
+			Support Limited
+			
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Dyspnea
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4b
+			WaitForAllSpawned	h_4a
+			TotalCurrency	300
+			TotalCount	1
+			MaxActive	1
+			SpawnCount	1
+            WaitBeforeStarting 3
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			Support Limited
+			LastSpawnOutput
+			{
+				Target	wave_start_relay
+				Action RunScriptCode
+				Param "EntFire(`spawnbot_arena2_disposable`, `Enable`, null, 25)"
+			}
+			DoneOutput
+			{
+				Target	wave_start_relay
+				Action RunScriptCode
+				Param "EntFire(`spawnbot_arena2_disposable`, `Enable`)"
+			}
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Sarcoma
+						Tag Sarcoma
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4c
+            WaitForAllSpawned	h_4a
+			TotalCount	5
+			MaxActive	5
+			SpawnCount	1
+            WaitBeforeStarting 5
+			WaitBetweenSpawns	4
+			Where spawnbot_arena2_disposable
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Tachycardia
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4d
+			WaitForAllSpawned	h_4c
+			TotalCount	20
+			MaxActive	20
+			SpawnCount	1
+			WaitBetweenSpawns	0.1
+			Where spawnbot_arena2
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Malignant_Tumor
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4e
+			WaitForAllSpawned	h_4d
+			TotalCount	1
+			MaxActive	1
+			SpawnCount	1
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Pneumonia
+						Action Mobber
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4f
+			WaitForAllSpawned	h_4e
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	1
+			WaitBeforeStarting	0
+			WaitBetweenSpawns	4
+			Where spawnbot_arena2
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Cardiomyopathy
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4g
+			WaitForAllSpawned	h_4f
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	2
+			WaitBeforeStarting	3
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			Support Limited
+			
+			RandomChoice {
+				Squad
+				{
+					TFBot
+					{
+						Template	T_TFBot_Cardiomyopathy
+					}
+					TFBot
+					{
+						Template	T_TFBot_Pneumonia
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4h
+			WaitForAllSpawned	h_4f
+			TotalCount	3
+			MaxActive	3
+			SpawnCount	1
+            WaitBeforeStarting 10
+			WaitBetweenSpawns	12.5
+			Where spawnbot_arena2
+			Support Limited
+			FirstSpawnOutput
+			{
+				Target wave_start_relay
+				Action RunScriptCode
+				Param "EntFire(`spawnbot_arena2_disposable`, `Disable`)"
+			}
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Dyspnea
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			WaitForAllDead	h_4f
+			TotalCount	1
+			MaxActive	1
+			SpawnCount	1
+			WaitBeforeStarting	32
+			Where spawnbot_arena2
+			Support Limited
+			DoneOutput
+			{
+				Target wave_start_relay
+				Action RunScriptCode
+				Param "EntFire(`spawnbot_arena2_disposable`, `Enable`)"
+			}
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Sarcoma
+						Tag Sarcoma
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4i
+			WaitForAllSpawned	h_4h
+			TotalCount	12
+			MaxActive	12
+			SpawnCount	4
+			WaitBeforeStarting	12
+			WaitBetweenSpawns	6
+			Where spawnbot_arena2
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Malignant_Tumor
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4j
+			WaitForAllSpawned	h_4h
+			TotalCount	2
+			MaxActive	2
+			SpawnCount	2
+            WaitBeforeStarting 11
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2
+			Support Limited
+			LastSpawnOutput
+			{
+				Target wave_start_relay
+				Action RunScriptCode
+				Param "EntFire(`spawnbot_arena2_disposable`, `Enable`, null, 16)"
+			}
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Cardiomyopathy
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name	h_4k
+			WaitForAllDead	h_4h
+			TotalCount	3
+			MaxActive	3
+			SpawnCount	3
+			WaitBetweenSpawns	10
+			Where spawnbot_arena2_disposable
+			Support Limited
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template	T_TFBot_Tachycardia
+					}
+				}
 			}
 		}
 	}

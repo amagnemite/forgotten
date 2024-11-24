@@ -7,8 +7,9 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 
 ::hardWaveCallbacks <- {
 	Cleanup = function() {
-		printl("icon callbacks checking hardmode " + isHardmode)
-		if(!isHardmode) {
+		local objRes = Entities.FindByClassname(null, "tf_objective_resource")
+		local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
+		if(wave == 1) {
 			delete ::hardWaveCallbacks
 		}
 	}

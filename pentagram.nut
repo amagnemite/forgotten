@@ -17,13 +17,13 @@ printl("hardmode is false")
             break
         case 1:
             EntFire("pentagram_particle_1", "start")
-            break
-        case 2:
-            EntFire("pentagram_particle_2", "start")
-			EntFire("pentagram_boom", "trigger")
+						EntFire("pentagram_boom", "trigger")
 			isHardmode = true
 			EntFire("logic_script", "FireUser1")
 			__CollectGameEventCallbacks(pentagramCallbacks)
+            break
+        case 2:
+            EntFire("pentagram_particle_2", "start")
             break
         case 3:
             EntFire("pentagram_particle_3", "start")
@@ -61,16 +61,17 @@ printl("hardmode is false")
     }
 }
 
-if("pentagramCallbacks" in getroottable()) {
-	pentagramCallbacks.Cleanup()
-}
 ::pentagramCallbacks <- {
 	Cleanup = function() {
-		delete ::pentagramCallbacks
+		local objRes = Entities.FindByClassname(null, "tf_objective_resource")
+		local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
+		if(wave == 1) {
+			delete ::pentagramCallbacks
+		}
     }
 
 	OnGameEvent_recalculate_holidays = function(_) {
-		if(GetRoundState() == 3 && !isHardmode) {
+		if(GetRoundState() == 3) {
 			Cleanup()
 		}
 	}
