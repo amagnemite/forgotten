@@ -896,6 +896,7 @@ WaveSchedule
 					Skill Expert
 				}
 				HardMode {
+					Tag pentagram_buffable
 					Skill Expert
 					Item "Conniver's Kunai"
 					Tag ignoredeath
@@ -1039,6 +1040,7 @@ WaveSchedule
 						Skill Expert
 						WeaponRestrictions PrimaryOnly
 						Attributes MiniBoss
+						Tag pentagram_buffable
 						Tag icon_soldier_spammer
 						Tag name_giant_rapid_fire_soldier
 						ItemAttributes {
@@ -1134,6 +1136,7 @@ WaveSchedule
 					}
 					HardMode { //super scout
 						Skill Easy
+						Tag pentagram_buffable
 						WeaponRestrictions MeleeOnly
 						Item "The Bolt Boy"
 						Item "The Candy Cane"
@@ -1534,6 +1537,7 @@ WaveSchedule
 						Skill Expert
 						WeaponRestrictions PrimaryOnly
 						Item "The Huntsman"
+						Tag pentagram_buffable
 						Attributes MiniBoss
 						//Tag icon
 						Tag name_giant_rapid_fire_bleed_huntsman
