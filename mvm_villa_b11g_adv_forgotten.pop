@@ -932,10 +932,13 @@ WaveSchedule
 			Param "
 				EntFire(`medonly_relay`, `trigger`)
 				EntFire(`bombpath_choose_relay`, `trigger`)
-				EntFire(`sniper_*`, `Enable`)
-				EntFire(`roof_sniper_*`, `Disable`)
 				EntFire(`pentagram_open`, `Trigger`)
 				IncludeScript(`pentagram.nut`, getroottable())
+				local script = SpawnEntityFromTable(`logic_script`, {
+					name = `hardmode_script`
+				}})
+				script.ValidateScriptScope()
+				IncludeScript(`hardmode.nut`, script.GetScriptScope())
 			"
 		}
 		StartWaveOutput
@@ -1944,16 +1947,29 @@ WaveSchedule
 			WaitBetweenSpawns 13
 			TotalCurrency 550
 			WaitForAllSpawned w5a
-			TFBot
+			TFBot //make sure this parses as intended
 			{
 				Template T_TFBot_Giant_Pyro
 				ClassIcon pyro_dragon_fury_swordstone
 				Name "Giant Dragon's Fury Pyro"
-				Skill Expert
-				WeaponRestrictions PrimaryOnly
-				Attributes MiniBoss
-				MaxVisionRange 800
-				Item "The Dragon's Fury"
+				EventChangeAttributes {
+					Default {
+						Skill Expert
+						WeaponRestrictions PrimaryOnly
+						Attributes MiniBoss
+						MaxVisionRange 800
+						Item "The Dragon's Fury"
+					}
+					HardMode {
+						Skill Expert
+						WeaponRestrictions PrimaryOnly
+						Attributes MiniBoss
+						Attributes AlwaysCrit
+						MaxVisionRange 800
+						Item "The Dragon's Fury"
+						Tag icon_alwayscrit
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -1990,6 +2006,14 @@ WaveSchedule
 			TFBot
 			{
 				Template T_TFBot_Giant_Heavyweapons
+				EventChangeAttributes {
+					Default {	
+					}
+					HardMode {
+						Attributes AlwaysCrit
+						Tag icon_alwayscrit
+					}
+				}
 			}
 		}
 		WaveSpawn
@@ -2787,11 +2811,51 @@ WaveSchedule
 			Target altmode_wave_finished_relay
 			Action Trigger
 		}
+			
+		WaveSpawn {
+			Name "hardkill"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Where spawnbot_altmode
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Class Medic
+						Name "death and all his friends"
+						Tag theendhard
+						Tag ignoredeath
+						Attributes IgnoreEnemies
+						Attributes IgnoreFlag
+					}
+				}
+			}
+		}
+		WaveSpawn {
+			Name "normalkill"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Where spawnbot_altmode
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Class Medic
+						Name "long live life"
+						Tag theendnormal
+						Tag ignoredeath
+						Attributes IgnoreEnemies
+						Attributes IgnoreFlag
+					}
+				}
+			}
+		}
 		
 		WaveSpawn {
 			TotalCount 1
 			MaxActive 1
 			SpawnCount 1
+			Where spawnbot
 			Where spawnbot_arena2
 			TFBot
 			{
@@ -2814,6 +2878,8 @@ WaveSchedule
 			MaxActive 17
 			SpawnCount 17
 			Where spawnbot_arena2
+			WaitForAllDead hardkill
+			WaitBeforeStarting 0.2
 			RandomSpawn 1
 			
 			LastSpawnOutput {
@@ -2834,6 +2900,7 @@ WaveSchedule
 			TotalCount 1
 			MaxActive 1
 			SpawnCount 1
+			WaitForAllDead hardkill
 			WaitBeforeStarting 45
 			WaitBetweenSpawnsAfterDeath 15
 			Support 1
@@ -2852,6 +2919,7 @@ WaveSchedule
 			TotalCount 1
 			MaxActive 1
 			SpawnCount 1
+			WaitForAllDead hardkill
 			WaitBeforeStarting 60
 			WaitBetweenSpawnsAfterDeath 11
 			Support 1
@@ -2872,6 +2940,7 @@ WaveSchedule
 			SpawnCount 1
 			WaitBeforeStarting 5
 			Support 1
+			WaitForAllDead hardkill
 			Where spawnbot_altmode
 			RandomChoice
 			{
@@ -2884,5 +2953,262 @@ WaveSchedule
 				}
 			}
 		}
+		
+		WaveSpawn {
+			MaxActive 4
+			SpawnCount 1
+			WaitBetweenSpawns 1
+			WaitForAllDead "normalkill"
+			Support 1
+			Where spawnbot_invasion
+		
+			TFBot
+			{
+				Class Heavy
+				Name "Malignant Tumor"
+				ClassIcon malignant_tumor_bp
+				Tag Malignant_Tumor
+				Tag ignoredeath
+				Skill Hard
+				Scale 0.6
+				Health 65
+				WeaponRestrictions MeleeOnly 
+				Item "The Bunsen Brave"
+				ItemAttributes
+				{
+					ItemName "The Bunsen Brave"
+					"set item tint RGB" 13328029
+				}
+				CharacterAttributes
+				{
+					"damage bonus" 0.2
+					"move speed bonus"	1.5
+				}
+			}
+		}
+		
+		WaveSpawn {
+			Name "w7a"
+			TotalCount 16
+			MaxActive 6
+			SpawnCount 2
+			WaitForAllDead normalkill
+			WaitBeforeStarting 0.2
+			WaitBetweenSpawns 12
+			Where spawnbot_invasion
+			RandomSpawn 1
+			Support Limited
+			
+			TFBot {
+				Class Soldier
+				Name "Dyspnea"
+				ClassIcon dyspnea_bp
+				Health 4200
+				Tag Dyspnea
+				Skill Expert
+				WeaponRestrictions PrimaryOnly
+				Attributes MiniBoss
+				Attributes HoldFireUntilFullReload
+				Attributes AlwaysCrit
+				Item "Shortness Of Breath"
+				ItemAttributes
+				{
+					ItemName "Shortness Of Breath"
+					"set item tint RGB" 13328029
+				}
+				ItemAttributes
+				{
+					ItemName "TF_WEAPON_ROCKETLAUNCHER"
+					"clip size upgrade atomic" 16.0
+					"add cond on hit" 12
+					"add cond on hit duration" 3.5
+					"faster reload rate" 0.2
+					"fire rate bonus" 0.2
+					"projectile spread angle penalty" 7
+					"damage bonus" 0.75 //changed from .125
+					"projectile speed increased" 0.6
+					"projectile trail particle" dyspnea_rockettrail
+				}
+				CharacterAttributes
+				{
+					"health regen"	40
+					"move speed bonus"	0.5
+					"damage force reduction" 0.4
+					"airblast vulnerability multiplier" 0.4
+					"override footstep sound set" 3
+					"airblast vertical vulnerability multiplier" 0.1			
+				}
+			}
+		}
+		WaveSpawn { //take stats from buffed ver
+			Name "w7b"
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 3
+			WaitBetweenSpawns 8
+			WaitForAllDead normalkill
+			WaitBeforeStarting 0.2
+			Where spawnbot
+			Support Limited
+			
+			TFBot
+			{
+				Template feverFinale
+			}
+		}
+		WaveSpawn { //make sure this doesn't do odd things on normal
+			WaitForAllDead "normalkill"
+			TotalCount 1
+			WaitBeforeStarting 20
+			TotalCurrency 0
+			Support Limited
+			
+			Tank {
+				Name tankboss
+				Health 15000
+				StartingPathTrackNode path_0
+				Skin 1
+				OnBombDroppedOutput
+				{
+					Target bomb_deploy_relay
+					Action Trigger
+				}
+				OnKilledOutput {
+					//decrement tank icon here
+				}
+			}
+		}
+		WaveSpawn { //take stats from buffed ver
+			Name "w7c"
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 3
+			WaitBeforeStarting 8
+			WaitForAllSpawned "w7b"
+			Where spawnbot
+			Support Limited
+			
+			TFBot
+			{
+				Template feverFinale
+			}
+		}
+		WaveSpawn {
+			Name "w7c"
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 2
+			WaitBetweenSpawns 12
+			WaitForAllSpawned "w7b"
+			WaitBeforeStarting 13
+			Where spawnbot_invasion
+			Support Limited
+			
+			TFBot //based on nukesalot
+			{
+				Template cardioFinale
+			}
+		}
+		WaveSpawn { 
+			Name "w7c"
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 25
+			WaitBetweenSpawns 10
+			WaitForAllSpawned "w7b"
+			Where spawnbot
+			Support Limited
+		
+			TFBot
+			{
+				Template tachyFinale
+			}
+		}
+		WaveSpawn {
+			Name "w7d"
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 3
+			WaitForAllSpawned "w7c"
+			WaitBeforeStarting 10
+			Where spawnbo
+			Support Limited
+			
+			TFBot
+			{
+				Template cardioFinale
+			}
+		}
+		WaveSpawn { 
+			Name "w7e"
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 15
+			WaitBetweenSpawns 8 //pairs are going to take 5 years to walk out
+			WaitForAllSpawned "w7d"
+			Where spawnbot
+			Support Limited
+			
+			Template gpair
+		}
+		WaveSpawn { 
+			Name "w7e"
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 3
+			WaitBeforeStarting 25
+			WaitForAllSpawned "w7d"
+			Where spawnbot
+			Support Limited
+			
+			TFBot {
+				Template tachyFinale
+			}
+		}
+		WaveSpawn {
+			Name "w7f"
+			TotalCount 3
+			MaxActive 3
+			SpawnCount 3
+			WaitBeforeStarting 20
+			WaitForAllSpawned "w7e"
+			Where spawnbot_invasion
+			Support Limited
+			
+			TFBot {
+				Template cardioFinale
+			}
+		}
+		WaveSpawn { 
+			Name "w7f"
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 25
+			WaitForAllSpawned "w7e"
+			Where spawnbot
+			Support Limited
+			
+			TFBot {
+				Template tachyFinale
+			}
+		}
+		WaveSpawn { 
+			Name "w7f"
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 9
+			WaitBetweenSpawns 6 //pairs are going to take 5 years to walk out
+			WaitForAllSpawned "w7d"
+			Where spawnbot
+			Support Limited
+			
+			Template gpair
+		}
+		
+		
 	}
 }

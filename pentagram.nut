@@ -1,11 +1,12 @@
 ::playersInPentagram <- 0
-::activePentagram <- false
 ::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
     particle_name = "pentagram_enemy"
     attachment_type = 1
     spawnflags = 64
 })
 
+::isHardmode <- false //this will be overwritten every time script is loaded, which will clear state
+printl("hardmode is false")
 
 ::IncrementPentagram <- function() {
     playersInPentagram++
@@ -26,10 +27,11 @@
             break
         case 5:
             EntFire("pentagram_boom", "trigger")
-            ActivatePentagram()
+			isHardmode = true
+			EntFire("logic_script", "FireUser1")
             break
         default:
-        break
+			break
     }
 }
 
@@ -49,12 +51,8 @@
             EntFire("pentagram_particle_4", "stop")
             break
         default:
-        break
+			break
     }
-}
-
-::ActivatePentagram <- function() {
-    activePentagram = true
 }
 
 ::pentagramCallbacks <- {
