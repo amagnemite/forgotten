@@ -1,14 +1,15 @@
 ::objRes <- Entities.FindByClassname(null, "tf_objective_resource")
+::difficultyNamespace <- null
 
 InputFireUser1 <- function() { //this essentially only fires once, then the callbacks should do everything else
 	__CollectGameEventCallbacks(hardCallbacks)
 	EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
 	hardCallbacks.updateHardModeWavebar(1)
+	difficultyNamespace = hardCallbacks
 	return true
 }
 
 ::normalNamespace <- {
-
 	finaleWaveInit = function() {
 		EntFire("spawnbot_roof", "Disable")
 		EntFire("spawnbot", "Disable")
@@ -186,7 +187,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 
 ::winCondCallbacks <- {
 	livingBot = null
-	botCount = 37
+	botCount = null
 
 	Cleanup = function() {
 		delete ::winCondCallbacks
@@ -230,6 +231,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 	}
 	
 	OnGameEvent_player_death = function(params) {
+		if(botCount == null) return //don't do anything if botcount isn't set
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
 		if(!IsPlayerABot(player)) return

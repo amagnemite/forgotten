@@ -313,7 +313,7 @@ setIcon <- function(icon) {
 	NetProps.SetPropString(self, "m_PlayerClass.m_iszClassIcon", icon)
 }
 
-//START OF PHASE 3 STUFF
+//START OF PHASE 2 STUFF
 changePhase <- function() {
 	phaseTimer = 0
 	pausePhaseTimerActions = false
@@ -703,8 +703,6 @@ local randName = randomNames[RandomInt(0, randomNames.len() - 1)]
 SetFakeClientConVarValue(self, "name", randName)
 self.SetCustomModelWithClassAnimations("models/bots/forgotten/disease_bot_medic_ukgr.mdl")
 self.AddCondEx((TF_COND_PREVENT_DEATH) , -1, null)
-thinkTable.offensiveThink <- offensiveThink
-thinkTable.phase1skinBuffThink <- phase1skinBuffThink
 mainThink <- function() { //this is mostly to make the customweapons think works
 	if(NetProps.GetPropInt(self, "m_lifeState") != 0) {
 		cleanup()
@@ -722,5 +720,3 @@ mainThink <- function() { //this is mostly to make the customweapons think works
 	}
 	return -1
 }
-__CollectGameEventCallbacks(phase1Callbacks)
-AddThinkToEnt(self, "mainThink")

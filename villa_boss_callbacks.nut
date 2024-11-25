@@ -23,6 +23,9 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 
 ::bossCallbacks <- {
 	ukgr = null
+	PHASE1 = 1
+	PHASE2 = 2
+	EXPLODING = 3
 
 	Cleanup = function() {
 		delete ::bossCallbacks
@@ -49,8 +52,22 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 	checkTags = function() {
 		if(!activator.HasBotTag("UKGR")) return
 		ukgr = activator
-		activator.ValidateScriptScope()
-		IncludeScript("villa_boss.nut", activator.GetScriptScope())
+		ukgr.ValidateScriptScope()
+		local scope = ukgr.GetScriptScope()
+		IncludeScript("villa_boss.nut", ukgr.GetScriptScope())
+		if(isHardmode) {
+			scope.mainPhase = PHASE2
+			ukgr.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
+			ukgr.AddCustomAttribute("max health additive bonus", 40000,  -1)
+			ukgr.SetHealth(ukgr.GetMaxHealth())
+			scope.thinkTable.finaleThink <- scope.finaleThink
+		}
+		else {
+			scope.thinkTable.offensiveThink <- scope.offensiveThink
+			scope.thinkTable.phase1skinBuffThink <- scope.phase1skinBuffThink
+			__CollectGameEventCallbacks(phase1Callbacks)
+		}
+		AddThinkToEnt(ukgr, "mainThink")
 	}
 
 	cleanupPhase1Support = function() { //if some of the phase 1 soldiers are still floating around
@@ -66,12 +83,12 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 	OnScriptHook_OnTakeDamage = function(params) { //may just put this in a separate namespace to throw out early
 		if(params.const_entity != ukgr) return
 		local scope = ukgr.GetScriptScope()
-		if(scope.mainPhase == 3) return
+		if(scope.mainPhase == EXPLODING) return
 		if(ukgr.GetHealth() <= params.damage) {
 			scope.mainPhase++
 
 			switch(scope.mainPhase) {
-				case 2:
+				case PHASE2:
 					foreach(player, datatable in losecond.players) {
 						if(player.InCond(TF_COND_HALLOWEEN_GHOST_MODE)) {
 							player.ForceRespawn()
@@ -98,9 +115,8 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					ukgr.RemoveCondEx(TF_COND_CRITBOOSTED_USER_BUFF, true)
 					ukgr.RemoveCondEx(TF_COND_HALLOWEEN_SPEED_BOOST, true)
 					ukgr.RemoveBotAttribute(HOLD_FIRE_UNTIL_FULL_RELOAD)
-				// case 3:
+					
 					local spawnbotOrigin = Entities.FindByName(null, "spawnbot_boss").GetOrigin()
-					//local playerTeleportLocation = Vector(-2252, 2209, 579)
 
 					EntFire("teleport_relay", "CancelPending")
 					EntFire("teleport_player_to_arena" "AddOutput", "target roof_player_destination")
@@ -127,20 +143,23 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 							1, null, null)
 					}
 					break
-				case 3:
+				case EXPLODING:
 					DispatchParticleEffect("ukgr_death_explosion", ukgr.GetCenter(), Vector())
 					ukgr.AddCustomAttribute("dmg taken increased", 0.00001, -1)
 					ukgr.AddCustomAttribute("move speed penalty", 0.000001, -1)
 					ukgr.AddCustomAttribute("increased jump height", 0.000001, -1)
 					ukgr.AddBotAttribute(SUPPRESS_FIRE)
 					//prevent phase from advancing or smth
-					for(local i = 1; i <= MaxPlayers ; i++) {
-						local player = PlayerInstanceFromIndex(i)
-						if(player == null) continue
-						if(IsPlayerABot(player)) continue
+					if(!isHardmode) {
+						for(local i = 1; i <= MaxPlayers ; i++) {
+							local player = PlayerInstanceFromIndex(i)
+							if(player == null) continue
+							if(IsPlayerABot(player)) continue
 
-						player.AddCustomAttribute("dmg taken increased", -0.01, -1)
+							player.AddCustomAttribute("dmg taken increased", -0.01, -1)
+						}
 					}
+					
 					scope.isExploding = true
 					ukgr.RemoveCond(TF_COND_PREVENT_DEATH)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`vo/mvm/norm/medic_mvm_paincrticialdeath03.mp3`)", 0, ukgr, null)
@@ -192,10 +211,3 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
     }
 }
 __CollectGameEventCallbacks(bossCallbacks)
-
-::reduceToOneHP <- function() {
-	if(ukgr == null) return
-	if(IsPlayerABot(self)) return
-	if(self.GetHealth() <= 5) return
-	self.SetHealth(1)
-}
