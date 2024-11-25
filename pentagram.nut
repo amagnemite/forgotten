@@ -1,4 +1,3 @@
-::playersInPentagram <- 0
 if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.IsValid()) {
 	::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
 		particle_name = "pentagram_enemy"
@@ -6,9 +5,8 @@ if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.
 		spawnflags = 64
 	})
 }
-
+::playersInPentagram <- 0
 ::isHardmode <- false //this will be overwritten every time script is loaded, which will clear state
-printl("hardmode is false")
 
 ::IncrementPentagram <- function() {
     playersInPentagram++

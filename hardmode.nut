@@ -1,92 +1,29 @@
-::objRes = Entities.FindByClassname(null, "tf_objective_resource")
-
-::updateHardModeWavebar <- function() {
-	if(!isHardmode) return
-	local waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-	switch(waveNumber) {
-		case 1:
-			//Index 2 Gsoldier to soldier_spammer
-			//Index 3 Samurai to crits (16 crits + 1 main wave)
-			//Index 5 Gscout to scout_fast
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "soldier_spammer", 2)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 17, 3)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "scout_fast", 5)
-			break
-		case 2:
-			//Index 2 to spies, active support (2)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "spy", 2)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 2, 2)
-			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", true, 2)
-			break
-		case 3:
-			//Index 1 burst demos to crits (16 crits + 1 main wave)
-			//Index 4 medics to medic_uber_shield_lite
-			//Index 7 gbows to sniper_bow_multi_bleed
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 17, 1)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "medic_uber_shield_lite", 4)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "sniper_bow_multi_bleed", 7)
-			break
-		case 4:
-			//Index 0 to support pathogen
-			//Index 1 to 5 dyspnea
-			//Index 2 to 2 sarcoma
-			//Index 3 to 8 tachycardia
-			//Index 4 to 32 tumors
-			//Index 5 to 2 pneumonia
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "blackdead", 0)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 2, 0)
-			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", true, 0)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "dyspnea_bp", 1)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 1, 1)
-			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", true, 1)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "sarcoma_bp", 2)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 1, 2)
-			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", true, 2)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "tachycardia_bp", 3)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 1, 3)
-			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", true, 3)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "malignant_tumor_bp", 4)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 1, 4)
-			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", true, 4)
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", "pneumonia_bp", 5)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 1, 5)
-			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", true, 5)
-			break
-		case 5:
-			//Index 3 furies to crits (16 crits + 1 main wave)
-			//Index 5 gheavies to crits (16 crits + 1 main wave)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 17, 3)
-			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", 17, 5)
-			break
-		default:
-			break	
-	}
-
-	//Add pentagram icon
-	NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames2", "pentagram", 11)
-	NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassFlags2", 2, 11)
-	NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
-}
+::objRes <- Entities.FindByClassname(null, "tf_objective_resource")
 
 InputFireUser1 <- function() { //this essentially only fires once, then the callbacks should do everything else
 	__CollectGameEventCallbacks(hardWaveCallbacks)
 	EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
-	//update w1 icons here
+	hardWaveCallbacks.updateHardModeWavebar(1)
 	return true
 }
 
 ::hardWaveCallbacks <- {
 	Cleanup = function() {
-		local objRes = Entities.FindByClassname(null, "tf_objective_resource")
-		local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-		if(wave == 1) {
-			delete ::hardWaveCallbacks
-		}
+		delete ::hardWaveCallbacks
 	}
 	
 	OnGameEvent_recalculate_holidays = function(_) {
 		if(GetRoundState() == 3) {
-			Cleanup()
+			local objRes = Entities.FindByClassname(null, "tf_objective_resource")
+			local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
+		
+			if(wave == 1) {
+				Cleanup()
+			}
+			else {
+				EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
+				updateHardModeWavebar(wave)
+			}
 		}
 	}
 	
@@ -125,7 +62,85 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		}
 	}
 	
-	//do icon stuff here
+	updateHardModeWavebar = function(waveNumber = null) {
+		if(!isHardmode) return
+		if(waveNumber == null) {
+			waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
+		}
+		local function setIcon(name, index) {
+			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, index)
+		}
+		local function setFlag(flag, index) {
+			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", flag, index)
+		}
+		local function setActive(isActive, index) {
+			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", isActive, index)
+		}
+		
+		switch(waveNumber) {
+			case 1:
+				//Index 2 Gsoldier to soldier_spammer
+				//Index 3 Samurai to crits (16 crits + 1 main wave)
+				//Index 5 Gscout to scout_fast
+				setIcon("soldier_spammer", 2)
+				setFlag(17, 3)
+				setIcon("scout_fast", 5)
+				break
+			case 2:
+				//Index 2 to spies, active support (2)
+				setIcon("spy", 2)
+				setFlag(2, 2)
+				setActive(true, 2)
+				break
+			case 3:
+				//Index 1 burst demos to crits (16 crits + 1 main wave)
+				//Index 4 medics to medic_uber_shield_lite
+				//Index 7 gbows to sniper_bow_multi_bleed
+				setFlag(17, 1)
+				setIcon("medic_uber_shield_lite", 4)
+				setIcon("sniper_bow_multi_bleed", 7)
+				break
+			case 4:
+				//Index 0 to support pathogen
+				//Index 1 to 5 dyspnea
+				//Index 2 to 2 sarcoma
+				//Index 3 to 8 tachycardia
+				//Index 4 to 32 tumors
+				//Index 5 to 2 pneumonia
+				setIcon("blackdead", 0)
+				setFlag(2, 0)
+				setActive(true, 0)
+				setIcon("dyspnea_bp", 1)
+				setFlag(1, 1)
+				setActive(true, 1)
+				setIcon("sarcoma_bp", 2)
+				setFlag(1, 2)
+				setActive(true, 2)
+				setIcon("tachycardia_bp", 3)
+				setFlag(1, 3)
+				setActive(true, 3)
+				setIcon("malignant_tumor_bp", 4)
+				setFlag(1, 4)
+				setActive(true, 4)
+				setIcon("pneumonia_bp", 5)
+				setFlag(1, 5)
+				setActive(true, 5)
+				break
+			case 5:
+				//Index 3 furies to crits (16 crits + 1 main wave)
+				//Index 5 gheavies to crits (16 crits + 1 main wave)
+				setFlag(17, 3)
+				setFlag(17, 5)
+				break
+			default:
+				break	
+		}
+
+		//Add pentagram icon
+		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames2", "pentagram", 11)
+		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassFlags2", 2, 11)
+		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
+	}
 }
 
 ::finaleCallbacks <- {

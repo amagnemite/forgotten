@@ -1301,7 +1301,134 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Name "normalkill"
+			Where spawnbot_altmode
+			Support Limited
+			
+			RandomChoice {
+				RandomChoice {
+					Class Medic
+					Name "chill"
+					Attributes IgnoreFlag
+					Attributes IgnoreEnemies
+				}
+			}
+		}
+		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Name "hardkill"
+			Where spawnbot_altmode
+			Support Limited
+			
+			RandomChoice {
+				RandomChoice {
+					Class Medic
+					Name "fever"
+					Attributes IgnoreFlag
+					Attributes IgnoreEnemies
+				}
+			}
+		}
+		
+		WaveSpawn {
+			WaitBeforeStarting 40
+			WaitForAllDead "normalkill"
+			Support Limited
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+				"
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 50
+			WaitForAllDead "normalkill"
+			Support Limited
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+					ClientPrint(null, 3, `\x07FF0000TIME WARNING`)
+				"
+			}
+		}
+		WaveSpawn {
+			WaitBeforeStarting 58
+			WaitForAllDead "normalkill"
+			Support Limited
+			FirstSpawnOutput {
+				Target wave_start_relay
+				Action RunScriptCode
+				Param
+				"
+					ClientPrint(null, 3, `\x07FF0000TIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNINGTIMEWARNING`)
+				"
+			}
+		}
+		WaveSpawn {
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 0.2
+			WaitForAllDead "normalkill"
+			Support limited
+			Where spawnbot_altmode
+			
+			RandomChoice { //this one just idles in spawn
+				RandomChoice {
+					Class Spy
+					Attributes IgnoreEnemies
+				}
+			}
+		}
+		WaveSpawn {
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 0.2
+			WaitBetweenSpawns 5
+			WaitForAllDead "normalkill"
+			Support 1
+			Where spawnbot_roof
+			
+			RandomChoice {
+				RandomChoice {
+					Class Spy
+					Name Spy
+				}
+			}
+		}
+		WaveSpawn {
+			MaxActive 6
+			SpawnCount 6
+			WaitBeforeStarting 13
+			WaitBetweenSpawns 13
+			WaitForAllDead "normalkill"
+			Support 1
+			Where spawnbot_roof
+			
+			RandomChoice {
+				RandomChoice {
+					Class Spy
+					Name Spy
+				}
+			}
+		}
+		
+		WaveSpawn {
 			WaitBeforeStarting 70
+			WaitForAllDead "hardkill"
 			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
@@ -1316,6 +1443,7 @@ WaveSchedule
 		}
 		WaveSpawn {
 			WaitBeforeStarting 80
+			WaitForAllDead "hardkill"
 			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
@@ -1330,6 +1458,7 @@ WaveSchedule
 		}
 		WaveSpawn {
 			WaitBeforeStarting 88
+			WaitForAllDead "hardkill"
 			Support Limited
 			FirstSpawnOutput {
 				Target wave_start_relay
@@ -1340,6 +1469,9 @@ WaveSchedule
 				"
 			}
 		}
+		
+		
+		
 		WaveSpawn {
 			TotalCount 1
 			MaxActive 1
@@ -1349,7 +1481,7 @@ WaveSchedule
 			Where spawnbot_altmode
 			RandomChoice {
 				RandomChoice {
-				TFBot {
+					TFBot {
 						Class Medic
 						Name "free money"
 						Attributes IgnoreFlag
@@ -1373,7 +1505,7 @@ WaveSchedule
 				Param "
 					findTimerBot(null, false, heartbeaterCallbacks.buffBoss)
 					if(isHardmode) {
-						timer.AddCustomAttribute(`max health additive bonus`, -60, -1)
+						timer.AddCustomAttribute(`max health additive bonus`, -30, -1)
 					}
 				"
 			}
