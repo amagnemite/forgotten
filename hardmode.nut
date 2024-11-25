@@ -1,15 +1,38 @@
 ::objRes <- Entities.FindByClassname(null, "tf_objective_resource")
 
 InputFireUser1 <- function() { //this essentially only fires once, then the callbacks should do everything else
-	__CollectGameEventCallbacks(hardWaveCallbacks)
+	__CollectGameEventCallbacks(hardCallbacks)
 	EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
-	hardWaveCallbacks.updateHardModeWavebar(1)
+	hardCallbacks.updateHardModeWavebar(1)
 	return true
 }
 
-::hardWaveCallbacks <- {
+::normalNamespace <- {
+
+	finaleWaveInit = function() {
+		EntFire("spawnbot_roof", "Disable")
+		EntFire("spawnbot", "Disable")
+		EntFire("spawnbot_invasion", "Disable")
+		EntFire("spawnbot_right", "Disable")
+		EntFire("altmode_init_reviveonly_relay", "Trigger")
+	}
+	
+	finaleWaveStart = function() {
+		const BOTCOUNT = 18
+		__CollectGameEventCallbacks(winCondCallbacks)
+		winCondCallbacks.setBotCount(BOTCOUNT)
+		IncludeScript("diseasebots.nut", getroottable())
+		IncludeScript("villa_boss_callbacks.nut", getroottable())
+
+		EntFire("altmode_arena2_wave_start_reviveonly_relay", "Trigger")
+		EntFire("sniper_*", "Disable")
+		EntFire("roof_sniper_*", "Enable")
+	}
+}
+
+::hardCallbacks <- {
 	Cleanup = function() {
-		delete ::hardWaveCallbacks
+		delete ::hardCallbacks
 	}
 	
 	OnGameEvent_recalculate_holidays = function(_) {
@@ -32,7 +55,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		if(player == null) return
 		if(!IsPlayerABot(player)) return
 		
-		EntFireByHandle(player, "hardWaveCallbacks.checkTags()", null, -1, player, null)
+		EntFireByHandle(player, "hardCallbacks.checkTags()", null, -1, player, null)
 	}
 	
 	checkTags = function() {
@@ -141,16 +164,32 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassFlags2", 2, 11)
 		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
 	}
+	
+	finaleWaveInit = function() {
+		EntFire("spawnbot_roof", "Disable")
+		EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
+		EntFire("spawnbot_arena2", "Disable")
+		EntFire("intel", "Enable", null, 0.5)
+		EntFire("bombpath_choose_relay", "Trigger")
+	}
+
+	finaleWaveStart = function() {
+		const BOTCOUNT = 37
+		__CollectGameEventCallbacks(winCondCallbacks)
+		winCondCallbacks.setBotCount(BOTCOUNT)
+		IncludeScript("diseasebots.nut", getroottable())
+		IncludeScript("villa_boss_callbacks.nut", getroottable())
+
+		EntFire("wave_start_relay", "Trigger")
+	}
 }
 
-::finaleCallbacks <- {
-	normalKill = null
-	hardKill = null
-	//TOTALCOUNT = 37
+::winCondCallbacks <- {
+	livingBot = null
 	botCount = 37
 
 	Cleanup = function() {
-		delete ::finaleCallbacks
+		delete ::winCondCallbacks
 	}
 
 	OnGameEvent_recalculate_holidays = function(_) {
@@ -168,20 +207,24 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		if(player == null) return
 		if(!IsPlayerABot(player)) return
 		
-		EntFireByHandle(player, "finaleCallbacks.checkTags()", null, -1, player, null)
+		EntFireByHandle(player, "winCondCallbacks.checkTags()", null, -1, player, null)
 	}
 	
 	checkTags = function() {
 		if(activator.HasBotTag("theendnormal")) {
-			normalKill = activator
 			if(hardmode) {
-				normalKill.TakeDamage(1000, 0, null)
+				activator.TakeDamage(1000, 0, null)
+			}
+			else {
+				livingBot = activator
 			}
 		}
 		else if(activator.HasBotTag("theendhard")) {
-			hardKill = activator
 			if(!hardmode) {
-				hardKill.TakeDamage(1000, 0, null)
+				activator.TakeDamage(1000, 0, null)
+			}
+			else {
+				livingBot = activator
 			}
 		}
 	}
@@ -192,50 +235,14 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		if(!IsPlayerABot(player)) return
 		if(player.HasBotTag("ignoredeath")) return
 		
-		if(player.HasBotTag("ukgr") && !hardmode) {
-			normalKill.TakeDamage(1000, 0, null)
-			return //the end
-		}
-		
 		botCount--
 		
 		if(botCount == 0) {
-			hardKill.TakeDamage(1000, 0, null)
+			livingBot.TakeDamage(1000, 0, null)
 		}
 	}
-}
-
-finaleWaveInit <- function() {
-	EntFire("spawnbot_roof", "Disable")
-
-	if(hardmode) {
-		EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
-		EntFire("spawnbot_arena2", "Disable")
-		
-		EntFire("intel", "Enable", null, 0.5)
-		
-		EntFire("bombpath_choose_relay", "Trigger")
-	}
-	else {
-		EntFire("spawnbot", "Disable")
-		EntFire("spawnbot_invasion", "Disable")
-		EntFire("spawnbot_right", "Disable")
-		
-		EntFire("altmode_init_reviveonly_relay", "Trigger")
-	}
-}
-
-finaleWaveStart <- function() {
-	__CollectGameEventCallbacks(finaleCallbacks)
-	IncludeScript("diseasebots.nut", getroottable())
-	IncludeScript("villa_boss_callbacks.nut", getroottable())
-
-	if(hardmode) {
-		EntFire("wave_start_relay", "Trigger")
-	}
-	else {
-		EntFire("altmode_arena2_wave_start_reviveonly_relay", "Trigger")
-		EntFire("sniper_*", "Disable")
-		EntFire("roof_sniper_*", "Enable")
+	
+	setBotCount = function(count) {
+		botCount = count
 	}
 }
