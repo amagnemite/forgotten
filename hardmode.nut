@@ -3,9 +3,9 @@
 InputFireUser1 <- function() { //this essentially only fires once, then the callbacks should do everything else
 	__CollectGameEventCallbacks(hardCallbacks)
 	EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
-	hardCallbacks.updateHardModeWavebar(1)
+	hardCallbacks.updateWavebar()
 	difficultyNamespace = hardCallbacks
-	objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) forget", null, null)
+	objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) under the bonesaw", null, null)
 	return true
 }
 
@@ -16,6 +16,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		EntFire("spawnbot_invasion", "Disable")
 		EntFire("spawnbot_right", "Disable")
 		EntFire("altmode_init_reviveonly_relay", "Trigger")
+		updateWavebar()
 	}
 	
 	finaleWaveStart = function() {
@@ -31,9 +32,8 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 	}
 	
 	//icon stuff
-	if(waveNumber == null) {
-			waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-		}
+	updateWavebar = function() {
+		local waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
 		local function setIcon(name, index) {
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, index)
 		}
@@ -85,26 +85,31 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setCount(5, 6)
 				break
 			case 7:
-				setIcon("ukgr", 0)
-				setFlag(9, 0)
-				setActive(true, 0)
-				setCount(1, 0)
-				setIcon("scout", 1)
-				setFlag(18, 1)
+				//setIcon("ukgr", 0)
+				//setFlag(9, 0)
+				//setActive(true, 0)
+				//setCount(1, 0)
+				setIcon("blackdead", 1)
+				setFlag(1, 1)
 				setActive(true, 1)
-				setCount(1, 1)
-				setIcon("sniper_sydney", 2)
-				setFlag(20, 2)
+				setCount(17, 1)
+				setIcon("scout", 2)
+				setFlag(18, 2)
 				setActive(true, 2)
 				setCount(1, 2)
-				setIcon("spy", 3)
+				setIcon("sniper_sydney", 3)
 				setFlag(20, 3)
 				setActive(true, 3)
 				setCount(1, 3)
+				setIcon("spy", 4)
+				setFlag(20, 4)
+				setActive(true, 4)
+				setCount(1, 4)
 				break
 			default:
 				break
 		}
+	}
 }
 ::difficultyNamespace <- normalNamespace
 
@@ -122,8 +127,9 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				Cleanup()
 			}
 			else {
+				objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) under the bonesaw", null, null)
 				EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
-				updateHardModeWavebar(wave)
+				updateWavebar()
 			}
 		}
 	}
@@ -133,7 +139,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		if(player == null) return
 		if(!IsPlayerABot(player)) return
 		
-		EntFireByHandle(player, "hardCallbacks.checkTags()", null, -1, player, null)
+		EntFireByHandle(player, "RunScriptFile", "hardCallbacks.checkTags()", -1, player, null)
 	}
 	
 	checkTags = function() {
@@ -163,11 +169,8 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		}
 	}
 	
-	updateHardModeWavebar = function(waveNumber = null) {
-		if(!isHardmode) return
-		if(waveNumber == null) {
-			waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-		}
+	updateWavebar = function() {
+		local waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
 		local function setIcon(name, index) {
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, index)
 		}
@@ -250,14 +253,16 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setFlag(25, 5)
 				break
 			case 7:
-				setIcon("ukgr_base", 0)
-				setFlag(9, 0)
-				setActive(true, 0)
-				setCount(1, 0)
+				//setIcon("ukgr", 0)
+				//setFlag(9, 0)
+				//setActive(true, 0)
+				//setCount(1, 0)
+				/*
 				setIcon("dyspnea_bp", 1)
 				setFlag(25, 1)
 				setActive(true, 1)
 				setCount(16, 1)
+				
 				setIcon("hemorrhagic_fever_bp", 2)
 				setFlag(25, 2)
 				setActive(true, 2)
@@ -298,6 +303,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setFlag(4, 11)
 				setActive(true, 11)
 				setCount(1, 11)
+				*/
 				break
 			default:
 				break	
@@ -315,6 +321,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		EntFire("spawnbot_arena2", "Disable")
 		EntFire("intel", "Enable", null, 0.5)
 		EntFire("bombpath_choose_relay", "Trigger")
+		updateWavebar()
 	}
 
 	finaleWaveStart = function() {

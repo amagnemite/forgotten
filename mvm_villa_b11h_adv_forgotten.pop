@@ -31,6 +31,15 @@ WaveSchedule
 	PrecacheGeneric "materials/hud/leaderboard_class_ukgr_cardiac.vtf"
 	PrecacheGeneric "materials/hud/leaderboard_class_ukgr_cardiac.vmt"
 	
+	PrecacheGeneric "materials/hud/leaderboard_class_pentagram.vmt"
+	PrecacheGeneric "materials/hud/leaderboard_class_pentagram.vtf"
+	PrecacheGeneric "materials/hud/leaderboard_class_medic_uber_shield_lite.vmt"
+	PrecacheGeneric "materials/hud/leaderboard_class_medic_uber_shield_lite.vtf"
+	PrecacheGeneric "materials/hud/leaderboard_class_sniper_bow_multi_bleed.vmt"
+	PrecacheGeneric "materials/hud/leaderboard_class_sniper_bow_multi_bleed.vtf"
+	PrecacheGeneric "materials/hud/leaderboard_class_blackdead.vmt"
+	PrecacheGeneric "materials/hud/leaderboard_class_blackdead.vtf"
+	
 	ExtendedUpgrades {
 		Upgrade {
 			Name "+25% Damage"
@@ -650,9 +659,7 @@ WaveSchedule
 			{
 				"move speed bonus"	1.15
 				"damage bonus" 0.5
-				//Screw you vacuum
-				"damage force reduction" 0.6
-				//"rage giving scale" 0.5
+				"damage force reduction" 0.6 //Screw you vacuum
 				"airblast vulnerability multiplier" 0.1
 			}
 		}
@@ -668,7 +675,7 @@ WaveSchedule
 			}
 		}
 		
-		feverFinale { //match stats with containment breaker ver
+		feverFinale {
 			Class Pyro
 			Name "Hemorrhagic Fever"
 			ClassIcon hemorrhagic_fever_bp
@@ -683,6 +690,8 @@ WaveSchedule
 			ItemAttributes {
 				ItemName "TF_WEAPON_FLAMETHROWER"
 				"airblast disabled" 1
+				"damage bonus" 1.5
+				"bleeding duration" 5
 			}
 			ItemAttributes
 			{
@@ -691,10 +700,11 @@ WaveSchedule
 			}
 			CharacterAttributes
 			{
-				"move speed bonus"	0.1
+				"move speed bonus"	0.5
 				"damage force reduction" 0.5
 				"airblast vulnerability multiplier" 0.5
-				"override footstep sound set" 4
+				"override footstep sound set" 6
+				//"dmg taken increased", 2
 			}
 		}
 		
@@ -1219,6 +1229,9 @@ WaveSchedule
 				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`roof_sound`, `Disable`, `0`, 1)
 				EntFire(`heartbeater_sound`, `Enable`, `0`, 1)
+				if(isHardmode) {
+					difficultyNamespace.updateWavebar()
+				}
 				//EntFire(`fog_heartbeater`, `TurnOn`)
 			"
 		}
@@ -1886,6 +1899,7 @@ WaveSchedule
 			"
 				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`spawnbot_arena2_disposable`, `Disable`)
+				difficultyNamespace.updateWavebar()
 			"
 		}
 		StartWaveOutput
@@ -3597,6 +3611,29 @@ WaveSchedule
 		}
 			
 		WaveSpawn {
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			Where spawnbot
+			Where spawnbot_arena2
+			TFBot
+			{
+				Template T_TFBot_UKGR
+				EventChangeAttributes {
+					ShootPlayers {
+						WeaponRestrictions PrimaryOnly
+						ActionOverride Mobber
+					}
+					EatBots {
+						WeaponRestrictions SecondaryOnly
+						Attributes IgnoreEnemies
+						ActionOverride Medic
+					}
+				}
+			}
+		}
+	
+		WaveSpawn {
 			Name "hardkill"
 			TotalCount 1
 			MaxActive 1
@@ -3622,35 +3659,13 @@ WaveSchedule
 				RandomChoice {
 					TFBot {
 						Template killswitch
-						Name "long live life"
+						Name "viva la vida"
 						Tag theendnormal
 					}
 				}
 			}
 		}
 		
-		WaveSpawn {
-			TotalCount 1
-			MaxActive 1
-			SpawnCount 1
-			Where spawnbot
-			Where spawnbot_arena2
-			TFBot
-			{
-				Template T_TFBot_UKGR
-				EventChangeAttributes {
-					ShootPlayers {
-						WeaponRestrictions PrimaryOnly
-						ActionOverride Mobber
-					}
-					EatBots {
-						WeaponRestrictions SecondaryOnly
-						Attributes IgnoreEnemies
-						ActionOverride Medic
-					}
-				}
-			}
-		}
 		WaveSpawn {
 			TotalCount 17
 			MaxActive 17
@@ -3777,6 +3792,7 @@ WaveSchedule
 		WaveSpawn {
 			MaxActive 4
 			SpawnCount 1
+			WaitBeforeStarting 0.3
 			WaitBetweenSpawns 1
 			WaitForAllDead "normalkill"
 			Support 1
@@ -3818,7 +3834,7 @@ WaveSchedule
 			SpawnCount 2
 			WaitForAllDead normalkill
 			WaitBeforeStarting 0.2
-			WaitBetweenSpawns 12
+			WaitBetweenSpawns 15
 			Where spawnbot_invasion
 			RandomSpawn 1
 			Support Limited
@@ -3874,7 +3890,7 @@ WaveSchedule
 			TotalCount 6
 			MaxActive 6
 			SpawnCount 3
-			WaitBetweenSpawns 8
+			WaitBetweenSpawns 12
 			WaitForAllDead normalkill
 			WaitBeforeStarting 0.2
 			Where spawnbot
@@ -3892,6 +3908,7 @@ WaveSchedule
 		WaveSpawn { //make sure this doesn't do odd things on normal
 			WaitForAllDead "normalkill"
 			TotalCount 1
+			Where spawnbot
 			WaitBeforeStarting 20
 			TotalCurrency 0
 			Support Limited
@@ -3920,7 +3937,7 @@ WaveSchedule
 			TotalCount 3
 			MaxActive 3
 			SpawnCount 3
-			WaitBeforeStarting 8
+			WaitBeforeStarting 12
 			WaitForAllSpawned "w7b"
 			Where spawnbot
 			Support Limited
