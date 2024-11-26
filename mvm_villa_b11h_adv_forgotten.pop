@@ -764,61 +764,70 @@ WaveSchedule
 		}
 		
 		gpair {
-			Squad {
-				TFBot {
-					Class Heavyweapons
-					Name "Sarcoma"
-					ClassIcon sarcoma_bp
-					Skill Expert
-					Health 5000
-					Attributes MiniBoss
-					Item "The Brass Beast"
-					Item "Cold War Luchador"
-					ItemAttributes
-					{
-						ItemName "Cold War Luchador"
-						"set item tint RGB" 13328029
+			RandomChoice {
+				Squad {
+					TFBot {
+						Class Heavyweapons
+						Name "Sarcoma"
+						ClassIcon sarcoma_bp
+						Skill Expert
+						Health 5000
+						Attributes MiniBoss
+						Item "The Brass Beast"
+						Item "Cold War Luchador"
+						ItemAttributes
+						{
+							ItemName "Cold War Luchador"
+							"set item tint RGB" 13328029
+						}
+						ItemAttributes
+						{
+							ItemName "The Brass Beast"
+							"damage bonus"	1.8
+							"spunup_damage_resistance" 1
+						}
+						CharacterAttributes
+						{
+							"move speed bonus"	0.5
+							"damage force reduction" 0.3
+							"airblast vulnerability multiplier" 0.3
+							"override footstep sound set" 2
+						}
 					}
-					ItemAttributes
-					{
-						ItemName "The Brass Beast"
-						"damage bonus"	1.8
-						"spunup_damage_resistance" 1
-					}
-					CharacterAttributes
-					{
-						"move speed bonus"	0.5
-						"damage force reduction" 0.3
-						"airblast vulnerability multiplier" 0.3
-						"override footstep sound set" 2
-					}
-				}
-				TFBot {
-					Class Medic
-					Name "Pneumonia"
-					ClassIcon pneumonia_bp
-					Tag Pneumonia
-					Skill Expert
-					Health 4500
-					Item "The Quick-Fix"
-					WeaponRestrictions SecondaryOnly
-					Attributes MiniBoss
-					Attributes SpawnWithFullCharge
-					Item "The Byte'd Beak"
-					ItemAttributes
-					{
-						ItemName "The Byte'd Beak"
-						"set item tint RGB" 13328029
-					}
-					CharacterAttributes
-					{
-						"move speed bonus"	0.5
-						"damage force reduction" 0.5
-						"airblast vulnerability multiplier" 0.6
-						"heal rate bonus" 200
+					TFBot {
+						Class Medic
+						Name "Pneumonia"
+						ClassIcon pneumonia_bp
+						Tag Pneumonia
+						Skill Expert
+						Health 4500
+						Item "The Quick-Fix"
+						WeaponRestrictions SecondaryOnly
+						Attributes MiniBoss
+						Attributes SpawnWithFullCharge
+						Item "The Byte'd Beak"
+						ItemAttributes
+						{
+							ItemName "The Byte'd Beak"
+							"set item tint RGB" 13328029
+						}
+						CharacterAttributes
+						{
+							"move speed bonus"	0.5
+							"damage force reduction" 0.5
+							"airblast vulnerability multiplier" 0.6
+							"heal rate bonus" 200
+						}
 					}
 				}
 			}
+		}
+		
+		killswitch {
+			Class Medic
+			Attributes IgnoreEnemies
+			Attributes IgnoreFlag
+			Tag IgnoreDeath
 		}
 	}
 	
@@ -944,9 +953,6 @@ WaveSchedule
 			Param "
 				EntFire(`pentagram_defuse`, `Trigger`)
 				EntFire(`wave_start_relay`, `Trigger`)
-				if(!isHardmode) {
-					difficultyNamespace = normalNamespace
-				}
 			"
 		}
 		DoneOutput
@@ -1224,7 +1230,7 @@ WaveSchedule
 			"
 				EntFire(`gamerules`, `RunScriptFile`, `heartbeater.nut`, -1)
 				self.AcceptInput(`Trigger`, null, null, null)
-				__CollectGameEventCallbacks(winCondCallbacks) //not setting a botcount here since all the bots are support
+				IncludeScript(`villa_waves.nut`, getroottable()) //not setting a botcount here since all the bots are support
 			"
 		}
 		DoneOutput
@@ -1306,14 +1312,16 @@ WaveSchedule
 			SpawnCount 1
 			Name "normalkill"
 			Where spawnbot_altmode
+			WaitBeforeStarting 0.1
 			Support Limited
 			
 			RandomChoice {
 				RandomChoice {
-					Class Medic
-					Name "chill"
-					Attributes IgnoreFlag
-					Attributes IgnoreEnemies
+					TFBot {
+						Template killswitch
+						Name "chill"
+						Tag theendnormal
+					}
 				}
 			}
 		}
@@ -1323,14 +1331,16 @@ WaveSchedule
 			SpawnCount 1
 			Name "hardkill"
 			Where spawnbot_altmode
+			WaitBeforeStarting 0.1
 			Support Limited
 			
 			RandomChoice {
 				RandomChoice {
-					Class Medic
-					Name "fever"
-					Attributes IgnoreFlag
-					Attributes IgnoreEnemies
+					TFBot {
+						Template killswitch
+						Name "fever"
+						Tag theendhard
+					}
 				}
 			}
 		}
@@ -1388,8 +1398,10 @@ WaveSchedule
 			
 			RandomChoice { //this one just idles in spawn
 				RandomChoice {
-					Class Spy
-					Attributes IgnoreEnemies
+					TFBot {
+						Class Spy
+						Attributes IgnoreEnemies
+					}
 				}
 			}
 		}
@@ -1404,8 +1416,10 @@ WaveSchedule
 			
 			RandomChoice {
 				RandomChoice {
-					Class Spy
-					Name Spy
+					TFBot {
+						Class Spy
+						Name Spy
+					}
 				}
 			}
 		}
@@ -1420,8 +1434,10 @@ WaveSchedule
 			
 			RandomChoice {
 				RandomChoice {
-					Class Spy
-					Name Spy
+					TFBot {
+						Class Spy
+						Name Spy
+					}
 				}
 			}
 		}
@@ -1600,7 +1616,7 @@ WaveSchedule
 						Skill Hard
 						WeaponRestrictions PrimaryOnly
 						Attributes MiniBoss
-						Action FetchFlag  
+						ActionOverride FetchFlag  
 						ItemAttributes {
 							ItemName "The Rescue Ranger"
 							"projectile penetration" 1
@@ -1617,7 +1633,7 @@ WaveSchedule
 						Skill Hard
 						WeaponRestrictions PrimaryOnly
 						Attributes MiniBoss
-						Action FetchFlag  
+						ActionOverride FetchFlag  
 						Tag pentagram_buffable
 						ItemAttributes {
 							ItemName "The Rescue Ranger"
@@ -1881,7 +1897,7 @@ WaveSchedule
 				const HARDBOTCOUNT = 54
 				local count = isHardmode ? HARDBOTCOUNT : NORMALBOTCOUNT
 				IncludeScript(`diseasebots.nut`, getroottable())
-				__CollectGameEventCallbacks(winCondCallbacks)
+				IncludeScript(`villa_waves.nut`, getroottable())
 				winCondCallbacks.setBotCount(count)
 				
 				self.AcceptInput(`Trigger`, null, null, null)
@@ -1907,12 +1923,9 @@ WaveSchedule
 			RandomChoice {
 				RandomChoice {
 					TFBot {
-						Class Medic
+						Template killswitch
 						Name "in hell we live"
 						Tag theendhard
-						Tag ignoredeath
-						Attributes IgnoreEnemies
-						Attributes IgnoreFlag
 					}
 				}
 			}
@@ -1926,12 +1939,9 @@ WaveSchedule
 			RandomChoice {
 				RandomChoice {
 					TFBot {
-						Class Medic
+						Template killswitch
 						Name "lament"
 						Tag theendnormal
-						Tag ignoredeath
-						Attributes IgnoreEnemies
-						Attributes IgnoreFlag
 					}
 				}
 			}
@@ -2768,11 +2778,11 @@ WaveSchedule
 					ClassIcon medic_syringe
 					Name "Syringe Medic"
 					WeaponRestrictions PrimaryOnly
-					Action Mobber  
 					EventChangeAttributes
 					{
 						Default {
 							Skill Expert
+							ActionOverride Mobber
 							CharacterAttributes
 							{
 								"damage bonus" 1
@@ -2781,6 +2791,7 @@ WaveSchedule
 						}
 						HardMode {
 							Skill Expert
+							ActionOverride Mobber
 							Attributes AlwaysCrit
 							Tag pentagram_buffable
 							CharacterAttributes
@@ -2796,13 +2807,13 @@ WaveSchedule
 					Class Medic
 					ClassIcon medic_crossbow
 					Name "Crossbow Medic"
-					WeaponRestrictions PrimaryOnly
-					Action Mobber  
+					WeaponRestrictions PrimaryOnly  
 					Item "The Crusader's Crossbow"
 					EventChangeAttributes
 					{
 						Default {
 							Skill Expert
+							ActionOverride Mobber
 							CharacterAttributes
 							{
 								"damage bonus" 1
@@ -2811,6 +2822,7 @@ WaveSchedule
 						}
 						HardMode {
 							Skill Expert
+							ActionOverride Mobber
 							Attributes AlwaysCrit
 							Tag pentagram_buffable
 							CharacterAttributes
@@ -3593,12 +3605,9 @@ WaveSchedule
 			RandomChoice {
 				RandomChoice {
 					TFBot {
-						Class Medic
+						Template killswitch
 						Name "death and all his friends"
 						Tag theendhard
-						Tag ignoredeath
-						Attributes IgnoreEnemies
-						Attributes IgnoreFlag
 					}
 				}
 			}
@@ -3612,12 +3621,9 @@ WaveSchedule
 			RandomChoice {
 				RandomChoice {
 					TFBot {
-						Class Medic
+						Template killswitch
 						Name "long live life"
 						Tag theendnormal
-						Tag ignoredeath
-						Attributes IgnoreEnemies
-						Attributes IgnoreFlag
 					}
 				}
 			}
@@ -3876,7 +3882,7 @@ WaveSchedule
 			
 			RandomChoice {
 				RandomChoice {
-				TFBot
+					TFBot
 					{
 						Template feverFinale
 					}
@@ -3959,9 +3965,12 @@ WaveSchedule
 			Where spawnbot
 			Support Limited
 		
-			TFBot
-			{
-				Template tachyFinale
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Template tachyFinale
+					}
+				}
 			}
 		}
 		WaveSpawn {
@@ -3974,9 +3983,13 @@ WaveSchedule
 			Where spawnbot
 			Support Limited
 			
-			TFBot
-			{
-				Template cardioFinale
+			RandomChoice {
+				RandomChoice {
+					TFBot
+					{
+						Template cardioFinale
+					}
+				}
 			}
 		}
 		WaveSpawn { 
@@ -4002,8 +4015,12 @@ WaveSchedule
 			Where spawnbot
 			Support Limited
 			
-			TFBot {
-				Template tachyFinale
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Template tachyFinale
+					}
+				}
 			}
 		}
 		WaveSpawn {
@@ -4016,8 +4033,12 @@ WaveSchedule
 			Where spawnbot_invasion
 			Support Limited
 			
-			TFBot {
-				Template cardioFinale
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Template cardioFinale
+					}
+				}
 			}
 		}
 		WaveSpawn { 
@@ -4030,8 +4051,12 @@ WaveSchedule
 			Where spawnbot
 			Support Limited
 			
-			TFBot {
-				Template tachyFinale
+			RandomChoice {
+				RandomChoice {
+					TFBot {
+						Template tachyFinale
+					}
+				}
 			}
 		}
 		WaveSpawn { 
@@ -4047,7 +4072,5 @@ WaveSchedule
 			
 			Template gpair
 		}
-		
-		
 	}
 }

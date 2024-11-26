@@ -1,11 +1,11 @@
 ::objRes <- Entities.FindByClassname(null, "tf_objective_resource")
-::difficultyNamespace <- null
 
 InputFireUser1 <- function() { //this essentially only fires once, then the callbacks should do everything else
 	__CollectGameEventCallbacks(hardCallbacks)
 	EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
 	hardCallbacks.updateHardModeWavebar(1)
 	difficultyNamespace = hardCallbacks
+	objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) forget", null, null)
 	return true
 }
 
@@ -20,7 +20,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 	
 	finaleWaveStart = function() {
 		const BOTCOUNT = 18
-		__CollectGameEventCallbacks(winCondCallbacks)
+		IncludeScript("villa_waves.nut", getroottable())
 		winCondCallbacks.setBotCount(BOTCOUNT)
 		IncludeScript("diseasebots.nut", getroottable())
 		IncludeScript("villa_boss_callbacks.nut", getroottable())
@@ -29,7 +29,10 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		EntFire("sniper_*", "Disable")
 		EntFire("roof_sniper_*", "Enable")
 	}
+	
+	//icon stuff
 }
+::difficultyNamespace <- normalNamespace
 
 ::hardCallbacks <- {
 	Cleanup = function() {
@@ -100,6 +103,9 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		local function setActive(isActive, index) {
 			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", isActive, index)
 		}
+		local function setCount(count, index) {
+			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassCounts", count, index)
+		}
 		
 		switch(waveNumber) {
 			case 1:
@@ -162,8 +168,8 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 
 		//Add pentagram icon
 		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames2", "pentagram", 11)
-		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassFlags2", 2, 11)
-		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
+		NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags2", 2, 11)
+		NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
 	}
 	
 	finaleWaveInit = function() {
@@ -176,75 +182,11 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 
 	finaleWaveStart = function() {
 		const BOTCOUNT = 37
-		__CollectGameEventCallbacks(winCondCallbacks)
+		IncludeScript("villa_waves.nut", getroottable())
 		winCondCallbacks.setBotCount(BOTCOUNT)
 		IncludeScript("diseasebots.nut", getroottable())
 		IncludeScript("villa_boss_callbacks.nut", getroottable())
 
 		EntFire("wave_start_relay", "Trigger")
-	}
-}
-
-::winCondCallbacks <- {
-	livingBot = null
-	botCount = null
-
-	Cleanup = function() {
-		delete ::winCondCallbacks
-	}
-
-	OnGameEvent_recalculate_holidays = function(_) {
-		if(GetRoundState() == 3) {
-			Cleanup()
-		}
-	}
-
-	OnGameEvent_mvm_wave_complete = function(_) {
-		Cleanup()
-	}
-
-	OnGameEvent_player_spawn = function(params) {
-		local player = GetPlayerFromUserID(params.userid)
-		if(player == null) return
-		if(!IsPlayerABot(player)) return
-		
-		EntFireByHandle(player, "winCondCallbacks.checkTags()", null, -1, player, null)
-	}
-	
-	checkTags = function() {
-		if(activator.HasBotTag("theendnormal")) {
-			if(hardmode) {
-				activator.TakeDamage(1000, 0, null)
-			}
-			else {
-				livingBot = activator
-			}
-		}
-		else if(activator.HasBotTag("theendhard")) {
-			if(!hardmode) {
-				activator.TakeDamage(1000, 0, null)
-			}
-			else {
-				livingBot = activator
-			}
-		}
-	}
-	
-	OnGameEvent_player_death = function(params) {
-		if(botCount == null) return //don't do anything if botcount isn't set
-		local player = GetPlayerFromUserID(params.userid)
-		if(player == null) return
-		if(!IsPlayerABot(player)) return
-		if(player.HasBotTag("ignoredeath")) return
-		
-		botCount--
-		
-		if(botCount == 0) {
-			livingBot.TakeDamage(1000, 0, null)
-		}
-	}
-	
-	setBotCount = function(count) {
-		botCount = count
 	}
 }
