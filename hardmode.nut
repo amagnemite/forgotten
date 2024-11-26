@@ -55,19 +55,20 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				//Index 3 to 8 tachycardia
 				//Index 4 to 32 tumors
 				//Index 5 to 2 pneumonia
+				//Index 6 to 5 cardiomyopathy (demo_burst)
 				setIcon("blackdead", 0)
 				setFlag(2, 0)
 				setActive(true, 0)
 				setIcon("dyspnea_bp", 1)
-				setFlag(1, 1)
+				setFlag(9, 1)
 				setActive(true, 1)
 				setCount(5, 1)
 				setIcon("sarcoma_bp", 2)
-				setFlag(1, 2)
+				setFlag(9, 2)
 				setActive(true, 2)
 				setCount(2, 2)
 				setIcon("tachycardia_bp", 3)
-				setFlag(1, 3)
+				setFlag(9, 3)
 				setActive(true, 3)
 				setCount(8, 3)
 				setIcon("malignant_tumor_bp", 4)
@@ -75,9 +76,13 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setActive(true, 4)
 				setCount(32, 4)
 				setIcon("pneumonia_bp", 5)
-				setFlag(1, 5)
+				setFlag(9, 5)
 				setActive(true, 5)
 				setCount(2, 5)
+				setIcon("demo_burst", 6)
+				setFlag(9, 6)
+				setActive(true, 6)
+				setCount(5, 6)
 				break
 			case 7:
 				setIcon("ukgr", 0)
@@ -190,6 +195,9 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setIcon("spy", 2)
 				setFlag(2, 2)
 				setActive(true, 2)
+				setIcon("timer_pink", 3)
+				setFlag(2, 3)
+				setActive(true, 3)
 				break
 			case 3:
 				//Index 1 burst demos to crits (16 crits + 1 main wave)
@@ -206,19 +214,20 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				//Index 3 to 8 tachycardia
 				//Index 4 to 32 tumors
 				//Index 5 to 2 pneumonia
+				//Index 6 to 5 cardiomyopathy
 				setIcon("blackdead", 0)
 				setFlag(2, 0)
 				setActive(true, 0)
 				setIcon("dyspnea_bp", 1)
-				setFlag(1, 1)
+				setFlag(9, 1)
 				setActive(true, 1)
 				setCount(5, 1)
 				setIcon("sarcoma_bp", 2)
-				setFlag(1, 2)
+				setFlag(9, 2)
 				setActive(true, 2)
 				setCount(2, 2)
 				setIcon("tachycardia_bp", 3)
-				setFlag(1, 3)
+				setFlag(9, 3)
 				setActive(true, 3)
 				setCount(8, 3)
 				setIcon("malignant_tumor_bp", 4)
@@ -226,9 +235,13 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setActive(true, 4)
 				setCount(32, 4)
 				setIcon("pneumonia_bp", 5)
-				setFlag(1, 5)
+				setFlag(9, 5)
 				setActive(true, 5)
 				setCount(2, 5)
+				setIcon("demo_burst", 6)
+				setFlag(9, 6)
+				setActive(true, 6)
+				setCount(5, 6)
 				break
 			case 5:
 				//Index 3 furies to crits (16 crits + 1 main wave)
@@ -237,7 +250,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setFlag(25, 5)
 				break
 			case 7:
-				setIcon("ukgr", 0)
+				setIcon("ukgr_base", 0)
 				setFlag(9, 0)
 				setActive(true, 0)
 				setCount(1, 0)
@@ -253,7 +266,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setFlag(9, 3)
 				setActive(true, 3)
 				setCount(1, 3)
-				setIcon("cardiomyopathy_bp", 4)
+				setIcon("demo_burst", 4)
 				setFlag(9, 4)
 				setActive(true, 4)
 				setCount(12, 4)
