@@ -31,6 +31,75 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 	}
 	
 	//icon stuff
+	if(waveNumber == null) {
+			waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
+		}
+		local function setIcon(name, index) {
+			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, index)
+		}
+		local function setFlag(flag, index) {
+			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags", flag, index)
+		}
+		local function setActive(isActive, index) {
+			NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", isActive, index)
+		}
+		local function setCount(count, index) {
+			NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassCounts", count, index)
+		}
+		
+		switch(waveNumber) {
+			case 4:
+				//Index 0 to support pathogen
+				//Index 1 to 5 dyspnea
+				//Index 2 to 2 sarcoma
+				//Index 3 to 8 tachycardia
+				//Index 4 to 32 tumors
+				//Index 5 to 2 pneumonia
+				setIcon("blackdead", 0)
+				setFlag(2, 0)
+				setActive(true, 0)
+				setIcon("dyspnea_bp", 1)
+				setFlag(1, 1)
+				setActive(true, 1)
+				setCount(5, 1)
+				setIcon("sarcoma_bp", 2)
+				setFlag(1, 2)
+				setActive(true, 2)
+				setCount(2, 2)
+				setIcon("tachycardia_bp", 3)
+				setFlag(1, 3)
+				setActive(true, 3)
+				setCount(8, 3)
+				setIcon("malignant_tumor_bp", 4)
+				setFlag(1, 4)
+				setActive(true, 4)
+				setCount(32, 4)
+				setIcon("pneumonia_bp", 5)
+				setFlag(1, 5)
+				setActive(true, 5)
+				setCount(2, 5)
+				break
+			case 7:
+				setIcon("ukgr", 0)
+				setFlag(9, 0)
+				setActive(true, 0)
+				setCount(1, 0)
+				setIcon("scout", 1)
+				setFlag(18, 0)
+				setActive(true, 0)
+				setCount(1, 0)
+				setIcon("sniper_sydney", 1)
+				setFlag(20, 0)
+				setActive(true, 0)
+				setCount(1, 0)
+				setIcon("spy", 1)
+				setFlag(20, 0)
+				setActive(true, 0)
+				setCount(1, 0)
+				break
+			default:
+				break
+		}
 }
 ::difficultyNamespace <- normalNamespace
 
@@ -143,24 +212,29 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				setIcon("dyspnea_bp", 1)
 				setFlag(1, 1)
 				setActive(true, 1)
+				setCount(5, 1)
 				setIcon("sarcoma_bp", 2)
 				setFlag(1, 2)
 				setActive(true, 2)
+				setCount(2, 2)
 				setIcon("tachycardia_bp", 3)
 				setFlag(1, 3)
 				setActive(true, 3)
+				setCount(8, 3)
 				setIcon("malignant_tumor_bp", 4)
 				setFlag(1, 4)
 				setActive(true, 4)
+				setCount(32, 4)
 				setIcon("pneumonia_bp", 5)
 				setFlag(1, 5)
 				setActive(true, 5)
+				setCount(2, 5)
 				break
 			case 5:
 				//Index 3 furies to crits (16 crits + 1 main wave)
 				//Index 5 gheavies to crits (16 crits + 1 main wave)
-				setFlag(17, 3)
-				setFlag(17, 5)
+				setFlag(25, 3)
+				setFlag(25, 5)
 				break
 			default:
 				break	
