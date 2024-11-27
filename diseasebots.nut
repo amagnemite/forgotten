@@ -203,6 +203,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 					}
 					handle.GetScriptScope().owner <- diseaseCallbacks.pneumoniaBot
 					handle.GetScriptScope().takePneumoniaDamage <- function() {
+						if(!("diseaseCallbacks" in getroottable())) return
 						diseaseCallbacks.playSound("player/drown3.wav", activator)
 						activator.ViewPunch(QAngle(-6, 0, 0))
 						activator.TakeDamage(40, DMG_POISON, owner)

@@ -7,11 +7,7 @@
         case 0:
             break
         case 1:
-            EntFire("pentagram_particle_1", "start")
-						EntFire("pentagram_boom", "trigger")
-			isHardmode = true
-			EntFire("logic_script", "FireUser1")
-			__CollectGameEventCallbacks(pentagramCallbacks)
+			EntFire("pentagram_particle_1", "start")
             break
         case 2:
             EntFire("pentagram_particle_2", "start")
@@ -23,9 +19,15 @@
             EntFire("pentagram_particle_4", "start")
             break
         case 5:
-            //EntFire("pentagram_boom", "trigger")
-			//isHardmode = true
-			//EntFire("logic_script", "FireUser1")
+            EntFire("pentagram_boom", "trigger")
+			isHardmode = true
+			EntFire("logic_script", "FireUser1")
+			__CollectGameEventCallbacks(pentagramCallbacks)
+			::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
+				particle_name = "pentagram_enemy"
+				attachment_type = 1
+				spawnflags = 64
+			})
             break
         default:
 			break

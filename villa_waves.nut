@@ -43,7 +43,9 @@
 				livingBot = activator
 			}
 		}
-		setWavebar()
+		if(hasWavebar) {
+			setWavebar()
+		}
 	}
 
 	OnGameEvent_player_death = function(params) {

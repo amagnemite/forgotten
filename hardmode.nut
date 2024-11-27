@@ -1,11 +1,13 @@
 ::objRes <- Entities.FindByClassname(null, "tf_objective_resource")
 
 InputFireUser1 <- function() { //this essentially only fires once, then the callbacks should do everything else
+	local names = ["under the bonesaw", "oblivion"]
+	::expName <- names[RandomInt(0, 1)]
 	__CollectGameEventCallbacks(hardCallbacks)
 	EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
 	hardCallbacks.updateWavebar()
 	difficultyNamespace = hardCallbacks
-	objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) under the bonesaw", null, null)
+	objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) " + expName, null, null)
 	return true
 }
 
@@ -83,20 +85,17 @@ normalNamespace[7] <- {
 ::difficultyNamespace <- normalNamespace
 
 ::hardCallbacks <- {
-	Cleanup = function() {
-		delete ::hardCallbacks
-	}
-	
 	OnGameEvent_recalculate_holidays = function(_) {
 		if(GetRoundState() == 3) {
 			local objRes = Entities.FindByClassname(null, "tf_objective_resource")
 			local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
 		
 			if(wave == 1) {
-				Cleanup()
+				objRes.AcceptInput("$ResetClientProp$m_iszMvMPopfileName", null, null, null)
+				delete ::hardCallbacks
 			}
 			else {
-				objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) under the bonesaw", null, null)
+				objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) " + expName, null, null)
 				EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
 				updateWavebar()
 			}

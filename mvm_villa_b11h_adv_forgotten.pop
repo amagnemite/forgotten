@@ -912,6 +912,7 @@ WaveSchedule
 					EventChangeAttributes {
 						Default {
 							Skill Expert
+							Tag ignoredeath
 						}
 						HardMode {
 							//Tag pentagram_buffable
@@ -1048,6 +1049,7 @@ WaveSchedule
 				Class Soldier
 				Name "Giant Soldier"
 				ClassIcon soldier_giant
+				Health 3800
 				
 				EventChangeAttributes {
 					Default {
@@ -1543,6 +1545,7 @@ WaveSchedule
 					findTimerBot(null, false, heartbeaterCallbacks.buffBoss)
 					if(isHardmode) {
 						timer.AddCustomAttribute(`max health additive bonus`, -30, -1)
+						timer.SetHealth(timer.GetMaxHealth())
 					}
 				"
 			}
@@ -1681,7 +1684,7 @@ WaveSchedule
 			WaitBeforeStarting 7
 			WaitBetweenSpawns 18
 			TotalCurrency 100
-			WaitForAllSpawned w3aa
+			WaitForAllSpawned w3a
 			Squad
 			{
 				TFBot
@@ -2899,6 +2902,7 @@ WaveSchedule
 					findTimerBot(1, true, null, false)
 					if(isHardmode) {
 						timer.AddCustomAttribute(`max health additive bonus`, -25, -1)
+						timer.SetHealth(timer.GetMaxHealth())
 					}
 				"
 			}
@@ -3776,7 +3780,7 @@ WaveSchedule
 			MaxActive 1
 			SpawnCount 1
 			WaitBeforeStarting 60
-			WaitBetweenSpawns 45
+			WaitBetweenSpawns 60
 			WaitForAllDead "normalkill"
 			Support 1
 			Where spawnbot
@@ -3802,7 +3806,7 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 1
 			WaitBeforeStarting 0.3
-			WaitBetweenSpawns 1
+			WaitBetweenSpawns 2
 			WaitForAllDead "normalkill"
 			Support 1
 			Where spawnbot_invasion
@@ -3838,12 +3842,12 @@ WaveSchedule
 		
 		WaveSpawn {
 			Name "w7a"
-			TotalCount 16
-			MaxActive 6
+			TotalCount 12
+			MaxActive 2
 			SpawnCount 2
 			WaitForAllDead normalkill
 			WaitBeforeStarting 0.2
-			WaitBetweenSpawns 15
+			WaitBetweenSpawns 20
 			Where spawnbot_invasion
 			RandomSpawn 1
 			Support Limited
@@ -3854,7 +3858,7 @@ WaveSchedule
 						Class Soldier
 						Name "Dyspnea"
 						ClassIcon dyspnea_bp
-						Health 4200
+						Health 3800
 						Tag Dyspnea
 						Skill Expert
 						WeaponRestrictions PrimaryOnly
@@ -3867,27 +3871,26 @@ WaveSchedule
 							ItemName "Shortness Of Breath"
 							"set item tint RGB" 13328029
 						}
-						ItemAttributes
+						ItemAttributes //more like regular bursts instead of colonels
 						{
 							ItemName "TF_WEAPON_ROCKETLAUNCHER"
-							"clip size upgrade atomic" 16.0
+							"clip size upgrade atomic" 7.0
 							"add cond on hit" 12
 							"add cond on hit duration" 3.5
-							"faster reload rate" 0.2
-							"fire rate bonus" 0.2
-							"projectile spread angle penalty" 7
-							"damage bonus" 0.75 //changed from .125
+							"faster reload rate" 0.5
+							"fire rate bonus" 0.1
+							//"projectile spread angle penalty" 7
+							"damage bonus" 0.125
 							"projectile speed increased" 0.6
 							"projectile trail particle" dyspnea_rockettrail
 						}
 						CharacterAttributes
 						{
-							"health regen"	40
+							//"health regen"	40
 							"move speed bonus"	0.5
 							"damage force reduction" 0.4
 							"airblast vulnerability multiplier" 0.4
-							"override footstep sound set" 3
-							"airblast vertical vulnerability multiplier" 0.1			
+							"override footstep sound set" 3		
 						}
 					}
 				}
@@ -3896,10 +3899,9 @@ WaveSchedule
 		}
 		WaveSpawn {
 			Name "w7b"
-			TotalCount 6
-			MaxActive 6
-			SpawnCount 3
-			WaitBetweenSpawns 12
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 2
 			WaitForAllDead normalkill
 			WaitBeforeStarting 0.2
 			Where spawnbot
@@ -3913,48 +3915,14 @@ WaveSchedule
 					}
 				}
 			}
-		}
-		WaveSpawn { //make sure this doesn't do odd things on normal
-			WaitForAllDead "normalkill"
-			TotalCount 1
-			Where spawnbot
-			WaitBeforeStarting 20
-			TotalCurrency 0
-			Support Limited
-			
-			DoneOutput {
-				Target wave_start_relay
-				Action RunScriptCode
-				Param "
-					winCondCallbacks.botCount--
-					winCondCallbacks.waveTable.tank.currentCount = 0
-					NetProps.SetPropIntArray(objRes, `m_nMannVsMachineWaveClassCounts`, 0, winCondCallbacks.waveTable.tank.index)
-				"
-			}
-			
-			RandomChoice {
-				RandomChoice {
-					Tank {
-						Name tankboss
-						Health 15000
-						StartingPathTrackNode path_0
-						Skin 1
-						OnBombDroppedOutput
-						{
-							Target bomb_deploy_relay
-							Action Trigger
-						}
-					}
-				}
-			}
-		}
+		}	
 		WaveSpawn { //take stats from buffed ver
 			Name "w7c"
-			TotalCount 3
-			MaxActive 3
-			SpawnCount 3
-			WaitBeforeStarting 12
-			WaitForAllSpawned "w7b"
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 15
+			WaitForAllDead "w7b"
 			Where spawnbot
 			Support Limited
 			
@@ -3968,13 +3936,13 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			Name "w7c"
-			TotalCount 6
-			MaxActive 6
+			Name "w7d"
+			TotalCount 4
+			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 13
-			WaitBetweenSpawns 12
-			WaitForAllSpawned "w7b"
+			WaitBetweenSpawns 18
+			WaitForAllSpawned "w7c"
 			Where spawnbot_invasion
 			Support Limited
 			
@@ -3988,13 +3956,13 @@ WaveSchedule
 			}
 		}
 		WaveSpawn { 
-			Name "w7c"
+			Name "w7d"
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 25
-			WaitBetweenSpawns 10
-			WaitForAllSpawned "w7b"
+			WaitBetweenSpawns 15
+			WaitForAllSpawned "w7c"
 			Where spawnbot
 			Support Limited
 		
@@ -4007,12 +3975,12 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			Name "w7d"
+			Name "w7e"
 			TotalCount 3
 			MaxActive 3
 			SpawnCount 3
-			WaitForAllSpawned "w7c"
-			WaitBeforeStarting 12
+			WaitForAllSpawned "w7d"
+			WaitBeforeStarting 17
 			Where spawnbot
 			Support Limited
 			
@@ -4031,7 +3999,7 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 15
-			WaitBetweenSpawns 8 //pairs are going to take 5 years to walk out
+			WaitBetweenSpawns 12 //pairs are going to take 5 years to walk out
 			WaitForAllSpawned "w7d"
 			Where spawnbot
 			Support Limited
@@ -4098,7 +4066,7 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 9
-			WaitBetweenSpawns 6 //pairs are going to take 5 years to walk out
+			WaitBetweenSpawns 9 //pairs are going to take 5 years to walk out
 			WaitForAllSpawned "w7d"
 			Where spawnbot
 			Support Limited
