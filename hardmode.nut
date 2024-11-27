@@ -31,20 +31,16 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		EntFire("roof_sniper_*", "Enable")
 	}
 	
-	//icon stuff
 	updateWavebar = function() {
 		local waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-		local function setIcon(name, index) {
-			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, index)
-		}
-		local function setFlag(flag, index) {
-			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", flag, index)
-		}
-		local function setActive(isActive, index) {
-			//NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", isActive, index)
-		}
-		local function setCount(count, index) {
-			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", count, index)
+		local function setWavebar(wave) {
+			foreach(name, data in normalNamespace[wave]) {
+				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, data.index)
+				NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", data.flag, data.index)
+				if(data.totalCount != null) {
+					NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", data.totalCount, data.index)
+				}
+			}
 		}
 		
 		switch(waveNumber) {
@@ -57,59 +53,32 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				//Index 5 to 2 pneumonia
 				//Index 6 to 5 cardiomyopathy (demo_burst)
 				NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", 64)
-				setIcon("blackdead", 0)
-				setFlag(2, 0)
-				setActive(true, 0)
-				setIcon("dyspnea_bp", 1)
-				setFlag(8, 1)
-				setActive(true, 1)
-				setCount(5, 1)
-				setIcon("sarcoma_bp", 2)
-				setFlag(8, 2)
-				setActive(true, 2)
-				setCount(2, 2)
-				setIcon("tachycardia_bp", 3)
-				setFlag(8, 3)
-				setActive(true, 3)
-				setCount(8, 3)
-				setIcon("malignant_tumor_bp", 4)
-				setFlag(1, 4)
-				setActive(true, 4)
-				setCount(42, 4)
-				setIcon("pneumonia_bp", 5)
-				setFlag(8, 5)
-				setActive(true, 5)
-				setCount(2, 5)
-				setIcon("demo_burst", 6)
-				setFlag(8, 6)
-				setActive(true, 6)
-				setCount(5, 6)
+				setWavebar(4)
 				break
 			case 7:
 				NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", 18)
-				setIcon("blackdead", 1)
-				setFlag(1, 1)
-				setActive(true, 1)
-				setCount(17, 1)
-				
-				setIcon("scout", 2)
-				setFlag(18, 2)
-				setActive(true, 2)
-				setCount(1, 2)
-				
-				setIcon("sniper_sydneysleeper", 3)
-				setFlag(20, 3)
-				setActive(true, 3)
-				setCount(1, 3)
-				
-				setIcon("spy", 4)
-				setFlag(20, 4)
-				setActive(true, 4)
-				setCount(1, 4)
+				setWavebar(7)
 				break
 			default:
 				break
 		}
+	}
+	
+	4 = {
+		blackdead = {index = 0, flag = 2, totalCount = null}
+		dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
+		sarcoma_bp = {index = 2, flag = 8, totalCount = 2}
+		tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
+		malignant_tumor_bp = {index = 4, flag = 1, totalCount = 42}
+		pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
+		demo_burst = {index = 6, flag = 8, totalCount = 6}
+	}
+	
+	7 = {
+		blackdead = {index = 1, flag = 1, totalCount = 17}
+		scout = {index = 2, flag = 18, totalCount = null}
+		sniper_sydneysleeper = {index = 3, flag = 20, totalCount = null}
+		spy = {index = 4, flag = 20, totalCount = null}
 	}
 }
 ::difficultyNamespace <- normalNamespace
@@ -172,14 +141,20 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 	
 	updateWavebar = function() {
 		local waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-		local function setIcon(name, index) {
+		local function setWavebar(wave) {
+			foreach(name, data in hardCallbacks[wave]) {
+				NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, data.index)
+				NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", data.flag, data.index)
+				if(data.totalCount != null) {
+					NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", data.totalCount, data.index)
+				}
+			}
+		}
+		local function setIcon(name, index) { //these are split
 			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, index)
 		}
 		local function setFlag(flag, index) {
 			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", flag, index)
-		}
-		local function setActive(isActive, index) {
-			//NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive", isActive, index)
 		}
 		local function setCount(count, index) {
 			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", count, index)
@@ -188,7 +163,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		switch(waveNumber) {
 			case 1:
 				//Index 2 Gsoldier to soldier_spammer
-				//Index 3 Samurai to crits (16 crits + 1 mainwave)
+				//Index 3 Samurai to crits (16 crits)
 				//Index 5 Gscout to scout_fast
 				setIcon("soldier_spammer", 2)
 				setFlag(17, 3)
@@ -198,10 +173,8 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				//Index 2 to spies, active support (2)
 				setIcon("spy", 2)
 				setFlag(2, 2)
-				setActive(true, 2)
 				setIcon("timer_pink", 3)
 				setFlag(2, 3)
-				setActive(true, 3)
 				break
 			case 3:
 				//Index 1 burst demos to crits (16 crits + 1 main wave)
@@ -220,97 +193,18 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				//Index 4 to 32 tumors
 				//Index 5 to 2 pneumonia
 				//Index 6 to 5 cardiomyopathy
-				setIcon("blackdead", 0)
-				setFlag(2, 0)
-				setActive(true, 0)
-				setIcon("dyspnea_bp", 1)
-				setFlag(8, 1)
-				setActive(true, 1)
-				setCount(5, 1)
-				setIcon("sarcoma_bp", 2)
-				setFlag(8, 2)
-				setActive(true, 2)
-				setCount(2, 2)
-				setIcon("tachycardia_bp", 3)
-				setFlag(8, 3)
-				setActive(true, 3)
-				setCount(8, 3)
-				setIcon("malignant_tumor_bp", 4)
-				setFlag(1, 4)
-				setActive(true, 4)
-				setCount(32, 4)
-				setIcon("pneumonia_bp", 5)
-				setFlag(8, 5)
-				setActive(true, 5)
-				setCount(2, 5)
-				setIcon("demo_burst", 6)
-				setFlag(8, 6)
-				setActive(true, 6)
-				setCount(5, 6)
+				setWavebar(4)
 				break
 			case 5:
 				//Index 3 furies to crits (16 crits + 8 giant)
 				//Index 5 gheavies to crits (16 crits + 8 giant)
-				ClientPrint(null, 3, "Yeah it's happening")
+				//ClientPrint(null, 3, "Yeah it's happening")
 				setFlag(24, 3)
 				setFlag(24, 5)
 				break
 			case 7:
 				NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", 55)
-				setIcon("dyspnea_bp", 1)
-				setFlag(24, 1)
-				//setActive(true, 1)
-				setCount(16, 1)
-				
-				setIcon("hemorrhagic_fever_bp", 2)
-				setFlag(24, 2)
-				//setActive(true, 2)
-				setCount(9, 2)
-				
-				setIcon("tank", 3)
-				setFlag(8, 3)
-				//setActive(true, 3)
-				setCount(1, 3)
-				
-				setIcon("demo_burst", 4)
-				setFlag(8, 4)
-				//setActive(true, 4)
-				setCount(12, 4)
-				
-				setIcon("tachycardia_bp", 5)
-				setFlag(8, 5)
-				//setActive(true, 5)
-				setCount(8, 5)
-				
-				setIcon("sarcoma_bp", 6)
-				setFlag(8, 6)
-				//setActive(true, 6)
-				setCount(4, 6)
-				
-				setIcon("pneumonia_bp", 7)
-				setFlag(8, 7)
-				//setActive(true, 7)
-				setCount(4, 7)
-				
-				setIcon("malignant_tumor_bp", 8)
-				setFlag(2, 8)
-				//setActive(true, 8)
-				setCount(1, 8)
-				
-				setIcon("engineer", 9)
-				setFlag(2, 9)
-				//setActive(true, 9)
-				setCount(1, 9)
-				
-				setIcon("spy", 10)
-				setFlag(4, 10)
-				//setActive(true, 10)
-				setCount(1, 10)
-				
-				setIcon("sniper_sydneysleeper", 11)
-				setFlag(4, 11)
-				//setActive(true, 11)
-				setCount(1, 11)
+				setWavebar(7)
 				break
 			default:
 				break	
@@ -318,8 +212,32 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 
 		//Add pentagram icon
 		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames2", "pentagram", 11)
-		NetProps.SetPropIntArray(objRes, "m_iszMannVsMachineWaveClassFlags2", 2, 11)
-		NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
+		NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags2", 2, 11)
+		//NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
+	}
+	
+	4 = {
+		blackdead = {index = 0, flag = 2, totalCount = null}
+		dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
+		sarcoma_bp = {index = 2, flag = 8, totalCount = 2}
+		tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
+		malignant_tumor_bp = {index = 4, flag = 1, totalCount = 32}
+		pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
+		demo_burst = {index = 6, flag = 8, totalCount = 6}
+	}
+	
+	7 = {
+		dyspnea_bp = {index = 1, flag = 24, totalCount = 16}
+		hemorrhagic_fever_bp = {index = 2, flag = 24, totalCount = 9}	
+		tank = {index = 3, flag = 8, totalCount = 1}			
+		demo_burst = {index = 4, flag = 8, totalCount = 12}		
+		tachycardia_bp = {index = 5, flag = 8, totalCount = 8}			
+		sarcoma_bp = {index = 6, flag = 8, totalCount = 4}			
+		pneumonia_bp = {index = 7, flag = 8, totalCount = 4}				
+		malignant_tumor_bp = {index = 8, flag = 2, totalCount = null}		
+		engineer = {index = 9, flag = 2, totalCount = null}	
+		spy = {index = 10, flag = 4, totalCount = null}		
+		sniper_sydneysleeper = {index = 11, flag = 4, totalCount = null}	
 	}
 	
 	finaleWaveInit = function() {
@@ -332,7 +250,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 	}
 
 	finaleWaveStart = function() {
-		const BOTCOUNT = 37
+		const BOTCOUNT = 54
 		IncludeScript("villa_waves.nut", getroottable())
 		winCondCallbacks.setBotCount(BOTCOUNT)
 		IncludeScript("diseasebots.nut", getroottable())

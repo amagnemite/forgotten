@@ -1,10 +1,3 @@
-if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.IsValid()) {
-	::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
-		particle_name = "pentagram_enemy"
-		attachment_type = 1
-		spawnflags = 64
-	})
-}
 ::playersInPentagram <- 0
 ::isHardmode <- false //this will be overwritten every time script is loaded, which will clear state
 
@@ -71,6 +64,13 @@ if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.
 	OnGameEvent_recalculate_holidays = function(_) {
 		if(GetRoundState() == 3) {
 			Cleanup()
+		}
+		if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.IsValid()) { //put this here since overall script essentially only runs once a mission
+			::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
+				particle_name = "pentagram_enemy"
+				attachment_type = 1
+				spawnflags = 64
+			})
 		}
 	}
 

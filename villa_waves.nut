@@ -1,6 +1,8 @@
 ::winCondCallbacks <- {
 	livingBot = null
 	botCount = null
+	hasWavebar = false
+	waveTable = {}
 
 	Cleanup = function() {
 		delete ::winCondCallbacks
@@ -41,6 +43,7 @@
 				livingBot = activator
 			}
 		}
+		setWavebar()
 	}
 	
 	OnGameEvent_player_death = function(params) {
@@ -48,17 +51,39 @@
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
 		if(!IsPlayerABot(player)) return
-		if(player.HasBotTag("ignoredeath")) return
 		
-		botCount--
+		if(!player.HasBotTag("ignoredeath")) {
+			botCount--
 		
-		if(botCount == 0) {
-			livingBot.TakeDamage(1000, 0, null)
+			if(botCount == 0) {
+				livingBot.TakeDamage(1000, 0, null)
+			}
+			waveTable[NetProps.GetPropString(player, "m_PlayerClass.m_iszClassIcon")].currentCount -= 1
 		}
+		setWavebar()
 	}
 	
 	setBotCount = function(count) {
 		botCount = count
+	}
+	
+	setWavebar = function() {
+		foreach(name, data in waveTable)) {
+			NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", name, data.index)
+			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", data.flag, data.index)
+			if(data.currentCount != null && data.currentCount > 0) {
+				NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", data.currentCount, data.index)
+			}
+		}
+	}
+}
+local wave = NetProps.GetPropInt((Entities.FindByClassname(null, "objective_resource"), "m_nMannVsMachineWaveCount"))
+if(wave in difficultyNamespace) {
+	winCondCallbacks.hasWavebar = true
+	local waveTable = winCondCallbacks.waveTable
+	foreach(k, v in difficultyNamespace[wave]) {
+		waveTable[k] <- v
+		waveTable[k].currentCount <- waveTable[k].totalCount
 	}
 }
 __CollectGameEventCallbacks(winCondCallbacks)

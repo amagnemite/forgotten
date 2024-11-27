@@ -528,7 +528,7 @@ finaleThink <- function() {
 
 		else if(phaseTimer > 540) {
 			readyToChangePhase = true
-			currentFinalePhase = MALIGNANT_TUMOR
+			currentFinalePhase = isHardmode ? CARDIOMYOPATHY : MALIGNANT_TUMOR //skip tumor in hardmode
 		}
 	}
 	else if(currentFinalePhase == MALIGNANT_TUMOR && (deadTumorCounter >= 15 || phaseTimer > 1000)) {

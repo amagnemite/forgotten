@@ -175,7 +175,9 @@ PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`ambient/levels/labs/electric_explosion5.wav`)", 3.6, ukgr, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`misc/doomsday_missile_explosion.wav`, true)", 4.0, ukgr, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "playEmitSoundEx(`mvm/mvm_tank_explode.wav`, true)", 4.0, ukgr, null)
-					EntFireByHandle(ukgr, "RunScriptCode", "ScreenFade(null, 230, 230, 230, 255, 1, 4.5, 2)", 4, null, null)
+					if(!isHardmode) {
+						EntFireByHandle(ukgr, "RunScriptCode", "ScreenFade(null, 230, 230, 230, 255, 1, 4.5, 2)", 4, null, null)
+					}
 					EntFireByHandle(ukgr, "RunScriptCode", "self.SetAbsOrigin(Vector(-2600, -871, 1493))", 5.0, null, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.AddCustomAttribute(`health drain`, -9999, -1)", 5.1, null, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.AddCustomAttribute(`dmg taken increased`, 10, -1)", 5.1, null, null)
