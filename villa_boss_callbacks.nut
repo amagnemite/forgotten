@@ -17,9 +17,8 @@ PrecacheSound("vo/mvm/norm/medic_mvm_specialcompleted05.mp3") //Transitioning to
 PrecacheSound("vo/mvm/norm/medic_mvm_specialcompleted07.mp3") //Transitioning to Cardiomyopathy mimic
 
 PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_tachycardia_intro"})
-PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
-PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
-PrecacheEntityFromTable({classname = "ukgr_death_explosion", effect_name = "boss_halo"})
+//PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr_teleport_spellwheel"})
+//PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "boss_halo"})
 
 ::bossCallbacks <- {
 	ukgr = null

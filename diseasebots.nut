@@ -105,15 +105,14 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "sarc
 			EntFire("hemorrhagic_fever_trigger", "Disable")
 			EntFire("hemorrhagic_fever_fire_particles", "Stop")
 			EntFire("hemorrhagic_fever_weapon_particles", "Stop")
-			if(scope.rageParticle.IsValid()) {
+			if("rageParticle" in scope && scope.rageParticle.IsValid()) {
 				scope.rageParticle.Kill()
+				delete scope.rageParticle
 			}
 			if("ornament" in scope && scope.ornament.IsValid()) {
 				scope.ornament.Kill()
 				delete scope.ornament
 			}
-			
-			delete scope.rageParticle
 		}
 		if(!player.HasBotTag("Malignant_Tumor") && !player.HasBotTag("UKGR_Tumor")) return
 

@@ -63,24 +63,23 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				break
 		}
 	}
-	
-	4 = {
-		blackdead = {index = 0, flag = 2, totalCount = null}
-		dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
-		sarcoma_bp = {index = 2, flag = 8, totalCount = 2}
-		tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
-		malignant_tumor_bp = {index = 4, flag = 1, totalCount = 42}
-		pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
-		demo_burst = {index = 6, flag = 8, totalCount = 6}
-	}
-	
-	7 = {
-		blackdead = {index = 1, flag = 1, totalCount = 17}
-		scout = {index = 2, flag = 18, totalCount = null}
-		sniper_sydneysleeper = {index = 3, flag = 20, totalCount = null}
-		spy = {index = 4, flag = 20, totalCount = null}
-	}
 }
+normalNamespace[4] <- {
+	blackdead = {index = 0, flag = 2, totalCount = null}
+	dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
+	sarcoma_bp = {index = 2, flag = 8, totalCount = 2}
+	tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
+	malignant_tumor_bp = {index = 4, flag = 1, totalCount = 42}
+	pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
+	demo_burst = {index = 6, flag = 8, totalCount = 6}
+}
+normalNamespace[7] <- {
+	blackdead = {index = 1, flag = 1, totalCount = 17}
+	scout = {index = 2, flag = 18, totalCount = null}
+	sniper_sydneysleeper = {index = 3, flag = 20, totalCount = null}
+	spy = {index = 4, flag = 20, totalCount = null}
+}
+
 ::difficultyNamespace <- normalNamespace
 
 ::hardCallbacks <- {
@@ -198,7 +197,6 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 			case 5:
 				//Index 3 furies to crits (16 crits + 8 giant)
 				//Index 5 gheavies to crits (16 crits + 8 giant)
-				//ClientPrint(null, 3, "Yeah it's happening")
 				setFlag(24, 3)
 				setFlag(24, 5)
 				break
@@ -216,30 +214,6 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		//NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
 	}
 	
-	4 = {
-		blackdead = {index = 0, flag = 2, totalCount = null}
-		dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
-		sarcoma_bp = {index = 2, flag = 8, totalCount = 2}
-		tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
-		malignant_tumor_bp = {index = 4, flag = 1, totalCount = 32}
-		pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
-		demo_burst = {index = 6, flag = 8, totalCount = 6}
-	}
-	
-	7 = {
-		dyspnea_bp = {index = 1, flag = 24, totalCount = 16}
-		hemorrhagic_fever_bp = {index = 2, flag = 24, totalCount = 9}	
-		tank = {index = 3, flag = 8, totalCount = 1}			
-		demo_burst = {index = 4, flag = 8, totalCount = 12}		
-		tachycardia_bp = {index = 5, flag = 8, totalCount = 8}			
-		sarcoma_bp = {index = 6, flag = 8, totalCount = 4}			
-		pneumonia_bp = {index = 7, flag = 8, totalCount = 4}				
-		malignant_tumor_bp = {index = 8, flag = 2, totalCount = null}		
-		engineer = {index = 9, flag = 2, totalCount = null}	
-		spy = {index = 10, flag = 4, totalCount = null}		
-		sniper_sydneysleeper = {index = 11, flag = 4, totalCount = null}	
-	}
-	
 	finaleWaveInit = function() {
 		EntFire("spawnbot_roof", "Disable")
 		EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
@@ -250,7 +224,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 	}
 
 	finaleWaveStart = function() {
-		const BOTCOUNT = 54
+		const BOTCOUNT = 55
 		IncludeScript("villa_waves.nut", getroottable())
 		winCondCallbacks.setBotCount(BOTCOUNT)
 		IncludeScript("diseasebots.nut", getroottable())
@@ -258,4 +232,26 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 
 		EntFire("wave_start_relay", "Trigger")
 	}
+}
+hardCallbacks[4] <- {
+	blackdead = {index = 0, flag = 2, totalCount = null}
+	dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
+	sarcoma_bp = {index = 2, flag = 8, totalCount = 2}
+	tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
+	malignant_tumor_bp = {index = 4, flag = 1, totalCount = 32}
+	pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
+	demo_burst = {index = 6, flag = 8, totalCount = 6}
+}
+hardCallbacks[7] <- {
+	dyspnea_bp = {index = 1, flag = 24, totalCount = 16}
+	hemorrhagic_fever_bp = {index = 2, flag = 24, totalCount = 9}	
+	tank = {index = 3, flag = 8, totalCount = 1}			
+	demo_burst = {index = 4, flag = 8, totalCount = 12}		
+	tachycardia_bp = {index = 5, flag = 8, totalCount = 8}			
+	sarcoma_bp = {index = 6, flag = 8, totalCount = 4}			
+	pneumonia_bp = {index = 7, flag = 8, totalCount = 4}				
+	malignant_tumor_bp = {index = 8, flag = 2, totalCount = null}		
+	engineer = {index = 9, flag = 2, totalCount = null}	
+	spy = {index = 10, flag = 4, totalCount = null}		
+	sniper_sydneysleeper = {index = 11, flag = 4, totalCount = null}	
 }
