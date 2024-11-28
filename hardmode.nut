@@ -168,7 +168,8 @@ normalNamespace[7] <- {
 		local function setCount(count, index) {
 			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", count, index)
 		}
-
+		local iconCount = 0
+		
 		switch(waveNumber) {
 			case 1:
 				//Index 2 Gsoldier to soldier_spammer
@@ -177,6 +178,7 @@ normalNamespace[7] <- {
 				setIcon("soldier_spammer", 2)
 				setFlag(17, 3)
 				setIcon("scout_fast", 5)
+				iconCount = 7
 				break
 			case 2:
 				//Index 2 to spies, active support (2)
@@ -184,6 +186,7 @@ normalNamespace[7] <- {
 				setFlag(2, 2)
 				setIcon("timer_pink", 3)
 				setFlag(2, 3)
+				iconCount = 3
 				break
 			case 3:
 				//Index 1 burst demos to crits (16 crits + 1 main wave)
@@ -192,6 +195,7 @@ normalNamespace[7] <- {
 				setFlag(17, 1)
 				setIcon("medic_uber_shield_lite", 4)
 				setIcon("sniper_bow_multi_bleed", 7)
+				iconCount = 8
 				break
 			case 4:
 				NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", 54)
@@ -207,8 +211,12 @@ normalNamespace[7] <- {
 			case 5:
 				//Index 3 furies to crits (16 crits + 8 giant)
 				//Index 5 gheavies to crits (16 crits + 8 giant)
+				//Index 6/7 medics to crits (16 crits + 2 support)
 				setFlag(24, 3)
 				setFlag(24, 5)
+				setFlag(18, 6)
+				setFlag(18, 7)
+				iconCount = 11
 				break
 			case 7:
 				NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", 55)
@@ -216,6 +224,16 @@ normalNamespace[7] <- {
 				break
 			default:
 				break
+		}
+
+		for (local i = 0; i < iconCount ; i++) {
+			local table = {}
+			table.index <- i
+			table.flag <- NetProps.GetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", i)
+			table.count <- NetProps.GetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", i)
+			local iconname = NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", i)
+			
+			hardCallbacks[wave][iconname] <- table
 		}
 
 		//Add pentagram icon
@@ -243,6 +261,11 @@ normalNamespace[7] <- {
 		EntFire("wave_start_relay", "Trigger")
 	}
 }
+hardCallbacks[1] <- {}
+hardCallbacks[2] <- {}
+hardCallbacks[3] <- {}
+hardCallbacks[5] <- {}
+hardCallbacks[6] <- {}
 hardCallbacks[4] <- {
 	blackdead = {index = 0, flag = 2, totalCount = null}
 	dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
@@ -250,6 +273,7 @@ hardCallbacks[4] <- {
 	tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
 	malignant_tumor_bp = {index = 4, flag = 1, totalCount = 32}
 	pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
+	demo_burst = {index = 6, flag = 8, totalCount = 5}
 	demo_burst = {index = 6, flag = 8, totalCount = 5}
 }
 hardCallbacks[7] <- {
