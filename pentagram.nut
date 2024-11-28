@@ -1,6 +1,17 @@
 ::playersInPentagram <- 0
 ::isHardmode <- false //this will be overwritten every time script is loaded, which will clear state
 
+::activatePentagram <- function() {
+	::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
+		particle_name = "pentagram_enemy"
+		attachment_type = 1
+		spawnflags = 64
+	})
+	isHardmode = true
+	EntFire("logic_script", "FireUser1")
+	__CollectGameEventCallbacks(pentagramCallbacks)
+}
+
 ::IncrementPentagram <- function() {
     playersInPentagram++
     switch(playersInPentagram) {
@@ -20,14 +31,7 @@
             break
         case 5:
             EntFire("pentagram_boom", "trigger")
-			isHardmode = true
-			EntFire("logic_script", "FireUser1")
-			__CollectGameEventCallbacks(pentagramCallbacks)
-			::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
-				particle_name = "pentagram_enemy"
-				attachment_type = 1
-				spawnflags = 64
-			})
+			activatePentagram()
             break
         default:
 			break
@@ -64,22 +68,22 @@
     }
 
 	OnGameEvent_recalculate_holidays = function(_) {
-		if(GetRoundState() == 3) {
-			Cleanup()
-		}
-		if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.IsValid()) { //put this here since overall script essentially only runs once a mission
+        if(!("pentagramBuffedParticles" in getroottable()) || !pentagramBuffedParticles.IsValid()) { //put this here since overall script essentially only runs once a mission
 			::pentagramBuffedParticles <- SpawnEntityFromTable("trigger_particle", {
 				particle_name = "pentagram_enemy"
 				attachment_type = 1
 				spawnflags = 64
 			})
 		}
+		if(GetRoundState() == 3) {
+			Cleanup()
+		}
 	}
 
     OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
-		
+
 		if(IsPlayerABot(player)) {
 			EntFireByHandle(player, "RunScriptCode", "pentagramCallbacks.checkForPentagramBuff()", -1, player, null)
 		}

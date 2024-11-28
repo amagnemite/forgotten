@@ -20,7 +20,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		EntFire("altmode_init_reviveonly_relay", "Trigger")
 		updateWavebar()
 	}
-	
+
 	finaleWaveStart = function() {
 		const BOTCOUNT = 18
 		IncludeScript("villa_waves.nut", getroottable())
@@ -32,7 +32,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 		EntFire("sniper_*", "Disable")
 		EntFire("roof_sniper_*", "Enable")
 	}
-	
+
 	updateWavebar = function() {
 		local waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
 		local function setWavebar(wave) {
@@ -44,7 +44,7 @@ InputFireUser1 <- function() { //this essentially only fires once, then the call
 				}
 			}
 		}
-		
+
 		switch(waveNumber) {
 			case 4:
 				//Index 0 to support pathogen
@@ -73,7 +73,7 @@ normalNamespace[4] <- {
 	tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
 	malignant_tumor_bp = {index = 4, flag = 1, totalCount = 42}
 	pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
-	demo_burst = {index = 6, flag = 8, totalCount = 6}
+	demo_burst = {index = 6, flag = 8, totalCount = 5}
 }
 normalNamespace[7] <- {
 	blackdead = {index = 1, flag = 1, totalCount = 17}
@@ -89,7 +89,7 @@ normalNamespace[7] <- {
 		if(GetRoundState() == 3) {
 			local objRes = Entities.FindByClassname(null, "tf_objective_resource")
 			local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-		
+
 			if(wave == 1) {
 				objRes.AcceptInput("$ResetClientProp$m_iszMvMPopfileName", null, null, null)
 				delete ::hardCallbacks
@@ -102,27 +102,33 @@ normalNamespace[7] <- {
 		}
 	}
 	
+	OnGameEvent_mvm_wave_complete = function(_) {
+		local objRes = Entities.FindByClassname(null, "tf_objective_resource")
+		local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
+		printl(wave)
+	}
+
 	OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
 		if(!IsPlayerABot(player)) return
-		
-		EntFireByHandle(player, "RunScriptFile", "hardCallbacks.checkTags()", -1, player, null)
+
+		EntFireByHandle(player, "RunScriptCode", "hardCallbacks.checkTags()", -1, player, null)
 	}
-	
+
 	checkTags = function() {
 		local tags = {}
 		activator.GetAllBotTags(tags)
-		
+
 		foreach(k, tag in tags) {
 			tag = tag.tolower()
-			
+
 			if(startswith(tag, "name_")) {
 				local chunks = split(tag.slice(5), "_")
 				local final = ""
 				for(local i = 0; i < chunks.len(); i++) {
 					local chunk = chunks[i]
-					local titlecase = chunk.splice(0, 1).toupper() + chunk.splice(1)
+					local titlecase = chunk.slice(0, 1).toupper() + chunk.slice(1)
 					final = final + titlecase
 					if(i + 1 < chunks.len()) {
 						final = final + " "
@@ -134,9 +140,14 @@ normalNamespace[7] <- {
 				local icon = tag.slice(5)
 				NetProps.SetPropString(activator, "m_PlayerClass.m_iszClassIcon", icon)
 			}
+			else if(startswith(tag, "health_")) {
+				local newHealth = tag.slice(6).tointeger()
+				activator.AddCustomAttribute("max health additive bonus", newHealth - activator.GetMaxHealth())
+				activator.SetHealth(activator.GetMaxHealth())
+			}
 		}
 	}
-	
+
 	updateWavebar = function() {
 		local waveNumber = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
 		local function setWavebar(wave) {
@@ -157,7 +168,7 @@ normalNamespace[7] <- {
 		local function setCount(count, index) {
 			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", count, index)
 		}
-		
+
 		switch(waveNumber) {
 			case 1:
 				//Index 2 Gsoldier to soldier_spammer
@@ -204,7 +215,7 @@ normalNamespace[7] <- {
 				setWavebar(7)
 				break
 			default:
-				break	
+				break
 		}
 
 		//Add pentagram icon
@@ -212,7 +223,7 @@ normalNamespace[7] <- {
 		NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags2", 2, 11)
 		//NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
 	}
-	
+
 	finaleWaveInit = function() {
 		EntFire("spawnbot_roof", "Disable")
 		EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
@@ -239,18 +250,17 @@ hardCallbacks[4] <- {
 	tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
 	malignant_tumor_bp = {index = 4, flag = 1, totalCount = 32}
 	pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
-	demo_burst = {index = 6, flag = 8, totalCount = 6}
+	demo_burst = {index = 6, flag = 8, totalCount = 5}
 }
 hardCallbacks[7] <- {
-	dyspnea_bp = {index = 1, flag = 24, totalCount = 16}
-	hemorrhagic_fever_bp = {index = 2, flag = 24, totalCount = 9}	
-	tank = {index = 3, flag = 8, totalCount = 1}			
-	demo_burst = {index = 4, flag = 8, totalCount = 12}		
-	tachycardia_bp = {index = 5, flag = 8, totalCount = 8}			
-	sarcoma_bp = {index = 6, flag = 8, totalCount = 4}			
-	pneumonia_bp = {index = 7, flag = 8, totalCount = 4}				
-	malignant_tumor_bp = {index = 8, flag = 2, totalCount = null}		
-	engineer = {index = 9, flag = 2, totalCount = null}	
-	spy = {index = 10, flag = 4, totalCount = null}		
-	sniper_sydneysleeper = {index = 11, flag = 4, totalCount = null}	
+	dyspnea_bp = {index = 1, flag = 24, totalCount = 12}
+	hemorrhagic_fever_bp = {index = 2, flag = 24, totalCount = 6}
+	demo_burst = {index = 3, flag = 8, totalCount = 12}
+	tachycardia_bp = {index = 4, flag = 8, totalCount = 8}
+	sarcoma_bp = {index = 5, flag = 8, totalCount = 4}
+	pneumonia_bp = {index = 6, flag = 8, totalCount = 4}
+	malignant_tumor_bp = {index = 7, flag = 2, totalCount = null}
+	engineer = {index = 8, flag = 2, totalCount = null}
+	spy = {index = 9, flag = 4, totalCount = null}
+	sniper_sydneysleeper = {index = 10, flag = 4, totalCount = null}
 }

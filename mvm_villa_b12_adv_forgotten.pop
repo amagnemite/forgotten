@@ -355,14 +355,14 @@ WaveSchedule
 			{
 				ItemName "TF_WEAPON_ROCKETLAUNCHER"
 				"clip size upgrade atomic" 16.0
-				"add cond on hit" 12
-				"add cond on hit duration" 3.5
+				"add cond on hit" 12 [$SIGSEGV]
+				"add cond on hit duration" 3.5 [$SIGSEGV]
 				"faster reload rate" 0.2
 				"fire rate bonus" 0.2
 				"projectile spread angle penalty" 7
                 "damage bonus" 0.125
 				"projectile speed increased" 0.6
-				"projectile trail particle" dyspnea_rockettrail
+				"projectile trail particle" dyspnea_rockettrail [$SIGSEGV]
 			}
 			CharacterAttributes
 			{
@@ -401,8 +401,8 @@ WaveSchedule
 			ItemAttributes {
 				ItemName "The Holy Mackerel"
 				"damage bonus" 1.5
-				"add cond on hit" 65
-				"add cond on hit duration" 20
+				"add cond on hit" 65 [$SIGSEGV]
+				"add cond on hit duration" 20 [$SIGSEGV]
 				"damage causes airblast" 1
 				"attach particle effect" 16
 				"Paintkit_proto_def_index" 3.16693e-43n
@@ -664,13 +664,13 @@ WaveSchedule
 			}
 		}
 		
-		w6action {
+		w6action [$SIGSEGV] {
 			EventChangeAttributes {
 				Default {
-					ActionOverride Passive [$SIGSEGV]
+					ActionOverride Passive
 				}
 				SwitchToMobber {
-					ActionOverride Mobber [$SIGSEGV]
+					ActionOverride Mobber
 				}
 			}
 		}
@@ -912,13 +912,13 @@ WaveSchedule
 					EventChangeAttributes {
 						Default {
 							Skill Expert
-							Tag ignoredeath
+							Tag ignoredeath [$SIGSEGV] //why does this crash local ???
 						}
 						HardMode {
-							//Tag pentagram_buffable
 							Skill Expert
 							Item "Conniver's Kunai"
 							Tag ignoredeath
+							Tag pentagram_buffable
 						}
 					}
 				}
@@ -1192,12 +1192,12 @@ WaveSchedule
 						Tag icon_scout_giant_fast
 						Tag name_super_scout
 						Tag pentagram_buffable
+						Tag health_1200
 						CharacterAttributes {
 							"move speed bonus"	2
 							"damage force reduction" 0.7
 							"airblast vulnerability multiplier" 0.7
 							"override footstep sound set" 5
-							"max health additive bonus" -400 //make sure this works correctly
 						}
 					}
 				}
@@ -2665,7 +2665,7 @@ WaveSchedule
 			TotalCount 3
 			MaxActive 3
 			SpawnCount 1
-			WaitBeforeStarting 17
+			WaitBeforeStarting 25
 			WaitBetweenSpawns 13
 			TotalCurrency 550
 			WaitForAllSpawned w5a
@@ -2716,7 +2716,7 @@ WaveSchedule
 			TotalCount 42
 			MaxActive 8
 			SpawnCount 2
-			WaitBeforeStarting 8
+			WaitBeforeStarting 17
 			WaitBetweenSpawns 2
 			WaitForAllSpawned w5a
 			Support Limited
@@ -2910,7 +2910,7 @@ WaveSchedule
 			TFBot {
 				Template timerbot
 				ClassIcon timer_pink
-				Health 45
+				Health 10
 			}
 		}
 		WaveSpawn {
@@ -2929,61 +2929,60 @@ WaveSchedule
 			Squad {
 				TFBot {
 					Template T_TFBot_Tachycardia
-					Tag ws1
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive 
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Tachycardia
 					Tag ws1
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Tachycardia
 					Tag ws1
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Giant_Demo_RapidFire
 					Tag ws1
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Giant_Demo_RapidFire
 					Tag ws1
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3005,12 +3004,12 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Giant_Soldier_Spammer
 					Tag ws2
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3021,24 +3020,24 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Heavyweapons_Fist
 					Tag ws2
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Heavyweapons_Fist
 					Tag ws2
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3071,12 +3070,12 @@ WaveSchedule
 					"cancel falling damage" 1
 					"damage force reduction" 0.5
 				}
-				EventChangeAttributes {
+				EventChangeAttributes [$SIGSEGV] {
 					Default {
-						ActionOverride Passive [$SIGSEGV]
+						ActionOverride Passive
 					}
 					SwitchToMobber {
-						ActionOverride Mobber [$SIGSEGV]
+						ActionOverride Mobber
 					}
 				}
 			}
@@ -3098,60 +3097,60 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws4
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Giant_Demo_RapidFire
 					Tag ws4
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3175,12 +3174,12 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Giant_Demo_RapidFire
 					Tag ws5
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3188,12 +3187,12 @@ WaveSchedule
 					Template T_TFBot_Heavyweapons_Heavyweight_Champ
 					Skill Expert
 					Tag ws5
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3201,12 +3200,12 @@ WaveSchedule
 					Template T_TFBot_Heavyweapons_Heavyweight_Champ
 					Skill Expert
 					Tag ws5
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3276,20 +3275,18 @@ WaveSchedule
 			DoneOutput {
 				Target altmode_chaos_script
 				Action RunScriptCode
-				Param "
-					DoneRoom(`ws6`, true)
-				"
+				Param "DoneRoom(`ws6`, true)"
 			}
 			
 			TFBot {
 				Template T_TFBot_Hemorrhagic_Fever
 				Tag ws6
-				EventChangeAttributes {
+				EventChangeAttributes [$SIGSEGV] {
 					Default {
-						ActionOverride Passive [$SIGSEGV]
+						ActionOverride Passive
 					}
 					SwitchToMobber {
-						ActionOverride Mobber [$SIGSEGV]
+						ActionOverride Mobber
 					}
 				}
 			}
@@ -3332,48 +3329,48 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
 					Tag ws7
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
 					Tag ws7
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
 					Tag ws7
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
 					Tag ws7
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3381,7 +3378,7 @@ WaveSchedule
 					Template T_TFBot_Sarcoma
 					Tag Sarcoma_w6
 					Tag ws7
-					Action Mobber //he can't move anyway
+					Action Mobber [$SIGSEGV] //he can't move anyway
 				}
 			}
 		}
@@ -3403,24 +3400,24 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Heavyweapons_Fist
 					Tag ws8
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Heavyweapons_Fist
 					Tag ws8
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3453,12 +3450,12 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Dyspnea
 					Tag ws9
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3470,24 +3467,24 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Giant_Pyro_NoAirblast
 					Tag ws9
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Cardiomyopathy
 					Tag ws9
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3511,12 +3508,12 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Cardiomyopathy
 					Tag ws10
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3528,36 +3525,36 @@ WaveSchedule
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
 					Tag ws10
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
 					Tag ws10
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
 				TFBot {
 					Template T_TFBot_Malignant_Tumor
 					Tag ws10
-					EventChangeAttributes {
+					EventChangeAttributes [$SIGSEGV] {
 						Default {
-							ActionOverride Passive [$SIGSEGV]
+							ActionOverride Passive
 						}
 						SwitchToMobber {
-							ActionOverride Mobber [$SIGSEGV]
+							ActionOverride Mobber
 						}
 					}
 				}
@@ -3847,7 +3844,7 @@ WaveSchedule
 			SpawnCount 2
 			WaitForAllDead normalkill
 			WaitBeforeStarting 0.2
-			WaitBetweenSpawns 20
+			//WaitBetweenSpawns 15
 			Where spawnbot_invasion
 			RandomSpawn 1
 			Support Limited
@@ -3875,14 +3872,14 @@ WaveSchedule
 						{
 							ItemName "TF_WEAPON_ROCKETLAUNCHER"
 							"clip size upgrade atomic" 7.0
-							"add cond on hit" 12
-							"add cond on hit duration" 3.5
+							"add cond on hit" 12 [$SIGSEGV]
+							"add cond on hit duration" 3.5 [$SIGSEGV]
 							"faster reload rate" 0.5
 							"fire rate bonus" 0.1
 							//"projectile spread angle penalty" 7
 							"damage bonus" 0.125
 							"projectile speed increased" 0.6
-							"projectile trail particle" dyspnea_rockettrail
+							"projectile trail particle" dyspnea_rockettrail [$SIGSEGV]
 						}
 						CharacterAttributes
 						{
@@ -3890,7 +3887,7 @@ WaveSchedule
 							"move speed bonus"	0.5
 							"damage force reduction" 0.4
 							"airblast vulnerability multiplier" 0.4
-							"override footstep sound set" 3		
+							"override footstep sound set" 3	
 						}
 					}
 				}
@@ -3899,9 +3896,10 @@ WaveSchedule
 		}
 		WaveSpawn {
 			Name "w7b"
-			TotalCount 2
+			TotalCount 4
 			MaxActive 2
 			SpawnCount 2
+			WaitBetweenSpawns 15
 			WaitForAllDead normalkill
 			WaitBeforeStarting 0.2
 			Where spawnbot
@@ -3915,34 +3913,16 @@ WaveSchedule
 					}
 				}
 			}
-		}	
-		WaveSpawn { //take stats from buffed ver
-			Name "w7c"
-			TotalCount 2
-			MaxActive 2
-			SpawnCount 2
-			WaitBeforeStarting 15
-			WaitForAllDead "w7b"
-			Where spawnbot
-			Support Limited
-			
-			RandomChoice {
-				RandomChoice {
-					TFBot
-					{
-						Template feverFinale
-					}
-				}
-			}
 		}
+
 		WaveSpawn {
-			Name "w7d"
+			Name "w7c"
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 13
 			WaitBetweenSpawns 18
-			WaitForAllSpawned "w7c"
+			WaitForAllSpawned "w7b"
 			Where spawnbot_invasion
 			Support Limited
 			
@@ -3956,13 +3936,13 @@ WaveSchedule
 			}
 		}
 		WaveSpawn { 
-			Name "w7d"
+			Name "w7c"
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 25
-			WaitBetweenSpawns 15
-			WaitForAllSpawned "w7c"
+			WaitBetweenSpawns 10
+			WaitForAllSpawned "w7b"
 			Where spawnbot
 			Support Limited
 		
@@ -3975,12 +3955,12 @@ WaveSchedule
 			}
 		}
 		WaveSpawn {
-			Name "w7e"
+			Name "w7d"
 			TotalCount 3
 			MaxActive 3
 			SpawnCount 3
-			WaitForAllSpawned "w7d"
-			WaitBeforeStarting 17
+			WaitForAllSpawned "w7c"
+			WaitBeforeStarting 20
 			Where spawnbot
 			Support Limited
 			
@@ -3999,7 +3979,7 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 15
-			WaitBetweenSpawns 12 //pairs are going to take 5 years to walk out
+			WaitBetweenSpawns 30 //pairs are going to take 5 years to walk out
 			WaitForAllSpawned "w7d"
 			Where spawnbot
 			Support Limited
@@ -4029,7 +4009,7 @@ WaveSchedule
 			TotalCount 3
 			MaxActive 3
 			SpawnCount 3
-			WaitBeforeStarting 20
+			WaitBeforeStarting 17
 			WaitForAllSpawned "w7e"
 			Where spawnbot_invasion
 			Support Limited
@@ -4065,8 +4045,8 @@ WaveSchedule
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
-			WaitBeforeStarting 9
-			WaitBetweenSpawns 9 //pairs are going to take 5 years to walk out
+			WaitBeforeStarting 19
+			WaitBetweenSpawns 22 //pairs are going to take 5 years to walk out
 			WaitForAllSpawned "w7d"
 			Where spawnbot
 			Support Limited
