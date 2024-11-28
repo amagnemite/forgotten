@@ -64,6 +64,7 @@
 			if(!startswith(iconName, "ukgr_")) {
 				waveTable[iconName].currentCount -= 1
 			}
+			NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", waveTable[iconName].currentCount)
 		}
 		//setWavebar()
 	}
