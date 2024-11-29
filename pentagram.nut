@@ -84,10 +84,18 @@
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
 
-		if(IsPlayerABot(player)) {
-			EntFireByHandle(player, "RunScriptCode", "pentagramCallbacks.checkForPentagramBuff()", -1, player, null)
-		}
+		if(!IsPlayerABot(player)) return
+        EntFireByHandle(player, "RunScriptCode", "pentagramCallbacks.checkForPentagramBuff()", -1, player, null)
 	}
+
+    OnGameEvent_player_death = function(params) {
+		local player = GetPlayerFromUserID(params.userid)
+		if(player == null) return
+
+		if(!IsPlayerABot(player)) return
+        EntFireByHandle(player, "DispatchEffect", "ParticleEffectStop", -1, player, player)
+	}
+
 
     checkForPentagramBuff = function() {
         if(!activator.HasBotTag("pentagram_buffable")) return

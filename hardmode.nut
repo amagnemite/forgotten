@@ -231,9 +231,9 @@ normalNamespace[7] <- {
 			table.index <- i
 			table.flag <- NetProps.GetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", i)
 			table.count <- NetProps.GetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", i)
-			local iconname = NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", i)
+			local iconname = NetProps.GetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", i)
 			
-			hardCallbacks[wave][iconname] <- table
+			hardCallbacks[waveNumber][iconname] <- table
 		}
 
 		//Add pentagram icon
