@@ -821,6 +821,10 @@ WaveSchedule
 							ItemName "The Byte'd Beak"
 							"set item tint RGB" 13328029
 						}
+						ItemAttributes {
+							ItemName "The Quick-Fix"
+							"ubercharge rate bonus" 0.01
+						}
 						CharacterAttributes
 						{
 							"move speed bonus"	0.5
@@ -2917,7 +2921,7 @@ WaveSchedule
 				Param "
 					findTimerBot(1, true, null, false)
 					if(isHardmode) {
-						timer.AddCustomAttribute(`max health additive bonus`, -25, -1)
+						timer.AddCustomAttribute(`max health additive bonus`, -30, -1)
 						timer.SetHealth(timer.GetMaxHealth())
 					}
 				"
@@ -2926,7 +2930,7 @@ WaveSchedule
 			TFBot {
 				Template timerbot
 				ClassIcon timer_pink
-				Health 45
+				Health 60
 			}
 		}
 		WaveSpawn {
@@ -3790,7 +3794,7 @@ WaveSchedule
 			}
 		}
 		
-		WaveSpawn {
+		WaveSpawn { //support limited?
 			MaxActive 4
 			SpawnCount 1
 			WaitBeforeStarting 0.3
@@ -3864,7 +3868,7 @@ WaveSchedule
 							ItemName "TF_WEAPON_ROCKETLAUNCHER"
 							"clip size upgrade atomic" 7.0
 							"add cond on hit" 12 [$SIGSEGV]
-							"add cond on hit duration" 3.5 [$SIGSEGV]
+							"add cond on hit duration" 1.5 [$SIGSEGV]
 							"faster reload rate" 0.5
 							"fire rate bonus" 0.1
 							//"projectile spread angle penalty" 7
@@ -3911,7 +3915,7 @@ WaveSchedule
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
-			WaitBeforeStarting 13
+			WaitBeforeStarting 21
 			WaitBetweenSpawns 18
 			WaitForAllSpawned "w7b"
 			Where spawnbot_invasion
@@ -3945,7 +3949,7 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn {
+		WaveSpawn { //cut this?
 			Name "w7d"
 			TotalCount 3
 			MaxActive 3
@@ -3969,8 +3973,8 @@ WaveSchedule
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
-			WaitBeforeStarting 15
-			WaitBetweenSpawns 30
+			WaitBeforeStarting 21
+			WaitBetweenSpawns 40
 			WaitForAllSpawned "w7d"
 			Where spawnbot
 			Support Limited
@@ -4031,13 +4035,13 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn { 
+		WaveSpawn { //replace with ukgr
 			Name "w7f"
 			TotalCount 4
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 19
-			WaitBetweenSpawns 22 //pairs are going to take 5 years to walk out
+			WaitBetweenSpawns 35
 			WaitForAllSpawned "w7e"
 			Where spawnbot
 			Support Limited
