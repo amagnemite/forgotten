@@ -375,6 +375,7 @@ changePhase <- function() {
 			teleportParticle.AcceptInput("Start", null, null, null)
 			break
 		case CARDIOMYOPATHY:
+			self.RemoveBotAttribute(SUPPRESS_FIRE)
 			playEmitSoundEx("vo/mvm/norm/medic_mvm_specialcompleted07.mp3")
 			setIcon("ukgr_burstdemo")
 			::CustomWeapons.GiveItem("The Iron Bomber", self)

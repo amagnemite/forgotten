@@ -1189,7 +1189,7 @@ WaveSchedule
 						Item "The Bolt Boy"
 						Item "The Candy Cane"
 						Attributes MiniBoss
-						Tag icon_scout_giant_fast
+						Tag icon_scout_fast
 						Tag name_super_scout
 						Tag pentagram_buffable
 						Tag health_1200
@@ -1559,6 +1559,17 @@ WaveSchedule
 	}
 	Wave
 	{
+		InitWaveOutput
+		{
+			Target bombpath_choose_relay
+			Action RunScriptCode
+			Param "
+				self.AcceptInput(`trigger`, null, null, null)
+				if(isHardmode) {
+					difficultyNamespace.updateWavebar()
+				}
+			"
+		}
 		StartWaveOutput
 		{
 			Target wave_start_relay
@@ -1567,11 +1578,6 @@ WaveSchedule
 		DoneOutput
 		{
 			Target wave_finished_relay
-			Action Trigger
-		}
-		InitWaveOutput
-		{
-			Target bombpath_choose_relay
 			Action Trigger
 		}
 		WaveSpawn
@@ -1729,7 +1735,6 @@ WaveSchedule
 							{
 								"generate rage on heal" 2
 								"increase buff duration" 19.0
-								"bot medic uber deploy delay duration" 900
 							}
 						}
 					}
@@ -2615,7 +2620,13 @@ WaveSchedule
 		InitWaveOutput
 		{
 			Target bombpath_choose_relay
-			Action Trigger
+			Action RunScriptCode
+			Param "
+				self.AcceptInput(`trigger`, null, null, null)
+				if(isHardmode) {
+					difficultyNamespace.updateWavebar()
+				}
+			"
 		}
 		WaveSpawn
 		{
@@ -2748,6 +2759,7 @@ WaveSchedule
 				Health 5000
 				EventChangeAttributes {
 					Default {
+						Skill Expert
 						WeaponRestrictions PrimaryOnly
 						MaxVisionRange 1200
 						Attributes MiniBoss
@@ -2765,6 +2777,7 @@ WaveSchedule
 						}
 					}
 					HardMode {
+						Skill Expert
 						WeaponRestrictions PrimaryOnly
 						MaxVisionRange 1200
 						Attributes MiniBoss
@@ -2869,6 +2882,9 @@ WaveSchedule
 				self.AcceptInput(`Trigger`, null, null, null)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `lockRoom(\`ws6\`, 4)`, -1)
 				EntFire(`altmode_chaos_script`, `runscriptcode`, `addTags(12)`, -1)
+				if(isHardmode) {
+					difficultyNamespace.updateWavebar()
+				}
 			"
 		}
 		StartWaveOutput {
@@ -2910,7 +2926,7 @@ WaveSchedule
 			TFBot {
 				Template timerbot
 				ClassIcon timer_pink
-				Health 10
+				Health 45
 			}
 		}
 		WaveSpawn {
@@ -2929,6 +2945,7 @@ WaveSchedule
 			Squad {
 				TFBot {
 					Template T_TFBot_Tachycardia
+					Tag ws1
 					EventChangeAttributes [$SIGSEGV] {
 						Default {
 							ActionOverride Passive 
@@ -3619,7 +3636,7 @@ WaveSchedule
 			Action Trigger
 		}
 			
-		WaveSpawn {
+		WaveSpawn { //this needs to be split
 			TotalCount 1
 			MaxActive 1
 			SpawnCount 1
@@ -3628,15 +3645,15 @@ WaveSchedule
 			TFBot
 			{
 				Template T_TFBot_UKGR
-				EventChangeAttributes {
+				EventChangeAttributes [$SIGSEGV] {
 					ShootPlayers {
 						WeaponRestrictions PrimaryOnly
-						ActionOverride Mobber [$SIGSEGV]
+						ActionOverride Mobber
 					}
 					EatBots {
 						WeaponRestrictions SecondaryOnly
 						Attributes IgnoreEnemies
-						ActionOverride Medic [$SIGSEGV]
+						ActionOverride Medic
 					}
 				}
 			}
@@ -3774,36 +3791,10 @@ WaveSchedule
 		}
 		
 		WaveSpawn {
-			MaxActive 1
-			SpawnCount 1
-			WaitBeforeStarting 60
-			WaitBetweenSpawns 60
-			WaitForAllDead "normalkill"
-			Support 1
-			Where spawnbot
-			
-			RandomChoice {
-				RandomChoice {
-					TFBot {
-						Class Engineer
-						Name Engineer
-						Skill Expert
-						TeleportWhere spawnbot
-						TeleportWhere spawnbot_invasion
-						TeleportWhere spawnbot_right
-						Health 500
-						Attributes TeleportToHint
-						Tag IgnoreDeath
-					}
-				}
-			}
-		}
-		
-		WaveSpawn {
 			MaxActive 4
 			SpawnCount 1
 			WaitBeforeStarting 0.3
-			WaitBetweenSpawns 2
+			WaitBetweenSpawns 3
 			WaitForAllDead "normalkill"
 			Support 1
 			Where spawnbot_invasion
@@ -3935,11 +3926,11 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn { 
+		WaveSpawn [$DISABLED] { 
 			Name "w7c"
-			TotalCount 4
-			MaxActive 4
-			SpawnCount 2
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 1
 			WaitBeforeStarting 25
 			WaitBetweenSpawns 10
 			WaitForAllSpawned "w7b"
@@ -3979,18 +3970,18 @@ WaveSchedule
 			MaxActive 4
 			SpawnCount 2
 			WaitBeforeStarting 15
-			WaitBetweenSpawns 30 //pairs are going to take 5 years to walk out
+			WaitBetweenSpawns 30
 			WaitForAllSpawned "w7d"
 			Where spawnbot
 			Support Limited
 			
 			Template gpair
 		}
-		WaveSpawn { 
+		WaveSpawn [$DISABLED] { 
 			Name "w7e"
-			TotalCount 3
-			MaxActive 3
-			SpawnCount 3
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
 			WaitBeforeStarting 25
 			WaitForAllSpawned "w7d"
 			Where spawnbot
@@ -4022,11 +4013,11 @@ WaveSchedule
 				}
 			}
 		}
-		WaveSpawn { 
+		WaveSpawn [$DISABLED] { 
 			Name "w7f"
-			TotalCount 2
-			MaxActive 2
-			SpawnCount 2
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
 			WaitBeforeStarting 25
 			WaitForAllSpawned "w7e"
 			Where spawnbot
@@ -4047,7 +4038,7 @@ WaveSchedule
 			SpawnCount 2
 			WaitBeforeStarting 19
 			WaitBetweenSpawns 22 //pairs are going to take 5 years to walk out
-			WaitForAllSpawned "w7d"
+			WaitForAllSpawned "w7e"
 			Where spawnbot
 			Support Limited
 			

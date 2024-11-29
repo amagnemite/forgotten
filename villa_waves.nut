@@ -64,9 +64,8 @@
 			if(!startswith(iconName, "ukgr_")) {
 				waveTable[iconName].currentCount -= 1
 			}
-			NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", waveTable[iconName].currentCount)
+			//NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
 		}
-		//setWavebar()
 	}
 
 	setBotCount = function(count) {
@@ -81,7 +80,7 @@
 				NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", data.currentCount, data.index)
 			}
 		}
-		NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
+		//NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
 	}
 }
 local wave = NetProps.GetPropInt(Entities.FindByClassname(null, "tf_objective_resource"), "m_nMannVsMachineWaveCount")

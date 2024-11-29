@@ -92,22 +92,16 @@ normalNamespace[7] <- {
 
 			if(wave == 1) {
 				objRes.AcceptInput("$ResetClientProp$m_iszMvMPopfileName", null, null, null)
+				EntFire("pentagram_sky_prop", "Disable")
 				delete ::hardCallbacks
 			}
 			else {
-				objRes.AcceptInput("$SetClientProp$m_iszMvMPopfileName", "(exp) " + expName, null, null)
 				EntFire("pop_interface", "ChangeDefaultEventAttributes", "HardMode", -1)
-				updateWavebar()
+				EntFire("pentagram_env_init", "Trigger")
 			}
 		}
 	}
 	
-	OnGameEvent_mvm_wave_complete = function(_) {
-		local objRes = Entities.FindByClassname(null, "tf_objective_resource")
-		local wave = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveCount")
-		printl(wave)
-	}
-
 	OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
@@ -141,10 +135,14 @@ normalNamespace[7] <- {
 				NetProps.SetPropString(activator, "m_PlayerClass.m_iszClassIcon", icon)
 			}
 			else if(startswith(tag, "health_")) {
-				local newHealth = tag.slice(6).tointeger()
-				activator.AddCustomAttribute("max health additive bonus", newHealth - activator.GetMaxHealth())
+				local newHealth = tag.slice(7).tointeger()
+				activator.AddCustomAttribute("max health additive bonus", newHealth - activator.GetMaxHealth(), -1)
 				activator.SetHealth(activator.GetMaxHealth())
 			}
+		}
+		local wave = NetProps.GetPropInt(Entities.FindByClassname(null, "tf_objective_resource"), "m_nMannVsMachineWaveCount")
+		if(wave != 4 && wave != 7) {
+			updateWavebar()
 		}
 	}
 
@@ -225,7 +223,8 @@ normalNamespace[7] <- {
 			default:
 				break
 		}
-
+		
+		/*
 		for (local i = 0; i < iconCount ; i++) {
 			local table = {}
 			table.index <- i
@@ -235,11 +234,11 @@ normalNamespace[7] <- {
 			
 			hardCallbacks[waveNumber][iconname] <- table
 		}
-
+		*/
+	
 		//Add pentagram icon
 		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames2", "pentagram", 11)
 		NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags2", 2, 11)
-		//NetProps.SetPropBoolArray(objRes, "m_iszMannVsMachineWaveClassActive2", true, 11)
 	}
 
 	finaleWaveInit = function() {
@@ -261,11 +260,6 @@ normalNamespace[7] <- {
 		EntFire("wave_start_relay", "Trigger")
 	}
 }
-hardCallbacks[1] <- {}
-hardCallbacks[2] <- {}
-hardCallbacks[3] <- {}
-hardCallbacks[5] <- {}
-hardCallbacks[6] <- {}
 hardCallbacks[4] <- {
 	blackdead = {index = 0, flag = 2, totalCount = null}
 	dyspnea_bp = {index = 1, flag = 8, totalCount = 5}
@@ -273,7 +267,6 @@ hardCallbacks[4] <- {
 	tachycardia_bp = {index = 3, flag = 8, totalCount = 8}
 	malignant_tumor_bp = {index = 4, flag = 1, totalCount = 32}
 	pneumonia_bp = {index = 5, flag = 8, totalCount = 2}
-	demo_burst = {index = 6, flag = 8, totalCount = 5}
 	demo_burst = {index = 6, flag = 8, totalCount = 5}
 }
 hardCallbacks[7] <- {

@@ -181,6 +181,7 @@ PrecacheEntityFromTable({classname = "info_particle_system", effect_name = "ukgr
 					EntFireByHandle(ukgr, "RunScriptCode", "self.AddCustomAttribute(`health drain`, -9999, -1)", 5.1, null, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.AddCustomAttribute(`dmg taken increased`, 10, -1)", 5.1, null, null)
 					EntFireByHandle(ukgr, "RunScriptCode", "self.TakeDamage(990000,0,self)", 5.1, null, null)
+					//delete ::bossCallbacks
 					break
 			}
 			params.early_out = true
