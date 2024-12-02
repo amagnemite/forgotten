@@ -24,6 +24,7 @@
 		if(!IsPlayerABot(player)) return
 
 		EntFireByHandle(player, "runscriptcode", "winCondCallbacks.checkTags()", -1, player, null)
+		NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
 	}
 
 	checkTags = function() {
@@ -52,23 +53,30 @@
 		if(botCount == null) return //don't do anything if botcount isn't set
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
+
+		// local botCountDebug = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount")
+		// ClientPrint(null, 3, "waveenemycount is at: " + botCountDebug)
+
 		if(!IsPlayerABot(player)) return
 
-		if(!player.HasBotTag("ignoredeath")) {
-			botCount--
+		NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
 
-			if(botCount == 0) {
-				livingBot.TakeDamage(1000, 0, null)
-			}
-			local iconName = NetProps.GetPropString(player, "m_PlayerClass.m_iszClassIcon")
-			if(!startswith(iconName, "ukgr_")) {
-				waveTable[iconName].currentCount -= 1
-			}
-			//NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
-		}
+		// if(!player.HasBotTag("ignoredeath")) {
+		// 	// botCount--
+
+		// 	// if(botCount == 0) {
+		// 	// 	livingBot.TakeDamage(1000, 0, null)
+		// 	// }
+		// 	// local iconName = NetProps.GetPropString(player, "m_PlayerClass.m_iszClassIcon")
+		// 	// if(!startswith(iconName, "ukgr_")) {
+		// 	// 	waveTable[iconName].currentCount -= 1
+		// 	// }
+		// 	NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
+		// }
 	}
 
 	setBotCount = function(count) {
+		ClientPrint(null, 3, "SOMETHING CHANGED BOT COUNT TO " + botCount)
 		botCount = count
 	}
 
@@ -80,7 +88,8 @@
 				NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", data.currentCount, data.index)
 			}
 		}
-		//NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
+		// ClientPrint(null, 3, "BOT COUNT: " + botCount)
+		// NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
 	}
 }
 local wave = NetProps.GetPropInt(Entities.FindByClassname(null, "tf_objective_resource"), "m_nMannVsMachineWaveCount")
