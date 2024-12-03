@@ -101,7 +101,7 @@ normalNamespace[7] <- {
 			}
 		}
 	}
-	
+
 	OnGameEvent_player_spawn = function(params) {
 		local player = GetPlayerFromUserID(params.userid)
 		if(player == null) return
@@ -166,8 +166,7 @@ normalNamespace[7] <- {
 		local function setCount(count, index) {
 			NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", count, index)
 		}
-		local iconCount = 0
-		
+
 		switch(waveNumber) {
 			case 1:
 				//Index 2 Gsoldier to soldier_spammer
@@ -176,7 +175,6 @@ normalNamespace[7] <- {
 				setIcon("soldier_spammer", 2)
 				setFlag(17, 3)
 				setIcon("scout_fast", 5)
-				iconCount = 7
 				break
 			case 2:
 				//Index 2 to spies, active support (2)
@@ -184,7 +182,6 @@ normalNamespace[7] <- {
 				setFlag(2, 2)
 				setIcon("timer_pink", 3)
 				setFlag(2, 3)
-				iconCount = 3
 				break
 			case 3:
 				//Index 1 burst demos to crits (16 crits + 1 main wave)
@@ -193,7 +190,6 @@ normalNamespace[7] <- {
 				setFlag(17, 1)
 				setIcon("medic_uber_shield_lite", 4)
 				setIcon("sniper_bow_multi_bleed", 7)
-				iconCount = 8
 				break
 			case 4:
 				NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", 54)
@@ -214,7 +210,6 @@ normalNamespace[7] <- {
 				setFlag(24, 5)
 				setFlag(18, 6)
 				setFlag(18, 7)
-				iconCount = 11
 				break
 			case 7:
 				NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", 55)
@@ -223,19 +218,7 @@ normalNamespace[7] <- {
 			default:
 				break
 		}
-		
-		/*
-		for (local i = 0; i < iconCount ; i++) {
-			local table = {}
-			table.index <- i
-			table.flag <- NetProps.GetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags", i)
-			table.count <- NetProps.GetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", i)
-			local iconname = NetProps.GetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames", i)
-			
-			hardCallbacks[waveNumber][iconname] <- table
-		}
-		*/
-	
+
 		//Add pentagram icon
 		NetProps.SetPropStringArray(objRes, "m_iszMannVsMachineWaveClassNames2", "pentagram", 11)
 		NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassFlags2", 2, 11)

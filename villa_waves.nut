@@ -1,6 +1,7 @@
 ::winCondCallbacks <- {
 	livingBot = null
-	botCount = null
+	currentBotCount = null
+	totalBotCount = null
 	hasWavebar = false
 	waveTable = {}
 
@@ -24,7 +25,9 @@
 		if(!IsPlayerABot(player)) return
 
 		EntFireByHandle(player, "runscriptcode", "winCondCallbacks.checkTags()", -1, player, null)
-		NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
+		if(hasWavebar) {
+			NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", totalBotCount)
+		}
 	}
 
 	checkTags = function() {
@@ -50,34 +53,28 @@
 	}
 
 	OnGameEvent_player_death = function(params) {
-		if(botCount == null) return //don't do anything if botcount isn't set
+		if(currentBotCount == null) return //don't do anything if currentBotCount isn't set
 		local player = GetPlayerFromUserID(params.userid)
-		if(player == null) return
-
-		// local botCountDebug = NetProps.GetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount")
-		// ClientPrint(null, 3, "waveenemycount is at: " + botCountDebug)
-
 		if(!IsPlayerABot(player)) return
 
-		NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
+		NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", totalBotCount)
 
-		// if(!player.HasBotTag("ignoredeath")) {
-		// 	// botCount--
+		if(!player.HasBotTag("ignoredeath")) {
+			currentBotCount--
 
-		// 	// if(botCount == 0) {
-		// 	// 	livingBot.TakeDamage(1000, 0, null)
-		// 	// }
-		// 	// local iconName = NetProps.GetPropString(player, "m_PlayerClass.m_iszClassIcon")
-		// 	// if(!startswith(iconName, "ukgr_")) {
-		// 	// 	waveTable[iconName].currentCount -= 1
-		// 	// }
-		// 	NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
-		// }
+			if(currentBotCount == 0) {
+				livingBot.TakeDamage(1000, 0, null)
+			}
+			local iconName = NetProps.GetPropString(player, "m_PlayerClass.m_iszClassIcon")
+			if(!startswith(iconName, "ukgr_")) {
+				waveTable[iconName].currentCount -= 1
+			}
+		}
 	}
 
 	setBotCount = function(count) {
-		ClientPrint(null, 3, "SOMETHING CHANGED BOT COUNT TO " + botCount)
-		botCount = count
+		currentBotCount = count
+		totalBotCount = count
 	}
 
 	setWavebar = function() {
@@ -88,8 +85,6 @@
 				NetProps.SetPropIntArray(objRes, "m_nMannVsMachineWaveClassCounts", data.currentCount, data.index)
 			}
 		}
-		// ClientPrint(null, 3, "BOT COUNT: " + botCount)
-		// NetProps.SetPropInt(objRes, "m_nMannVsMachineWaveEnemyCount", botCount)
 	}
 }
 local wave = NetProps.GetPropInt(Entities.FindByClassname(null, "tf_objective_resource"), "m_nMannVsMachineWaveCount")
